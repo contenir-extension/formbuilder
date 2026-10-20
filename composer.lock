@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f41d47b11fd17757a9b0310f6dc2e0de",
+    "content-hash": "5310a3cebe1991663a953dbd7f5fece0",
     "packages": [
         {
             "name": "contenir/contenir-formbuilder",
@@ -80,16 +80,16 @@
         },
         {
             "name": "contenir/extension-api",
-            "version": "dev-main",
+            "version": "v0.5.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:contenir/contenir-extension-api.git",
-                "reference": "6137bcede4ad6bbfb8ec6b2fbfed5352e2fe7fac"
+                "url": "https://github.com/contenir/contenir-extension-api.git",
+                "reference": "14241e1dd02ee2d135c64b19e69a963085e702a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/6137bcede4ad6bbfb8ec6b2fbfed5352e2fe7fac",
-                "reference": "6137bcede4ad6bbfb8ec6b2fbfed5352e2fe7fac",
+                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/14241e1dd02ee2d135c64b19e69a963085e702a0",
+                "reference": "14241e1dd02ee2d135c64b19e69a963085e702a0",
                 "shasum": ""
             },
             "require": {
@@ -112,7 +112,6 @@
                 "nyholm/psr7": "A PSR-7 and PSR-17 implementation for the in-memory host (Testing\\InMemoryHost), or use any other",
                 "phpunit/phpunit": "Runs the conformance suite (Conformance\\Abstract*ConformanceTestCase) against a host"
             },
-            "default-branch": true,
             "bin": [
                 "bin/extension-boundary"
             ],
@@ -127,45 +126,7 @@
                     "Contenir\\Extension\\Api\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Contenir\\Extension\\Api\\Tests\\": "tests/",
-                    "Contenir\\Extension\\Example\\": "tests/Fixture/Example/src/",
-                    "Contenir\\Extension\\Example\\Tests\\": "tests/Fixture/Example/tests/"
-                }
-            },
-            "scripts": {
-                "check": [
-                    "@cs-check",
-                    "@static-analysis",
-                    "@test",
-                    "@test-integration",
-                    "@mutation-test"
-                ],
-                "cs-check": [
-                    "mago format --check",
-                    "mago lint"
-                ],
-                "cs-fix": [
-                    "mago format",
-                    "mago lint --fix"
-                ],
-                "static-analysis": [
-                    "mago analyze"
-                ],
-                "test": [
-                    "phpunit --colors=always --testsuite unit"
-                ],
-                "test-integration": [
-                    "phpunit --colors=always --testsuite integration"
-                ],
-                "test-coverage": [
-                    "phpunit --colors=always --coverage-clover clover.xml"
-                ],
-                "mutation-test": [
-                    "infection"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
@@ -182,7 +143,7 @@
                 "issues": "https://github.com/contenir/contenir-extension-api/issues",
                 "source": "https://github.com/contenir/contenir-extension-api"
             },
-            "time": "2026-10-20T10:18:40+00:00"
+            "time": "2026-10-20T10:55:29+00:00"
         },
         {
             "name": "laminas/laminas-escaper",
@@ -5670,17 +5631,9 @@
             "time": "2025-11-17T20:03:58+00:00"
         }
     ],
-    "aliases": [
-        {
-            "package": "contenir/extension-api",
-            "version": "dev-main",
-            "alias": "0.4.0",
-            "alias_normalized": "0.4.0.0"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "contenir/extension-api": 20,
         "contenir/contenir-qa-tools": 20
     },
     "prefer-stable": true,
