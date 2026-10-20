@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e64bc9fdc0b7a5f2e6a9e5355aec22e6",
+    "content-hash": "af8fda5fca81649f3a27a4acd01a9eba",
     "packages": [
         {
             "name": "contenir/contenir-formbuilder",
@@ -118,16 +118,16 @@
         },
         {
             "name": "contenir/extension-api",
-            "version": "dev-main",
+            "version": "dev-feat/screen-tabs",
             "source": {
                 "type": "git",
-                "url": "https://github.com/contenir/contenir-extension-api.git",
-                "reference": "26cf6fa97b541a43d1daca2699e9c88c2631a4a1"
+                "url": "git@github.com:contenir/contenir-extension-api.git",
+                "reference": "042cfcedc31bf6c1b6e30c15a10dd5b0fb6a1957"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/26cf6fa97b541a43d1daca2699e9c88c2631a4a1",
-                "reference": "26cf6fa97b541a43d1daca2699e9c88c2631a4a1",
+                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/042cfcedc31bf6c1b6e30c15a10dd5b0fb6a1957",
+                "reference": "042cfcedc31bf6c1b6e30c15a10dd5b0fb6a1957",
                 "shasum": ""
             },
             "require": {
@@ -150,7 +150,6 @@
                 "nyholm/psr7": "A PSR-7 and PSR-17 implementation for the in-memory host (Testing\\InMemoryHost), or use any other",
                 "phpunit/phpunit": "Runs the conformance suite (Conformance\\Abstract*ConformanceTestCase) against a host"
             },
-            "default-branch": true,
             "bin": [
                 "bin/extension-boundary"
             ],
@@ -220,7 +219,7 @@
                 "issues": "https://github.com/contenir/contenir-extension-api/issues",
                 "source": "https://github.com/contenir/contenir-extension-api"
             },
-            "time": "2026-10-20T07:23:18+00:00"
+            "time": "2026-10-20T09:33:43+00:00"
         },
         {
             "name": "laminas/laminas-escaper",
@@ -5717,9 +5716,9 @@
         },
         {
             "package": "contenir/extension-api",
-            "version": "dev-main",
-            "alias": "0.3.0",
-            "alias_normalized": "0.3.0.0"
+            "version": "dev-feat/screen-tabs",
+            "alias": "0.4.0",
+            "alias_normalized": "0.4.0.0"
         }
     ],
     "minimum-stability": "dev",

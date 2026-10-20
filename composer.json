@@ -16,7 +16,7 @@
     "require": {
         "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
         "contenir/contenir-formbuilder": "dev-feat/persistence-schema as 2.0.0",
-        "contenir/extension-api": "dev-main as 0.3.0",
+        "contenir/extension-api": "dev-feat/screen-tabs as 0.4.0",
         "php-db/phpdb": "^0.6.0",
         "psr/clock": "^1.0",
         "psr/container": "^1.1 || ^2.0",
