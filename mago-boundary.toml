@@ -1,0 +1,53 @@
+# Written by vendor/bin/extension-boundary from composer.json. Run it again after changing
+# dependencies; the add-on's tests check this file is current.
+
+[[guard.perimeter.rules]]
+namespace = 'Contenir\Extension\Formbuilder\'
+permit = [
+    '@native',
+    'Contenir\Extension\Api\**',
+    'Psr\Clock\**',
+    'Psr\Container\**',
+    'Psr\EventDispatcher\**',
+    'Psr\Http\Message\**',
+    'Psr\Log\**',
+    'Contenir\Extension\Formbuilder\**',
+    'Contenir\FormBuilder\**',
+    'Contenir\FormBuilder\Schema\**',
+    'PhpDb\**',
+    'CustomRule\PHPUnit\**',
+]
+
+[[guard.perimeter.rules]]
+namespace = 'Contenir\Extension\Formbuilder\Tests\'
+permit = [
+    '@all',
+]
+
+[[guard.perimeter.restrictions]]
+dependency = 'Contenir\Extension\Api\Boundary\**'
+allow-from = [
+    'Contenir\Extension\Api\**',
+    'Contenir\Extension\Formbuilder\Tests\**',
+]
+
+[[guard.perimeter.restrictions]]
+dependency = 'Contenir\Extension\Api\Conformance\**'
+allow-from = [
+    'Contenir\Extension\Api\**',
+    'Contenir\Extension\Formbuilder\Tests\**',
+]
+
+[[guard.perimeter.restrictions]]
+dependency = 'Contenir\Extension\Api\Internal\**'
+allow-from = [
+    'Contenir\Extension\Api\**',
+    'Contenir\Extension\Formbuilder\Tests\**',
+]
+
+[[guard.perimeter.restrictions]]
+dependency = 'Contenir\Extension\Api\Testing\**'
+allow-from = [
+    'Contenir\Extension\Api\**',
+    'Contenir\Extension\Formbuilder\Tests\**',
+]

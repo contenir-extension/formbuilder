@@ -1,0 +1,93 @@
+<?php
+/**
+ * The Forms area's home: the page header with Add form, which offers the templates to start from
+ * where there are any, then a card per form with its status, slug and layout, its title leading to
+ * its entries and its footer to each of its screens.
+ *
+ * @var array{
+ *     forms: list<array{id: int|null, title: string, slug: string, active: bool, layout: string}>,
+ *     templates: list<\Contenir\Extension\Formbuilder\Template\FormTemplate>,
+ * } $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+$layouts = ['single' => 'Single page', 'stepped' => 'Stepped'];
+$addUrl  = $view->url('form-add');
+?>
+                <div class="pageheader pageheader--row">
+                    <div class="pageheader__content">
+                        <h1 class="pageheader__title">Forms</h1>
+                        <p class="pageheader__description">Build editable forms, capture entries and send notifications.</p>
+                    </div>
+                    <div class="pageheader__actions">
+<?php if ([] !== $values['templates']): ?>
+                        <div class="dropdown dropdown--right">
+                            <button type="button" class="btn btn--primary dropdown__trigger" aria-haspopup="menu" aria-expanded="false"
+                                    data-toggle data-toggle-target="#forms-templates" data-toggle-capture="true"><?= $view->icon('plus') ?><span>Add form</span><?= $view->icon('chevron-down') ?></button>
+                            <div class="dropdown__menu" id="forms-templates" role="menu">
+<?php foreach ($values['templates'] as $template): ?>
+                                <a class="dropdown__item" role="menuitem" href="<?= $view->escape($view->url('form-add', ['template' => $template->slug])) ?>"><?= $view->icon($template->icon) ?><span class="dropdown__item-text"><?= $view->escape($template->name) ?></span></a>
+<?php endforeach ?>
+                                <div class="dropdown__divider" role="separator"></div>
+                                <a class="dropdown__item" role="menuitem" href="<?= $view->escape($addUrl) ?>"><?= $view->icon('file') ?><span class="dropdown__item-text">Blank form</span></a>
+                            </div>
+                        </div>
+<?php else: ?>
+                        <a class="btn btn--primary" href="<?= $view->escape($addUrl) ?>"><?= $view->icon('plus') ?><span>Add form</span></a>
+<?php endif ?>
+                    </div>
+                </div>
+
+<?php if ([] === $values['forms']): ?>
+                <div class="card">
+                    <div class="card__content card__content--pt">
+                        <div class="empty">
+                            <div class="empty__content">
+                                <h2 class="empty__title">No forms yet</h2>
+                                <p class="empty__description">Build a form to capture entries from the site.</p>
+                            </div>
+                            <div class="empty__actions">
+                                <a class="btn btn--primary" href="<?= $view->escape($addUrl) ?>"><?= $view->icon('plus') ?><span>Create your first form</span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<?php else: ?>
+                <div class="grid grid--2">
+<?php foreach ($values['forms'] as $form): ?>
+<?php
+    $id   = (int) $form['id'];
+    $tabs = [
+        ['Entries', 'table', 'entries'],
+        ['Fields', 'layout-list', 'fields'],
+        ['Preview', 'eye', 'preview'],
+        ['Notifications', 'mail', 'notifications'],
+        ['Integrations', 'send', 'webhooks'],
+        ['Settings', 'settings', 'form'],
+    ];
+?>
+                    <section class="card">
+                        <div class="card__header card__header--row">
+                            <h2 class="card__title"><a href="<?= $view->escape($view->url('entries', ['form' => $id])) ?>"><?= $view->escape($form['title']) ?></a></h2>
+                            <span class="badge badge--<?= $form['active'] ? 'success-muted' : 'outline' ?>"><?= $form['active'] ? 'Active' : 'Inactive' ?></span>
+                        </div>
+                        <div class="card__content">
+                            <dl class="datalist datalist--grid">
+                                <div class="datalist__item">
+                                    <dt class="datalist__label">Slug</dt>
+                                    <dd class="datalist__value"><code><?= $view->escape($form['slug']) ?></code></dd>
+                                </div>
+                                <div class="datalist__item">
+                                    <dt class="datalist__label">Layout</dt>
+                                    <dd class="datalist__value"><?= $view->escape($layouts[$form['layout']] ?? ucfirst($form['layout'])) ?></dd>
+                                </div>
+                            </dl>
+                        </div>
+                        <nav class="card__footer card__footer--border cluster cluster--xs" aria-label="<?= $view->escape($form['title']) ?>">
+<?php foreach ($tabs as [$label, $icon, $handler]): ?>
+                            <a class="btn btn--ghost btn--sm" href="<?= $view->escape($view->url($handler, ['form' => $id])) ?>"><?= $view->icon($icon) ?><span><?= $label ?></span></a>
+<?php endforeach ?>
+                        </nav>
+                    </section>
+<?php endforeach ?>
+                </div>
+<?php endif ?>
