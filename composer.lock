@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e3bba02bb01a90151d1e0687a9a64457",
+    "content-hash": "5310a3cebe1991663a953dbd7f5fece0",
     "packages": [
         {
             "name": "contenir/contenir-formbuilder",
@@ -80,16 +80,16 @@
         },
         {
             "name": "contenir/extension-api",
-            "version": "v0.3.0",
+            "version": "v0.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/contenir/contenir-extension-api.git",
-                "reference": "a77748a3828b6b4ae2b0eb76e228d496322501b8"
+                "reference": "14241e1dd02ee2d135c64b19e69a963085e702a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/a77748a3828b6b4ae2b0eb76e228d496322501b8",
-                "reference": "a77748a3828b6b4ae2b0eb76e228d496322501b8",
+                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/14241e1dd02ee2d135c64b19e69a963085e702a0",
+                "reference": "14241e1dd02ee2d135c64b19e69a963085e702a0",
                 "shasum": ""
             },
             "require": {
@@ -143,7 +143,7 @@
                 "issues": "https://github.com/contenir/contenir-extension-api/issues",
                 "source": "https://github.com/contenir/contenir-extension-api"
             },
-            "time": "2026-10-20T09:19:29+00:00"
+            "time": "2026-10-20T10:55:29+00:00"
         },
         {
             "name": "laminas/laminas-escaper",
