@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "69fac30fbdb5a22289f8f992ba396d7b",
+    "content-hash": "f41d47b11fd17757a9b0310f6dc2e0de",
     "packages": [
         {
             "name": "contenir/contenir-formbuilder",
@@ -5680,7 +5680,6 @@
     ],
     "minimum-stability": "dev",
     "stability-flags": {
-        "contenir/contenir-formbuilder": 5,
         "contenir/extension-api": 20,
         "contenir/contenir-qa-tools": 20
     },
