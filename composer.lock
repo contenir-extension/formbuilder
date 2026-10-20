@@ -4,14 +4,14 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f4acdecfb25ef68f0043be6a9aa0c375",
+    "content-hash": "48820dbd92686d81703c610c0514d515",
     "packages": [
         {
             "name": "contenir/contenir-formbuilder",
-            "version": "dev-main",
+            "version": "v2.0.0-RC3",
             "source": {
                 "type": "git",
-                "url": "git@github.com:contenir/contenir-formbuilder.git",
+                "url": "https://github.com/contenir/contenir-formbuilder.git",
                 "reference": "cb1efcd91c1d6d9365d5d7dbcff8ef611580264e"
             },
             "dist": {
@@ -52,7 +52,6 @@
                 "php-db/phpdb-mysql": "The MySQL driver for php-db, for the form_* tables on a site's MySQL database.",
                 "php-db/phpdb-sqlite": "The SQLite driver for php-db, for the form_* tables on SQLite."
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laminas": {
@@ -68,63 +67,29 @@
                     "Contenir\\FormBuilder\\Schema\\": "schema/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Contenir\\FormBuilder\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "check": [
-                    "@cs-check",
-                    "@static-analysis",
-                    "@test",
-                    "@test-integration",
-                    "@mutation-test"
-                ],
-                "cs-check": [
-                    "mago format --check",
-                    "mago lint"
-                ],
-                "cs-fix": [
-                    "mago format",
-                    "mago lint --fix"
-                ],
-                "static-analysis": [
-                    "mago analyze"
-                ],
-                "test": [
-                    "phpunit --colors=always --testsuite unit"
-                ],
-                "test-integration": [
-                    "phpunit --colors=always --testsuite integration",
-                    "@putenv CONTENIR_TEST_DB_PLATFORM=mysql",
-                    "phpunit --colors=always --testsuite integration"
-                ],
-                "test-coverage": [
-                    "@php -d pcov.directory=. -d pcov.exclude=#/vendor/# vendor/bin/phpunit --colors=always --coverage-clover clover.xml"
-                ],
-                "mutation-test": [
-                    "infection"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Framework-agnostic form-builder engine for Contenir CMS — runtime-editable form definitions, builder-form construction, server-side submission validation, and their storage with php-db on MySQL or SQLite.",
+            "support": {
+                "issues": "https://github.com/contenir/contenir-formbuilder/issues",
+                "source": "https://github.com/contenir/contenir-formbuilder/tree/v2.0.0-RC3"
+            },
             "time": "2026-10-20T09:24:05+00:00"
         },
         {
             "name": "contenir/extension-api",
-            "version": "dev-main",
+            "version": "v0.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/contenir/contenir-extension-api.git",
-                "reference": "26cf6fa97b541a43d1daca2699e9c88c2631a4a1"
+                "reference": "a77748a3828b6b4ae2b0eb76e228d496322501b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/26cf6fa97b541a43d1daca2699e9c88c2631a4a1",
-                "reference": "26cf6fa97b541a43d1daca2699e9c88c2631a4a1",
+                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/a77748a3828b6b4ae2b0eb76e228d496322501b8",
+                "reference": "a77748a3828b6b4ae2b0eb76e228d496322501b8",
                 "shasum": ""
             },
             "require": {
@@ -147,7 +112,6 @@
                 "nyholm/psr7": "A PSR-7 and PSR-17 implementation for the in-memory host (Testing\\InMemoryHost), or use any other",
                 "phpunit/phpunit": "Runs the conformance suite (Conformance\\Abstract*ConformanceTestCase) against a host"
             },
-            "default-branch": true,
             "bin": [
                 "bin/extension-boundary"
             ],
@@ -162,45 +126,7 @@
                     "Contenir\\Extension\\Api\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Contenir\\Extension\\Api\\Tests\\": "tests/",
-                    "Contenir\\Extension\\Example\\": "tests/Fixture/Example/src/",
-                    "Contenir\\Extension\\Example\\Tests\\": "tests/Fixture/Example/tests/"
-                }
-            },
-            "scripts": {
-                "check": [
-                    "@cs-check",
-                    "@static-analysis",
-                    "@test",
-                    "@test-integration",
-                    "@mutation-test"
-                ],
-                "cs-check": [
-                    "mago format --check",
-                    "mago lint"
-                ],
-                "cs-fix": [
-                    "mago format",
-                    "mago lint --fix"
-                ],
-                "static-analysis": [
-                    "mago analyze"
-                ],
-                "test": [
-                    "phpunit --colors=always --testsuite unit"
-                ],
-                "test-integration": [
-                    "phpunit --colors=always --testsuite integration"
-                ],
-                "test-coverage": [
-                    "phpunit --colors=always --coverage-clover clover.xml"
-                ],
-                "mutation-test": [
-                    "infection"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
@@ -217,7 +143,7 @@
                 "issues": "https://github.com/contenir/contenir-extension-api/issues",
                 "source": "https://github.com/contenir/contenir-extension-api"
             },
-            "time": "2026-10-20T07:23:18+00:00"
+            "time": "2026-10-20T09:19:29+00:00"
         },
         {
             "name": "laminas/laminas-escaper",
@@ -5705,24 +5631,10 @@
             "time": "2025-11-17T20:03:58+00:00"
         }
     ],
-    "aliases": [
-        {
-            "package": "contenir/contenir-formbuilder",
-            "version": "dev-main",
-            "alias": "2.0.0",
-            "alias_normalized": "2.0.0.0"
-        },
-        {
-            "package": "contenir/extension-api",
-            "version": "dev-main",
-            "alias": "0.3.0",
-            "alias_normalized": "0.3.0.0"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "contenir/contenir-formbuilder": 20,
-        "contenir/extension-api": 20,
+        "contenir/contenir-formbuilder": 5,
         "contenir/contenir-qa-tools": 20
     },
     "prefer-stable": true,
