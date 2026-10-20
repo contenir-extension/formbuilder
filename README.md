@@ -46,7 +46,7 @@ adapter over the site's own connection.
 - contenir/extension-api 0.3 (a module's templates, menus and handler privileges)
 - contenir/contenir-formbuilder 2.0 (one persistence layer over php-db)
 
-Until both are tagged, `composer.json` requires their branches through VCS entries.
+Until both are tagged, `composer.json` requires their development branches through VCS entries.
 
 ## Development
 
