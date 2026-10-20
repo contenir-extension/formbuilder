@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<admin>
+    <forms>
+        <title>Forms</title>
+        <icon>forms</icon>
+        <description>Build editable forms, capture entries and send notifications</description>
+        <handler>forms</handler>
+    </forms>
+</admin>
