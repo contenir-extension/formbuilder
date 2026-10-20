@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Contenir\Extension\Formbuilder;
 
 use Contenir\Extension\Api\ExtensionInterface;
+use Contenir\Extension\Api\Handler\Privilege;
 use Contenir\Extension\Api\Registry;
+use Contenir\Extension\Formbuilder\Admin\AddFormHandler;
+use Contenir\Extension\Formbuilder\Admin\FormHandler;
 use Contenir\Extension\Formbuilder\Admin\FormsHandler;
 use Contenir\FormBuilder\ConfigProvider;
 use Override;
@@ -37,5 +40,7 @@ final readonly class FormbuilderExtension implements ExtensionInterface
         $registry->templates("{$root}/templates");
         $registry->migrations(ConfigProvider::schemaPath(), ConfigProvider::SCHEMA_NAMESPACE);
         $registry->handler(FormsHandler::NAME, FormsHandler::class);
+        $registry->handler(AddFormHandler::NAME, AddFormHandler::class, Privilege::Add);
+        $registry->handler(FormHandler::NAME, FormHandler::class);
     }
 }
