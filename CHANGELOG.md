@@ -28,7 +28,8 @@ adheres to [Semantic Versioning](https://semver.org/).
   submission that runs its checks and sends its notifications with `Test: ` before their subjects, storing no entry
   and calling no webhook. It needs View, as the built-in preview did. Its mail goes through the site's, which the
   host lends as `Contenir\Extension\Api\Mail\MailerInterface` (contenir/contenir-extension-api#15); without it,
-  each notification is logged as not sent.
+  each notification is logged as not sent. The preview's scripts (FormStepper for a stepped form, FormConditional for
+  fields shown by condition) and its styles move into the add-on with it.
 
 ### Changed
 

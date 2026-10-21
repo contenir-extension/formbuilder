@@ -7,6 +7,8 @@ import FieldFormModal from '../../../assets/js/components/FieldFormModal.js'
 import FieldsEditor from '../../../assets/js/components/FieldsEditor.js'
 import FormbuilderDelete from '../../../assets/js/components/FormbuilderDelete.js'
 import FormbuilderInlineForm from '../../../assets/js/components/FormbuilderInlineForm.js'
+import FormConditional from '../../../assets/js/components/FormConditional.js'
+import FormStepper from '../../../assets/js/components/FormStepper.js'
 
 /**
  * Each component's data attribute, which the host's registry mounts it on
@@ -23,6 +25,8 @@ describe('Component selectors', () => {
         ['FieldForm', FieldForm, 'data-field-form'],
         ['ConditionalEditor', ConditionalEditor, 'data-conditional-editor'],
         ['DataIdentifier', DataIdentifier, 'data-identifier'],
+        ['FormStepper', FormStepper, 'data-form-stepper'],
+        ['FormConditional', FormConditional, 'data-form-conditional'],
     ])('%s keeps its state under %s', (_name, Component, selector) => {
         const component = new Component({ eventBus: null, logger: null, router: null })
         const element = document.createElement('div')

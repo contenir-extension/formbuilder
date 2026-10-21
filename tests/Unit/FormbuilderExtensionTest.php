@@ -109,7 +109,7 @@ final class FormbuilderExtensionTest extends TestCase
         }
 
         static::assertSame(
-            [dirname(__DIR__, levels: 2) . '/public', 8, [], true],
+            [dirname(__DIR__, levels: 2) . '/public', 10, [], true],
             [
                 $module?->assets,
                 count($module->components ?? []),
