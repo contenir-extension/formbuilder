@@ -1,0 +1,242 @@
+/**
+ * The form builder's fields editor on the dashboard: sections, groups, rows and field tiles with
+ * their drag handles (FieldsEditor) and legends renamed in place (EditableLegend); a field's choices
+ * and its validation and condition rules. Built to public/css/formbuilder.css; the dashboard's own
+ * stylesheet provides the theme, so only its variables are used here: its mixins module would
+ * repeat the theme's keyframes.
+ */
+@use "@parallelogram-js/dashboard/scss/variables" as *;
+
+/**
+ * The fields editor: a card per section holding its groups, each group's rows a bordered strip of
+ * field tiles between a drag handle and the row's add and delete buttons
+ */
+.builder {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-md;
+
+    > .builder__section {
+        align-self: stretch;
+    }
+}
+
+.builder__body,
+.builder__rows {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-2xs;
+
+    > :not(.builder__insert) {
+        align-self: stretch;
+    }
+}
+
+.builder__body {
+    gap: $spacing-sm;
+}
+
+.builder__legend {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-3xs;
+    min-width: 0;
+}
+
+.builder__group {
+    min-width: 0;
+    margin: 0;
+    padding: $spacing-xs $spacing-sm $spacing-sm;
+    border: 1px solid var(--border);
+    border-radius: $radius-md;
+
+    > .builder__legend {
+        padding: 0 $spacing-3xs;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-medium;
+    }
+}
+
+.builder__row {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2xs;
+    padding: $spacing-2xs;
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    border-radius: $radius-md;
+}
+
+.builder__fields {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    gap: $spacing-2xs;
+    min-width: 0;
+    min-height: $btn-height-sm;
+    border-radius: $radius-md;
+}
+
+/**
+ * A field tile opens its field's editor, so like a block card it takes a control's edge
+ */
+.builder__field {
+    display: flex;
+    flex: 1 0 10rem;
+    align-items: center;
+    gap: $spacing-3xs;
+    min-width: 0;
+    padding: $spacing-3xs $spacing-3xs $spacing-3xs $spacing-2xs;
+    background-color: var(--bg-muted);
+    border: var(--control-border-width) solid var(--input);
+    border-radius: $radius-md;
+}
+
+.builder__handle {
+    display: inline-flex;
+    flex-shrink: 0;
+    color: var(--fg-subtle);
+    cursor: grab;
+
+    &:active {
+        cursor: grabbing;
+    }
+
+    > svg {
+        width: $icon-size-sm;
+        height: $icon-size-sm;
+    }
+}
+
+.builder__type,
+.builder__flag {
+    display: inline-flex;
+    flex-shrink: 0;
+    color: var(--fg-muted);
+
+    > svg {
+        width: $icon-size-sm;
+        height: $icon-size-sm;
+    }
+}
+
+.builder__label {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.builder__required {
+    font-weight: $font-weight-semibold;
+    color: var(--destructive);
+}
+
+.builder__inline,
+.builder__insert {
+    display: inline-flex;
+    margin: 0;
+}
+
+.builder__delete:hover {
+    color: var(--destructive);
+}
+
+/**
+ * While a row or field is dragged, every row's field strip shows it can take a drop
+ */
+.formbuilder__rows--dragging [data-formbuilder-fields] {
+    outline: 1px dashed var(--primary);
+    outline-offset: 2px;
+    background-color: color-mix(in srgb, var(--primary) 4%, transparent);
+}
+
+/**
+ * A legend being renamed in place, and one with no name yet showing its placeholder
+ */
+[data-editable-legend] {
+    border-radius: $radius-sm;
+
+    &[data-empty="true"]:not(.is-editing) {
+        color: var(--fg-subtle);
+    }
+
+    &.is-editing {
+        cursor: text;
+        outline: 1px solid var(--ring);
+        outline-offset: 2px;
+    }
+}
+
+/**
+ * A field's choices: an optional default picker, then the value and its label
+ */
+.builder__choices {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2xs;
+}
+
+.builder__choice {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2xs;
+
+    /**
+     * Radios with no default chosen yet match :indeterminate, which the library fills as checked
+     */
+    > .radio__input:indeterminate {
+        background-color: transparent;
+        border-color: var(--input);
+    }
+
+    > .input {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+}
+
+/**
+ * A validation or condition rule: its handle, then its parts in a row that wraps, a validation
+ * rule's options taking a line of their own beneath it
+ */
+.builder__rules {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2xs;
+}
+
+.builder__rule {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $spacing-2xs;
+    padding: $spacing-2xs;
+    border: 1px solid var(--border);
+    border-radius: $radius-md;
+
+    > .select,
+    > .input {
+        flex: 1 1 8rem;
+        width: auto;
+        min-width: 0;
+    }
+}
+
+.builder__rule-options {
+    display: flex;
+    flex: 1 0 100%;
+    flex-wrap: wrap;
+    gap: $spacing-2xs;
+
+    > .input {
+        flex: 1 1 8rem;
+        width: auto;
+        min-width: 0;
+    }
+}
