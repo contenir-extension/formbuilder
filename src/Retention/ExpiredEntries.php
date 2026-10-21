@@ -14,6 +14,8 @@ use Contenir\FormBuilder\Redaction\RedactionReport;
 use LogicException;
 use Psr\Container\ContainerExceptionInterface;
 
+use function count;
+
 /**
  * Redacts the entries each form with a retention period has kept longer than
  * that, by the host's clock: their answers and uploaded files are deleted
@@ -23,6 +25,29 @@ use Psr\Container\ContainerExceptionInterface;
  */
 final class ExpiredEntries
 {
+    /**
+     * How many entries a redaction would take now, across every form with a
+     * retention period, for the page that asks first.
+     *
+     * @throws PersistenceException        When the forms or their entries can't be read.
+     * @throws ContainerExceptionInterface When the host can't give the site's database.
+     * @throws LogicException              When the host offers no site database.
+     */
+    public static function count(ExtensionContextInterface $context): int
+    {
+        $forms = Forms::of($context);
+        $count = 0;
+        foreach ($forms->loader->loadAll() as $form) {
+            if (null === $form->id || null === $form->retentionDays || $form->retentionDays < 1) {
+                continue;
+            }
+
+            $count += count($forms->entries->findExpired($form->id, $form->retentionDays));
+        }
+
+        return $count;
+    }
+
     /**
      * @throws PersistenceException        When the forms or their entries can't be read or changed.
      * @throws ContainerExceptionInterface When the host can't give the site's database or its storage.

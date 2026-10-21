@@ -40,6 +40,40 @@ final class RedactExpiredTest extends TestCase
     }
 
     #[Test]
+    public function asksFirstByGetSayingHowManyEntriesItWouldTake(): void
+    {
+        $form  = $this->expiring();
+        $entry = $this->addEntry($form, ['name' => 'Ada'], at: '2026-09-01 10:00');
+        $this->addEntry($form, ['name' => 'Bea'], at: '2026-10-19 10:00');
+        $result = (new EntriesRedactHandler())->handle(
+            new ServerRequest('GET', '/admin/extension/formbuilder/entries-redact'),
+            $this->context(),
+        );
+
+        static::assertSame(
+            ['forms/entries-redact', ['expired' => 1], 'Forms', 'complete'],
+            [
+                $result->template?->name,
+                $result->template?->values,
+                $result->template?->parent?->title,
+                $this->storedEntry($entry)['status'] ?? null,
+            ],
+        );
+    }
+
+    #[Test]
+    public function countsNothingWhereNoFormHasARetentionPeriod(): void
+    {
+        $this->addEntry($this->layOutWithUpload()['form'], ['name' => 'Ada'], at: '2025-01-01 10:00');
+        $result = (new EntriesRedactHandler())->handle(
+            new ServerRequest('GET', '/admin/extension/formbuilder/entries-redact'),
+            $this->context(),
+        );
+
+        static::assertSame(['expired' => 0], $result->template?->values);
+    }
+
+    #[Test]
     public function keepsAnEntryWhoseFilesHaveNowhereToBeDeletedFrom(): void
     {
         $this->setUpHost();
@@ -117,21 +151,6 @@ final class RedactExpiredTest extends TestCase
         (new RedactExpiredTask())->run($this->context());
 
         static::assertSame(['Redacted 1 entry on 1 form.'], array_column($this->host->logs(), 'message'));
-    }
-
-    #[Test]
-    public function redactsNothingWhenAskedByGet(): void
-    {
-        $entry  = $this->addEntry($this->expiring(), ['name' => 'Ada'], at: '2026-09-01 10:00');
-        $result = (new EntriesRedactHandler())->handle(
-            new ServerRequest('GET', '/admin/extension/formbuilder/entries-redact'),
-            $this->context(),
-        );
-
-        static::assertSame(
-            ['/admin/extension/formbuilder/forms', [], 'complete'],
-            [$result->url, $result->messages, $this->storedEntry($entry)['status'] ?? null],
-        );
     }
 
     #[Override]

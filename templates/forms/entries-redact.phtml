@@ -1,0 +1,29 @@
+<?php
+/**
+ * Redact expired entries, under Tools in the Forms menu: what it does, how many entries it would
+ * take now, and the button, which asks first and posts to the same handler.
+ *
+ * @var array{expired: int} $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+$expired = $values['expired'];
+?>
+                <div class="pageheader">
+                    <div class="pageheader__content">
+                        <h1 class="pageheader__title">Redact expired entries</h1>
+                        <p class="pageheader__description">Clear entries kept longer than their form's retention period, as the nightly run does.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card__content card__content--pt stack stack--md">
+                        <p>Each expired entry keeps its row and date, but its answers and uploaded files are deleted and its address and browser details cleared. This cannot be undone.</p>
+                        <p data-redact-expired><?= 0 === $expired ? 'No entries are past their retention period now.' : (1 === $expired ? '1 entry is past its retention period now.' : "{$expired} entries are past their retention period now.") ?></p>
+<?php if ($expired > 0): ?>
+                        <form method="post" action="<?= $view->escape($view->url('entries-redact')) ?>" data-confirm="Redact <?= 1 === $expired ? '1 entry' : "{$expired} entries" ?> now? Their answers and uploaded files are deleted and their address and browser details cleared. This cannot be undone.">
+                            <?= $view->token() ?>
+                            <button type="submit" class="btn btn--destructive"><?= $view->icon('eraser') ?><span>Redact expired entries</span></button>
+                        </form>
+<?php endif ?>
+                    </div>
+                </div>

@@ -1,0 +1,29 @@
+<?php
+/**
+ * Move uploads to private storage, under Tools in the Forms menu: what it does, and the button,
+ * which asks first and posts to the same handler. Without private storage it says so instead.
+ *
+ * @var array{private: bool} $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+?>
+                <div class="pageheader">
+                    <div class="pageheader__content">
+                        <h1 class="pageheader__title">Move uploads to private storage</h1>
+                        <p class="pageheader__description">Move every form's uploaded files out of public storage, where anyone with a link could open them.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card__content card__content--pt stack stack--md">
+<?php if ($values['private']): ?>
+                        <p>Files already in private storage stay where they are, so this can be run again. Links to the files from before stop working; notification emails link them afresh, each for 7 days.</p>
+                        <form method="post" action="<?= $view->escape($view->url('uploads-move')) ?>" data-confirm="Move every form's uploads from public storage to private? Links to them from before stop working; emails link them afresh.">
+                            <?= $view->token() ?>
+                            <button type="submit" class="btn btn--primary"><?= $view->icon('lock') ?><span>Move uploads to private storage</span></button>
+                        </form>
+<?php else: ?>
+                        <p data-uploads-no-private>This site has no private storage, so uploads can't be moved.</p>
+<?php endif ?>
+                    </div>
+                </div>

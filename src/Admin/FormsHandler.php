@@ -7,6 +7,7 @@ namespace Contenir\Extension\Formbuilder\Admin;
 use Contenir\Extension\Api\Context\ExtensionContextInterface;
 use Contenir\Extension\Api\Handler\HandlerInterface;
 use Contenir\Extension\Api\Handler\HandlerResult;
+use Contenir\Extension\Api\Handler\ParentPage;
 use Contenir\Extension\Formbuilder\Persistence\SiteDatabase;
 use Contenir\Extension\Formbuilder\Template\FormTemplateRegistry;
 use Contenir\FormBuilder\Definition\FormDefinition;
@@ -27,6 +28,15 @@ use function array_map;
 final class FormsHandler implements HandlerInterface
 {
     public const string NAME = 'forms';
+
+    /**
+     * The Forms home as the parent page of a screen about every form, such
+     * as a tool, so the breadcrumb reads Forms › the tool.
+     */
+    public static function parent(): ParentPage
+    {
+        return new ParentPage('Forms', self::NAME);
+    }
 
     /**
      * What a form's card shows.

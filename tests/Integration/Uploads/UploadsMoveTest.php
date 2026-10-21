@@ -60,6 +60,28 @@ final class UploadsMoveTest extends TestCase
     }
 
     #[Test]
+    public function asksFirstByGetAndMovesNothing(): void
+    {
+        $form = $this->layOutWithUpload()['form'];
+        $this->addEntry($form, ['cv' => 'forms/contact/notes.txt']);
+        $this->public->putFile('forms/contact/notes.txt', 'Notes');
+        $result = (new UploadsMoveHandler())->handle(
+            new ServerRequest('GET', '/admin/extension/formbuilder/uploads-move'),
+            $this->context(),
+        );
+
+        static::assertSame(
+            ['forms/uploads-move', ['private' => true], 'Forms', true],
+            [
+                $result->template?->name,
+                $result->template?->values,
+                $result->template?->parent?->title,
+                $this->public->exists('forms/contact/notes.txt'),
+            ],
+        );
+    }
+
+    #[Test]
     public function movesAnEntrysOtherFilesWhenOneIsMissing(): void
     {
         $ids = $this->layOutWithUpload();
@@ -110,23 +132,6 @@ final class UploadsMoveTest extends TestCase
     }
 
     #[Test]
-    public function movesNothingWhenAskedByGet(): void
-    {
-        $form = $this->layOutWithUpload()['form'];
-        $this->addEntry($form, ['cv' => 'forms/contact/notes.txt']);
-        $this->public->putFile('forms/contact/notes.txt', 'Notes');
-        $result = (new UploadsMoveHandler())->handle(
-            new ServerRequest('GET', '/admin/extension/formbuilder/uploads-move'),
-            $this->context(),
-        );
-
-        static::assertSame(
-            ['/admin/extension/formbuilder/forms', [], true],
-            [$result->url, $result->messages, $this->public->exists('forms/contact/notes.txt')],
-        );
-    }
-
-    #[Test]
     #[DataProvider('grantProvider')]
     public function needsUpdate(array $grants, int $status): void
     {
@@ -136,6 +141,18 @@ final class UploadsMoveTest extends TestCase
         );
 
         static::assertSame($status, $response->getStatusCode());
+    }
+
+    #[Test]
+    public function saysByGetWhenTheSiteHasNoPrivateStorage(): void
+    {
+        $this->setUpHost();
+        $result = (new UploadsMoveHandler())->handle(
+            new ServerRequest('GET', '/admin/extension/formbuilder/uploads-move'),
+            $this->context(),
+        );
+
+        static::assertSame(['private' => false], $result->template?->values);
     }
 
     #[Test]
