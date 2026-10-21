@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "59aa0ea68aad538eb8635e1940101433",
+    "content-hash": "21d2592fd3b44162fcab9149684a778e",
     "packages": [
         {
             "name": "contenir/contenir-formbuilder",
@@ -80,16 +80,16 @@
         },
         {
             "name": "contenir/extension-api",
-            "version": "dev-feat/template-tabs",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "git@github.com:contenir/contenir-extension-api.git",
-                "reference": "db3f32f09df14543acb096da001713a18df80d9f"
+                "reference": "080cca513844b6bfc49801259b55bf018256be5d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/db3f32f09df14543acb096da001713a18df80d9f",
-                "reference": "db3f32f09df14543acb096da001713a18df80d9f",
+                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/080cca513844b6bfc49801259b55bf018256be5d",
+                "reference": "080cca513844b6bfc49801259b55bf018256be5d",
                 "shasum": ""
             },
             "require": {
@@ -112,13 +112,14 @@
                 "nyholm/psr7": "A PSR-7 and PSR-17 implementation for the in-memory host (Testing\\InMemoryHost), or use any other",
                 "phpunit/phpunit": "Runs the conformance suite (Conformance\\Abstract*ConformanceTestCase) against a host"
             },
+            "default-branch": true,
             "bin": [
                 "bin/extension-boundary"
             ],
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "0.1.x-dev"
+                    "dev-main": "0.6.x-dev"
                 }
             },
             "autoload": {
@@ -181,7 +182,7 @@
                 "issues": "https://github.com/contenir/contenir-extension-api/issues",
                 "source": "https://github.com/contenir/contenir-extension-api"
             },
-            "time": "2026-10-20T23:25:24+00:00"
+            "time": "2026-10-21T00:00:32+00:00"
         },
         {
             "name": "laminas/laminas-escaper",
@@ -5669,14 +5670,7 @@
             "time": "2025-11-17T20:03:58+00:00"
         }
     ],
-    "aliases": [
-        {
-            "package": "contenir/extension-api",
-            "version": "dev-feat/template-tabs",
-            "alias": "0.5.1",
-            "alias_normalized": "0.5.1.0"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
         "contenir/extension-api": 20,
