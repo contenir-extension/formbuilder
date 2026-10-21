@@ -200,10 +200,11 @@ final class EntryChangesTest extends TestCase
         ]);
         $ids = $this->layOut();
         $this->repository()->createNotification($ids['form'], [
-            'name' => 'Team',
-            'to_address' => 'team@example.com',
-            'subject' => 'New enquiry from {field:name}',
-            'body_template' => '<p>{field:message} at {site:base_url}, seen in {site:admin_url}, call {settings:contact.telephone}</p>',
+            'name'          => 'Team',
+            'to_address'    => 'team@example.com',
+            'subject'       => 'New enquiry from {field:name}',
+            'body_template' => '<p>{field:message} at {site:base_url}, seen in {site:admin_url}, call '
+                . '{settings:contact.telephone}</p>',
         ]);
         $entry  = $this->addEntry($ids['form'], ['name' => 'Ada', 'message' => 'Hello'], 'spam');
         $result = (new EntryStatusHandler())->handle(
