@@ -111,8 +111,8 @@ final class EntryChangesTest extends TestCase
                 "form_entry_id,submitted_at,status,name,email,message\n1,\"2026-10-19 10:00:00\",complete,'=SUM(A1),,\n",
             ],
             [$file?->filename, $file?->mediaType, $this->written($this->page(EntriesExportHandler::class, 'GET', [
-                'form' => $form,
-            ]))],
+                    'form' => $form,
+                ]))],
         );
     }
 
@@ -208,8 +208,10 @@ final class EntryChangesTest extends TestCase
         ]);
         $entry  = $this->addEntry($ids['form'], ['name' => 'Ada', 'message' => 'Hello'], 'spam');
         $result = (new EntryStatusHandler())->handle(
-            (new ServerRequest('POST', 'https://www.example.com/admin/extension/formbuilder/entry-status'))
-                ->withQueryParams(['form' => $ids['form'], 'entry' => $entry, 'status' => 'complete']),
+            (new ServerRequest(
+                'POST',
+                'https://www.example.com/admin/extension/formbuilder/entry-status',
+            ))->withQueryParams(['form' => $ids['form'], 'entry' => $entry, 'status' => 'complete']),
             $this->context(),
         );
 
