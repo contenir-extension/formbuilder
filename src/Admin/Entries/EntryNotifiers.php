@@ -7,6 +7,7 @@ namespace Contenir\Extension\Formbuilder\Admin\Entries;
 use Contenir\Extension\Api\Context\ExtensionContextInterface;
 use Contenir\Extension\Api\Mail\MailerInterface;
 use Contenir\Extension\Formbuilder\Admin\Preview\HostMail;
+use Contenir\Extension\Formbuilder\Admin\SiteTokens;
 use Contenir\Extension\Formbuilder\Uploads\EntryUploads;
 use Contenir\Extension\Formbuilder\Uploads\FileLinks;
 use Contenir\Extension\Formbuilder\Uploads\FileTokens;
@@ -29,7 +30,8 @@ use function array_key_exists;
  * marked complete, as the built-in module wired them: its notification
  * emails, through the site's mail when the host lends it, and its webhooks,
  * each sent at once. Tokens fill in the admin's and the site's address, and
- * {file:<field>} a signed link to the entry's file, valid for seven days.
+ * {file:<field>} a signed link to the entry's file, valid for seven days, and
+ * {settings:*} the site's settings when the host lends them.
  */
 final class EntryNotifiers
 {
@@ -70,6 +72,7 @@ final class EntryNotifiers
                 ? FileLinks::of($context)->link($base, $entryId, $field)
                 : '',
         );
+        SiteTokens::register($tokens, $context);
 
         return [
             new EmailNotificationRegistrar($tokens, $delivery, $context->logger()),

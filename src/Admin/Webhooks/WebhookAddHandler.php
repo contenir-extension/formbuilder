@@ -23,7 +23,7 @@ final class WebhookAddHandler extends AbstractFormHandler
     protected function answer(FormRequest $form): HandlerResult
     {
         if (! $form->posts()) {
-            return WebhookForm::screen('New webhook', $form->id, WebhookInput::values(null));
+            return WebhookForm::screen('New webhook', $form->id, $form->form->title, WebhookInput::values(null));
         }
 
         $input    = WebhookInput::fromBody($form->body());
@@ -32,6 +32,7 @@ final class WebhookAddHandler extends AbstractFormHandler
             return WebhookForm::screen(
                 'New webhook',
                 $form->id,
+                $form->form->title,
                 $input->shown(),
                 $problems,
             );

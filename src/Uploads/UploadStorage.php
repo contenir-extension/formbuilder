@@ -6,6 +6,7 @@ namespace Contenir\Extension\Formbuilder\Uploads;
 
 use Closure;
 use Contenir\Extension\Api\Context\ExtensionContextInterface;
+use Contenir\Extension\Api\Storage\StorageProfile;
 use Contenir\FormBuilder\Definition\FormDefinition;
 use Contenir\FormBuilder\Redaction\EntryFilesInterface;
 use Contenir\Storage\Exception\InvalidPathException;
@@ -38,7 +39,7 @@ final readonly class UploadStorage implements EntryFilesInterface
     /**
      * The profile of the host's storage that no URL reaches.
      */
-    public const string PRIVATE = 'private';
+    public const string PRIVATE = StorageProfile::PRIVATE;
 
     /**
      * @param (Closure(): (resource|false))|null $scratch Opens a temporary file to copy a file through

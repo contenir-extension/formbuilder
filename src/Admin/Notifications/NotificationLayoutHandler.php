@@ -48,6 +48,7 @@ final class NotificationLayoutHandler extends AbstractFormHandler
                 'tags'         => TokenVocabulary::of($form->form),
             ],
             FormTabs::of($form->id, FormTabs::NOTIFICATIONS),
+            FormTabs::parent($form->id, $form->form->title, FormTabs::NOTIFICATIONS),
         );
     }
 }
