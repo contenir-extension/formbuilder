@@ -194,12 +194,16 @@ final class PreviewHandlerTest extends TestCase
         );
 
         static::assertSame(
-            [true, true],
+            [true, true, true],
             [
                 str_contains($this->drawn($result), 'Submission valid'),
                 str_contains(
+                    $this->drawn($result),
+                    '1 notification failed to send; the log says why. No entry was stored.',
+                ),
+                str_contains(
                     $this->logged(),
-                    'Form notification "Team" failed for form "contact": no mail transport is configured',
+                    'Form notification "Team" failed for form "contact": this site lends add-ons no mail',
                 ),
             ],
         );

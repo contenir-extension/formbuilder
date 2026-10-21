@@ -85,11 +85,12 @@ final class PreviewHandler implements HandlerInterface
         int $id,
         string $markup,
         ?PreviewSuccess $success = null,
+        string $sent = '',
     ): HandlerResult {
         return HandlerResult::template(
             'forms/preview',
             $form->title,
-            ['form' => $form, 'markup' => $markup, 'success' => $success],
+            ['form' => $form, 'markup' => $markup, 'success' => $success, 'sent' => $sent],
             FormTabs::of($id, self::NAME),
         );
     }
@@ -136,10 +137,11 @@ final class PreviewHandler implements HandlerInterface
         }
 
         $tokens  = self::tokens($request, $context);
+        $mail    = new CountedMail(self::mail($context));
         $service = new FormSubmissionService($builder);
         $service->attach(new EmailNotificationRegistrar(
             $tokens,
-            new ImmediateDelivery(self::mail($context), log: $context->logger()),
+            new ImmediateDelivery($mail, log: $context->logger()),
             $context->logger(),
             'Test: ',
         ));
@@ -149,7 +151,7 @@ final class PreviewHandler implements HandlerInterface
         ]);
 
         return $result->valid
-            ? self::screen($form, $id, '', PreviewSuccess::of($form, $result->values, $tokens))
+            ? self::screen($form, $id, '', PreviewSuccess::of($form, $result->values, $tokens), $mail->summary())
             : self::screen($form, $id, (new FormMarkup())->render($form, $result->form, preview: true));
     }
 }
