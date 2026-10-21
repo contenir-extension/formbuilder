@@ -7,6 +7,7 @@ namespace Contenir\Extension\Formbuilder\Admin\Entries;
 use Contenir\Extension\Api\Context\ExtensionContextInterface;
 use Contenir\Extension\Api\Mail\MailerInterface;
 use Contenir\Extension\Formbuilder\Admin\Preview\HostMail;
+use Contenir\Extension\Formbuilder\Admin\SiteTokens;
 use Contenir\FormBuilder\Delivery\ImmediateDelivery;
 use Contenir\FormBuilder\Registrar\EmailNotificationRegistrar;
 use Contenir\FormBuilder\Registrar\WebhookRegistrar;
@@ -19,7 +20,8 @@ use SplObserver;
  * The registrars that tell people about an entry when one held as spam is
  * marked complete, as the built-in module wired them: its notification
  * emails, through the site's mail when the host lends it, and its webhooks,
- * each sent at once. Tokens fill in the admin's and the site's address.
+ * each sent at once. Tokens fill in the admin's and the site's address, and
+ * {settings:*} the site's settings when the host lends them.
  */
 final class EntryNotifiers
 {
@@ -36,17 +38,15 @@ final class EntryNotifiers
             $mailer instanceof MailerInterface ? new HostMail($mailer) : null,
             log: $context->logger(),
         );
-        $uri = $request->getUri();
+        $uri    = $request->getUri();
+        $tokens = new TokenReplacer([
+            'admin_url' => '/admin',
+            'base_url'  => "{$uri->getScheme()}://{$uri->getAuthority()}",
+        ]);
+        SiteTokens::register($tokens, $context);
 
         return [
-            new EmailNotificationRegistrar(
-                new TokenReplacer([
-                    'admin_url' => '/admin',
-                    'base_url'  => "{$uri->getScheme()}://{$uri->getAuthority()}",
-                ]),
-                $delivery,
-                $context->logger(),
-            ),
+            new EmailNotificationRegistrar($tokens, $delivery, $context->logger()),
             new WebhookRegistrar($context->logger(), delivery: $delivery),
         ];
     }

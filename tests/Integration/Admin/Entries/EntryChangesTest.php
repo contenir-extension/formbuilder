@@ -8,7 +8,9 @@ use Contenir\Extension\Api\Handler\HandlerResult;
 use Contenir\Extension\Api\Handler\ResultKind;
 use Contenir\Extension\Api\Mail\MailerInterface;
 use Contenir\Extension\Api\Mail\Message;
+use Contenir\Extension\Api\Settings\SiteSettingsInterface;
 use Contenir\Extension\Api\Testing\MemoryMailer;
+use Contenir\Extension\Api\Testing\MemorySiteSettings;
 use Contenir\Extension\Formbuilder\Admin\Entries\EntriesExportHandler;
 use Contenir\Extension\Formbuilder\Admin\Entries\EntryDeleteHandler;
 use Contenir\Extension\Formbuilder\Admin\Entries\EntryStatusHandler;
@@ -192,13 +194,16 @@ final class EntryChangesTest extends TestCase
     public function sendsOnSpamMarkedCompleteWithItsNotifications(): void
     {
         $this->mailer = new MemoryMailer();
-        $this->setUpHost([MailerInterface::class => $this->mailer]);
+        $this->setUpHost([
+            MailerInterface::class       => $this->mailer,
+            SiteSettingsInterface::class => new MemorySiteSettings(['contact' => ['telephone' => '01234 567890']]),
+        ]);
         $ids = $this->layOut();
         $this->repository()->createNotification($ids['form'], [
-            'name'          => 'Team',
-            'to_address'    => 'team@example.com',
-            'subject'       => 'New enquiry from {field:name}',
-            'body_template' => '<p>{field:message} at {site:base_url}, seen in {site:admin_url}</p>',
+            'name' => 'Team',
+            'to_address' => 'team@example.com',
+            'subject' => 'New enquiry from {field:name}',
+            'body_template' => '<p>{field:message} at {site:base_url}, seen in {site:admin_url}, call {settings:contact.telephone}</p>',
         ]);
         $entry  = $this->addEntry($ids['form'], ['name' => 'Ada', 'message' => 'Hello'], 'spam');
         $result = (new EntryStatusHandler())->handle(
@@ -211,7 +216,7 @@ final class EntryChangesTest extends TestCase
             [
                 [['level' => 'success', 'text' => 'Entry marked complete, and its notifications and webhooks sent.']],
                 ['New enquiry from Ada'],
-                ['<p>Hello at https://www.example.com, seen in /admin</p>'],
+                ['<p>Hello at https://www.example.com, seen in /admin, call 01234 567890</p>'],
             ],
             [
                 $result->messages,
