@@ -60,6 +60,8 @@ adheres to [Semantic Versioning](https://semver.org/).
   period are redacted every night at 03:00 (their answers and uploaded files deleted, their address cleared), and
   Redact expired entries on the Forms home, needing Delete, does it at once. An entry whose files can't be deleted is
   kept and tried again next time.
+- The token picker offers `{settings:<key>}` under Site settings, for any of the site's settings the host
+  lends read-only.
 
 ### Changed
 

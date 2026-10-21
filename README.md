@@ -77,7 +77,7 @@ npm run build
 
 `composer check` runs Mago (format, lint, the boundary guard and analysis), both test suites and Infection. The
 integration suite runs the add-on on the API's in-memory host, over an in-memory SQLite site database with the form
-tables migrated. Format with Mago 1.52.0, which CI pins.
+tables migrated. Format with Mago 1.57.0, which CI pins.
 
 See [contenir-extension/tracking](https://github.com/contenir-extension/tracking#building-an-add-on), the reference
 add-on, for how an add-on is laid out, built, tested and released.
