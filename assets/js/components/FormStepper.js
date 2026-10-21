@@ -58,8 +58,6 @@ export default class FormStepper extends BaseComponent {
 
     _advance(form) {
         const state = this.elements.get(form)
-        /* v8 ignore if -- the click listener that leads here is added with this state and removed with it on unmount, so the state is always there */
-        if (!state) return
         if (!this._validateStep(state.steps[state.currentIndex])) return
         if (state.currentIndex >= state.steps.length - 1) return
         this._show(form, state.currentIndex + 1)
@@ -73,8 +71,6 @@ export default class FormStepper extends BaseComponent {
 
     _goTo(form, key) {
         const state = this.elements.get(form)
-        /* v8 ignore if -- the click listener that leads here is added with this state and removed with it on unmount, so the state is always there */
-        if (!state) return
         const index = state.steps.findIndex((step) => step.getAttribute('data-form-step') === key)
         if (index < 0 || index > state.furthestIndex) return
         this._show(form, index)
@@ -82,8 +78,6 @@ export default class FormStepper extends BaseComponent {
 
     _show(form, index) {
         const state = this.elements.get(form)
-        /* v8 ignore if -- only _advance, _retreat and _goTo call this, each once it has found the state */
-        if (!state) return
 
         state.steps.forEach((step, i) => {
             step.hidden = i !== index
@@ -106,8 +100,7 @@ export default class FormStepper extends BaseComponent {
         const inputs = step.querySelectorAll('input, select, textarea')
         for (const input of inputs) {
             if (typeof input.checkValidity === 'function' && !input.checkValidity()) {
-                /* v8 ignore else -- every input, select and textarea in an HTML document has reportValidity beside checkValidity */
-                if (typeof input.reportValidity === 'function') input.reportValidity()
+                input.reportValidity()
                 return false
             }
         }
