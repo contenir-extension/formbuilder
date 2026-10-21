@@ -1,0 +1,46 @@
+<?php
+/**
+ * A field's settings on a page of their own, for a browser without the editor's scripts: the
+ * page's title and the form's tabs, what stopped the last save, then the settings in a card and
+ * the Save bar.
+ *
+ * @var array{
+ *     form: \Contenir\FormBuilder\Definition\FormDefinition,
+ *     errors: array<string, string>,
+ *     handler: string,
+ *     query: array<string, scalar>,
+ *     title: string,
+ * } $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+$adding = 'field-add' === $values['handler'];
+$back   = $view->url('fields', ['form' => (int) $values['form']->id]);
+?>
+                <div class="pageheader pageheader--row">
+                    <div class="pageheader__content">
+                        <h1 class="pageheader__title"><?= $view->escape($values['title']) ?></h1>
+                    </div>
+                </div>
+<?= $view->tabs() ?>
+<?php if ([] !== $values['errors']): ?>
+                <div class="alert alert--destructive mb--md" role="alert">
+                    <span class="alert__icon"><?= $view->icon('alert-triangle') ?></span>
+                    <div class="alert__content">
+                        <p class="alert__title">Check the highlighted fields</p>
+                    </div>
+                </div>
+<?php endif ?>
+
+                <form action="<?= $view->escape($view->url($values['handler'], $values['query'])) ?>" method="post" class="form form--record">
+                    <?= $view->token() ?>
+                    <fieldset class="card form__card">
+                        <h2 class="card__header form__card-title"><?= $adding ? 'New field' : 'Field details' ?></h2>
+                        <div class="card__content">
+<?= $view->render('forms/fields/settings', $values) ?>
+                        </div>
+                    </fieldset>
+                    <fieldset class="form__actions form__actions--bar">
+                        <a class="btn btn--outline" href="<?= $view->escape($back) ?>"><?= $view->icon('x') ?><span>Back to fields</span></a>
+                        <button type="submit" class="btn btn--primary"><?= $view->icon($adding ? 'plus' : 'check') ?><span><?= $adding ? 'Create field' : 'Save' ?></span></button>
+                    </fieldset>
+                </form>

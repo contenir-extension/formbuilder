@@ -1,0 +1,26 @@
+<?php
+/**
+ * A field's settings inside the fields editor's modal (FieldFormModal): the field's type as the
+ * title, the settings form, then Cancel and the submit in the modal's actions. Drawn alone, and
+ * again with what stopped it saving.
+ *
+ * @var array{
+ *     field: array<string, mixed>,
+ *     types: \Contenir\Extension\Formbuilder\Admin\Fields\FieldTypes,
+ *     handler: string,
+ *     query: array<string, scalar>,
+ *     submit: string,
+ * } $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+$type = (string) ($values['field']['type'] ?? 'text');
+?>
+<h2 slot="title" class="cluster cluster--xs"><?php if ($values['types']->has($type)): ?><?= $view->icon($values['types']->icon($type)) ?><span><?= $view->escape($values['types']->label($type)) ?></span><?php else: ?>Field<?php endif ?></h2>
+<form id="field-modal-form" action="<?= $view->escape($view->url($values['handler'], $values['query'])) ?>" method="post" class="form" data-field-modal-form>
+<?= $view->token() ?>
+<?= $view->render('forms/fields/settings', $values) ?>
+</form>
+<div slot="actions" class="cluster cluster--sm">
+    <button type="button" class="btn btn--outline" data-modal-close>Cancel</button>
+    <button type="submit" form="field-modal-form" class="btn btn--primary"><?= $view->icon('check') ?><span><?= $view->escape($values['submit']) ?></span></button>
+</div>

@@ -1,0 +1,39 @@
+<?php
+/**
+ * One section of the fields editor as a card: its legend, renamed in place (EditableLegend), and
+ * its menu, then its groups and the button that adds one. Drawn alone for a section just added.
+ *
+ * @var array{
+ *     form: \Contenir\FormBuilder\Definition\FormDefinition,
+ *     section: \Contenir\FormBuilder\Definition\SectionDefinition,
+ *     types: \Contenir\Extension\Formbuilder\Admin\Fields\FieldTypes,
+ * } $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+$form      = $values['form'];
+$section   = $values['section'];
+$query     = ['form' => (int) $form->id, 'section' => (int) $section->id];
+$tokens    = (string) json_encode([
+    'deleteUrl'  => $view->url('section-delete', $query),
+    'formTarget' => '.builder__section[data-section-id="' . (int) $section->id . '"]',
+]);
+$untitled  = '' === (string) ($section->legend ?? '');
+?>
+                <section class="card builder__section" data-section-id="<?= (int) $section->id ?>">
+                    <header class="card__header card__header--row">
+                        <h2 class="card__title builder__legend">
+                            <span data-editable-legend data-update-url="<?= $view->escape($view->url('section-update', $query)) ?>"<?= $untitled ? ' data-empty="true"' : '' ?>><?= $untitled ? 'Untitled' : $view->escape((string) $section->legend) ?></span>
+                            <button type="button" class="btn btn--ghost btn--icon btn--sm" data-edit-legend aria-label="Rename section" data-tooltip="Rename section"><?= $view->icon('pencil') ?></button>
+                        </h2>
+                        <button type="button" class="btn btn--ghost btn--icon btn--sm" data-toggle="dropdown" data-menu-template="formbuilder-section-actions" data-menu-tokens="<?= $view->escape($tokens) ?>" aria-label="Section actions" data-tooltip="More"><?= $view->icon('dots-vertical') ?></button>
+                    </header>
+                    <div class="card__content builder__body">
+<?php foreach ($section->groups as $group): ?>
+<?= $view->render('forms/fields/group', ['form' => $form, 'group' => $group, 'types' => $values['types']]) ?>
+<?php endforeach ?>
+                        <form method="post" action="<?= $view->escape($view->url('group-insert', $query + ['position' => count($section->groups)])) ?>" class="builder__insert" data-formbuilder-inline>
+                            <?= $view->token() ?>
+                            <button class="btn btn--ghost btn--sm" type="submit"><?= $view->icon('plus') ?><span>Add group</span></button>
+                        </form>
+                    </div>
+                </section>

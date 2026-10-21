@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5310a3cebe1991663a953dbd7f5fece0",
+    "content-hash": "59aa0ea68aad538eb8635e1940101433",
     "packages": [
         {
             "name": "contenir/contenir-formbuilder",
@@ -80,16 +80,16 @@
         },
         {
             "name": "contenir/extension-api",
-            "version": "v0.5.0",
+            "version": "dev-feat/template-tabs",
             "source": {
                 "type": "git",
-                "url": "https://github.com/contenir/contenir-extension-api.git",
-                "reference": "14241e1dd02ee2d135c64b19e69a963085e702a0"
+                "url": "git@github.com:contenir/contenir-extension-api.git",
+                "reference": "db3f32f09df14543acb096da001713a18df80d9f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/14241e1dd02ee2d135c64b19e69a963085e702a0",
-                "reference": "14241e1dd02ee2d135c64b19e69a963085e702a0",
+                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/db3f32f09df14543acb096da001713a18df80d9f",
+                "reference": "db3f32f09df14543acb096da001713a18df80d9f",
                 "shasum": ""
             },
             "require": {
@@ -126,7 +126,45 @@
                     "Contenir\\Extension\\Api\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Contenir\\Extension\\Api\\Tests\\": "tests/",
+                    "Contenir\\Extension\\Example\\": "tests/Fixture/Example/src/",
+                    "Contenir\\Extension\\Example\\Tests\\": "tests/Fixture/Example/tests/"
+                }
+            },
+            "scripts": {
+                "check": [
+                    "@cs-check",
+                    "@static-analysis",
+                    "@test",
+                    "@test-integration",
+                    "@mutation-test"
+                ],
+                "cs-check": [
+                    "mago format --check",
+                    "mago lint"
+                ],
+                "cs-fix": [
+                    "mago format",
+                    "mago lint --fix"
+                ],
+                "static-analysis": [
+                    "mago analyze"
+                ],
+                "test": [
+                    "phpunit --colors=always --testsuite unit"
+                ],
+                "test-integration": [
+                    "phpunit --colors=always --testsuite integration"
+                ],
+                "test-coverage": [
+                    "phpunit --colors=always --coverage-clover clover.xml"
+                ],
+                "mutation-test": [
+                    "infection"
+                ]
+            },
             "license": [
                 "BSD-3-Clause"
             ],
@@ -143,7 +181,7 @@
                 "issues": "https://github.com/contenir/contenir-extension-api/issues",
                 "source": "https://github.com/contenir/contenir-extension-api"
             },
-            "time": "2026-10-20T10:55:29+00:00"
+            "time": "2026-10-20T23:25:24+00:00"
         },
         {
             "name": "laminas/laminas-escaper",
@@ -5631,9 +5669,17 @@
             "time": "2025-11-17T20:03:58+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "contenir/extension-api",
+            "version": "dev-feat/template-tabs",
+            "alias": "0.5.1",
+            "alias_normalized": "0.5.1.0"
+        }
+    ],
     "minimum-stability": "dev",
     "stability-flags": {
+        "contenir/extension-api": 20,
         "contenir/contenir-qa-tools": 20
     },
     "prefer-stable": true,

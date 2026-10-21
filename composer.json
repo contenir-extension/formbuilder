@@ -16,7 +16,7 @@
     "require": {
         "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
         "contenir/contenir-formbuilder": "^2.0.0-RC3",
-        "contenir/extension-api": "^0.4 || ^0.5",
+        "contenir/extension-api": "dev-feat/template-tabs as 0.5.1",
         "php-db/phpdb": "^0.6.0",
         "psr/clock": "^1.0",
         "psr/container": "^1.1 || ^2.0",
@@ -30,6 +30,12 @@
         "php-db/phpdb-sqlite": "^0.3",
         "phpunit/phpunit": "^11.5.42"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/contenir/contenir-extension-api"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Contenir\\Extension\\Formbuilder\\": "src/"

@@ -32,6 +32,20 @@ data, it is a described screen, drawn like a settings screen. The few that can't
 | Handler | Screen | Drawn as |
 |---|---|---|
 | `forms` | the Forms home: a card per form with its status, slug and layout, and Add form | `templates/forms/index.phtml` |
+| `form-add`, `form` | Add form, and a form's Settings tab with Delete form | described screens |
+| `fields` | a form's Fields tab: its sections, groups, rows and fields, arranged by dragging | `templates/forms/fields.phtml` |
+| `field-add`, `field-edit` | a field's settings, in the fields editor's modal, or on a page without scripts | `templates/forms/fields/modal.phtml`, `templates/forms/field.phtml` |
+
+The fields editor's other handlers (`section-insert`, `group-delete`, `row-reorder` and the like) answer its scripts
+with fragments or JSON. Every one needs Update in the Forms area, as the built-in fields screen did, and changes only
+parts of the form the request names.
+
+**Its scripts and styles** are dashboard components and a stylesheet in its published assets. The sources are in
+`assets/`; `npm run build` builds them with esbuild and Sass into `public/`, which is committed, and CI checks the
+build matches its sources. `npm test` runs their tests (vitest), against markup that
+`tests/Integration/Contract/ComponentFixtureTest.php` keeps in step with the templates: regenerate it with
+`UPDATE_CONTRACT_FIXTURES=1 vendor/bin/phpunit --filter ComponentFixture`. Every post carries the host's handler
+token, which the scripts copy from the hidden field the page prints.
 
 **Its tables** keep their names, `form` and `form_*` (P10), so public sites read them as before. The library's
 baseline migration creates them on a new site and leaves an existing site's tables as they are. Any table the
@@ -43,14 +57,18 @@ adapter over the site's own connection.
 ## Requirements
 
 - PHP 8.3, 8.4 or 8.5
-- contenir/extension-api 0.3 (a module's templates, menus and handler privileges)
+- contenir/extension-api with tabs on template screens (contenir/contenir-extension-api#12, until it is tagged)
 - contenir/contenir-formbuilder 2.0 (one persistence layer over php-db)
+- Node 22, to build the scripts and styles
 
 ## Development
 
 ```bash
 composer install
 composer check
+npm ci
+npm run test:coverage
+npm run build
 ```
 
 `composer check` runs Mago (format, lint, the boundary guard and analysis), both test suites and Infection. The

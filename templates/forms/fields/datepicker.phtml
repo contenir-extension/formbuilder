@@ -1,0 +1,14 @@
+<?php
+/**
+ * A date control (Parallelogram's <p-datetime>), its value pinned to the stored Y-m-d H:i:s.
+ *
+ * @var array{name: string, value: string, id: string} $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+$value = $values['value'];
+if ('' !== $value) {
+    $time  = strtotime($value);
+    $value = false !== $time ? date('Y-m-d H:i:s', $time) : '';
+}
+?>
+<p-datetime name="<?= $view->escape($values['name']) ?>" id="<?= $view->escape($values['id']) ?>" mode="date" format="mysql" time-format="12" theme="inherit"<?= '' !== $value ? ' value="' . $view->escape($value) . '"' : '' ?>></p-datetime>

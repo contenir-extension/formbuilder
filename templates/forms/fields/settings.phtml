@@ -1,0 +1,278 @@
+<?php
+/**
+ * A field's settings, in the field modal or on its own page: its label and ID, then what its type
+ * supports (content, placeholder and default, required and label visibility, description,
+ * choices), then folded away its type's options, its validation rules (ordered by dragging,
+ * FieldForm) and its conditional logic (ConditionalEditor).
+ *
+ * @var array{
+ *     field: array<string, mixed>,
+ *     errors: array<string, string>,
+ *     types: \Contenir\Extension\Formbuilder\Admin\Fields\FieldTypes,
+ *     validators: list<array{type: string, label: string, requires_options: bool}>,
+ *     siblings: list<array{name: string, label: string, type: string}>,
+ *     operators: list<array{op: string, label: string, needs_value: bool}>,
+ * } $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+$field                = $values['field'];
+$errors               = $values['errors'];
+$fieldTypes           = $values['types']->all();
+$validatorTypes       = $values['validators'];
+$siblingFields        = $values['siblings'];
+$conditionalOperators = $values['operators'];
+$selectedKey  = (string) ($field['type'] ?? 'text');
+$selectedType = null;
+foreach ($fieldTypes as $candidate) {
+    if ($candidate->key() === $selectedKey) {
+        $selectedType = $candidate;
+        break;
+    }
+}
+$groups            = null !== $selectedType ? $selectedType->supportedGroups() : [];
+$has               = static fn(string $key): bool => in_array($key, $groups, true);
+$allowedValidators = null !== $selectedType ? $selectedType->supportedValidators() : [];
+
+$savedValidators = (array) ($field['validators'] ?? []);
+$savedTypes      = array_column($savedValidators, 'type');
+$savedByType     = [];
+foreach ($savedValidators as $sv) {
+    if (is_array($sv) && isset($sv['type'])) {
+        $savedByType[(string) $sv['type']] = $sv;
+    }
+}
+
+/** The saved rules first, in the order they run, then the rest the type allows. */
+$validatorIndex        = array_column($validatorTypes, null, 'type');
+$orderedValidatorTypes = [];
+foreach ($savedValidators as $sv) {
+    $type = is_array($sv) ? (string) ($sv['type'] ?? '') : '';
+    if (isset($validatorIndex[$type]) && in_array($type, $allowedValidators, true)) {
+        $orderedValidatorTypes[] = $validatorIndex[$type];
+    }
+}
+foreach ($validatorTypes as $vtype) {
+    if (in_array($vtype['type'], $allowedValidators, true) && ! in_array($vtype['type'], $savedTypes, true)) {
+        $orderedValidatorTypes[] = $vtype;
+    }
+}
+
+$conditional      = is_array($field['conditional'] ?? null) ? $field['conditional'] : null;
+$conditionalShow  = is_array($conditional['show_when'] ?? null) ? $conditional['show_when'] : [];
+$conditionalCombo = isset($conditionalShow['any']) ? 'any' : 'all';
+$conditionalRules = is_array($conditionalShow[$conditionalCombo] ?? null) ? $conditionalShow[$conditionalCombo] : [];
+$valuelessOps     = array_column(array_filter($conditionalOperators, static fn($o) => ! $o['needs_value']), 'op');
+
+/**
+ * Choice fields pick their default inline: a radio for a single default, a checkbox for any
+ * number, persisted comma-joined by the controller.
+ */
+$isSingleDefault = in_array($selectedKey, ['select', 'radio'], true);
+$isMultiDefault  = in_array($selectedKey, ['multiselect', 'multicheckbox'], true);
+$rawDefault      = (string) ($field['default_value'] ?? '');
+$multiDefaults   = '' === $rawDefault ? [] : array_map('trim', explode(',', $rawDefault));
+$typeHasOptions  = $has('options') && in_array($selectedKey, ['textarea', 'number', 'date', 'file'], true);
+
+/** One field: its label (marked when required), the control, then its description and any error. */
+$formField = function (string $id, string $label, string $control, string $description = '', string $name = '', bool $required = false) use ($errors, $view): string {
+    $error = '' !== $name ? (string) ($errors[$name] ?? '') : '';
+    if ('' !== $error) {
+        $control = str_replace(' id="' . $id . '"', ' id="' . $id . '" aria-invalid="true" aria-describedby="' . $id . '-error"', $control);
+    }
+
+    return '<div class="form__field' . ('' !== $error ? ' form__field--error' : '') . '">'
+        . '<label for="' . $id . '" class="form__label">' . $label . ($required ? ' <span class="form__required" aria-hidden="true">*</span>' : '') . '</label>'
+        . $control
+        . ('' !== $description ? '<p class="form__description">' . $description . '</p>' : '')
+        . ('' !== $error ? '<p class="form__error" id="' . $id . '-error" role="alert">' . $view->escape($error) . '</p>' : '')
+        . '</div>';
+};
+$input = fn(string $id, string $name, string $value, string $extra = '', string $type = 'text'): string => '<input type="' . $type . '" id="' . $id . '" name="' . $name . '" class="input" value="' . $view->escape($value) . '"' . $extra . '>';
+$siblingOptions = function (string $selected) use ($siblingFields, $view): string {
+    $html = '<option value="">Select a field</option>';
+    foreach ($siblingFields as $sf) {
+        $html .= '<option value="' . $view->escape($sf['name']) . '"' . ($sf['name'] === $selected ? ' selected' : '') . '>' . $view->escape($sf['label']) . '</option>';
+    }
+
+    return $html;
+};
+$operatorOptions = function (string $selected) use ($conditionalOperators, $view): string {
+    $html = '';
+    foreach ($conditionalOperators as $op) {
+        $html .= '<option value="' . $view->escape($op['op']) . '"' . ($op['op'] === $selected ? ' selected' : '') . '>' . $view->escape($op['label']) . '</option>';
+    }
+
+    return $html;
+};
+$conditionRow = fn(string $index, string $ruleField, string $ruleOp, string $ruleValue, string $combo, bool $first, bool $needsValue): string => '<div class="builder__rule" data-conditional-row>'
+    . '<span class="builder__handle" data-handle data-tooltip="Drag to reorder" aria-hidden="true">' . $view->icon('grip-vertical') . '</span>'
+    . '<span data-conditional-combinator-slot' . ($first ? ' hidden' : '') . '><select name="conditional[combinator]" class="select select--auto" aria-label="Combine with" data-conditional-combinator>'
+    . '<option value="all"' . ('all' === $combo ? ' selected' : '') . '>And</option><option value="any"' . ('any' === $combo ? ' selected' : '') . '>Or</option></select></span>'
+    . '<select name="conditional[conditions][' . $index . '][field]" class="select" aria-label="Field">' . $siblingOptions($ruleField) . '</select>'
+    . '<select name="conditional[conditions][' . $index . '][op]" class="select" aria-label="Condition" data-conditional-op>' . $operatorOptions($ruleOp) . '</select>'
+    . '<input type="text" name="conditional[conditions][' . $index . '][value]" class="input" value="' . $view->escape($ruleValue) . '" placeholder="Value" aria-label="Value" data-conditional-value' . ($needsValue ? '' : ' hidden disabled') . '>'
+    . '<button type="button" class="btn btn--ghost btn--icon btn--sm" data-conditional-remove aria-label="Remove condition" data-tooltip="Remove condition">' . $view->icon('trash') . '</button>'
+    . '</div>';
+$drawer = fn(string $icon, string $title, string $body): string => '<details class="accordion__item">'
+    . '<summary class="accordion__trigger"><span class="cluster cluster--xs">' . $view->icon($icon) . '<span>' . $title . '</span></span><span class="accordion__icon" aria-hidden="true">' . $view->icon('chevron-down') . '</span></summary>'
+    . '<div class="accordion__content"><div class="accordion__body form__card-body">' . $body . '</div></div>'
+    . '</details>';
+?>
+<div class="form__card-body" data-field-form>
+    <input type="hidden" name="type" value="<?= $view->escape($selectedKey) ?>">
+
+    <div class="form__row">
+<?php if ($has('label')): ?>
+        <div class="form__col"><?= $formField('field-label', 'Label', $input('field-label', 'label', (string) ($field['label'] ?? ''), ' required'), '', 'label', true) ?></div>
+<?php else: ?>
+        <input type="hidden" name="label" value="<?= $view->escape((string) ($field['label'] ?? '')) ?>">
+<?php endif ?>
+        <div class="form__col"><?= $formField('field-name', 'Field ID', '<input type="text" id="field-name" name="name"' . ($has('label') ? ' data-identifier="label"' : '') . ' class="input text--mono" value="' . $view->escape((string) $field['name']) . '" required pattern="[a-z][a-z0-9_\-]*">', '', 'name', true) ?></div>
+    </div>
+
+<?php if ('content' === $selectedKey): ?>
+    <?= $formField('field-content', 'Content', '<textarea id="field-content" name="options[html]" rows="8" class="textarea">' . $view->escape((string) ($field['options']['html'] ?? '')) . '</textarea>', 'Instructional text shown inline in the form. HTML allowed: paragraphs, headings (h2&ndash;h4), lists, blockquotes, links and inline emphasis. Anything else is stripped on save.') ?>
+<?php endif ?>
+
+<?php if ($has('placeholder') || $has('default')): ?>
+    <div class="form__row">
+<?php if ($has('placeholder')): ?>
+        <div class="form__col"><?= $formField('field-placeholder', 'Placeholder', $input('field-placeholder', 'placeholder', (string) ($field['placeholder'] ?? ''))) ?></div>
+<?php endif ?>
+<?php if ($has('default')): ?>
+        <div class="form__col"><?= $formField('field-default', 'Default value', $input('field-default', 'default_value', (string) ($field['default_value'] ?? ''))) ?></div>
+<?php endif ?>
+    </div>
+<?php endif ?>
+
+<?php if ($has('required') || $has('visibility')): ?>
+    <div class="cluster cluster--lg">
+<?php if ($has('required')): ?>
+        <input type="hidden" name="required" value="0">
+        <label class="checkbox"><input type="checkbox" id="field-required" name="required" value="1" class="checkbox__input"<?= ! empty($field['required']) ? ' checked' : '' ?>><span class="checkbox__label">This field is required</span></label>
+<?php endif ?>
+<?php if ($has('visibility')): ?>
+        <input type="hidden" name="show_label" value="0">
+        <label class="checkbox"><input type="checkbox" id="field-show-label" name="show_label" value="1" class="checkbox__input"<?= ! empty($field['show_label']) ? ' checked' : '' ?>><span class="checkbox__label">Show the label on the form</span></label>
+<?php endif ?>
+    </div>
+<?php endif ?>
+
+<?php if ($has('description')): ?>
+    <?= $formField('field-description', 'Description', $input('field-description', 'description', (string) ($field['description'] ?? '')), 'A short line shown below the field.') ?>
+<?php endif ?>
+
+<?php if ($has('choices')): ?>
+    <fieldset class="form__fieldset">
+        <legend class="form__legend">Choices</legend>
+        <p class="form__description">The options people can pick from.<?= $isSingleDefault ? ' Select one to be the default.' : ($isMultiDefault ? ' Tick any to be selected by default.' : '') ?></p>
+        <div class="builder__choices">
+<?php $choices = (array) ($field['options']['choices'] ?? []) ?>
+<?php for ($i = 0; $i < max(4, count($choices) + 1); $i++): ?>
+<?php $entryValue = (string) ($choices[$i]['value'] ?? '') ?>
+<?php $entryLabel = (string) ($choices[$i]['label'] ?? '') ?>
+            <div class="builder__choice">
+<?php if ($isSingleDefault): ?>
+                <input type="radio" name="default_value" value="<?= $view->escape($entryValue) ?>" class="radio__input" data-default-row<?= ('' !== $entryValue && $rawDefault === $entryValue) ? ' checked' : '' ?> aria-label="Set as default">
+<?php elseif ($isMultiDefault): ?>
+                <input type="checkbox" name="default_value[]" value="<?= $view->escape($entryValue) ?>" class="checkbox__input" data-default-row<?= ('' !== $entryValue && in_array($entryValue, $multiDefaults, true)) ? ' checked' : '' ?> aria-label="Default selection">
+<?php endif ?>
+                <input type="text" name="options[choice_value][]" class="input" value="<?= $view->escape($entryValue) ?>" placeholder="Value" aria-label="Choice <?= $i + 1 ?> value">
+                <input type="text" name="options[choice_label][]" class="input" value="<?= $view->escape($entryLabel) ?>" placeholder="Label" aria-label="Choice <?= $i + 1 ?> label">
+            </div>
+<?php endfor ?>
+        </div>
+    </fieldset>
+<?php endif ?>
+
+    <div class="accordion">
+<?php if ($typeHasOptions): ?>
+<?php
+    $options = match ($selectedKey) {
+        'textarea' => $formField('opt-rows', 'Visible rows', $input('opt-rows', 'options[rows]', (string) ($field['options']['rows'] ?? ''), ' min="1" placeholder="4"', 'number'), 'How tall the box should look. People can still type beyond this; the field scrolls.'),
+        'number' => $formField('opt-step', 'Step', $input('opt-step', 'options[step]', (string) ($field['options']['step'] ?? ''), ' placeholder="1"', 'number'), 'The increment between allowed values: 0.01 for currency, 1 for whole numbers. Use the Number range rule for a minimum and maximum.'),
+        'file' => $formField('opt-accept', 'Allowed file types', $input('opt-accept', 'options[accept]', (string) ($field['options']['accept'] ?? ''), ' placeholder="image/*, .pdf"'), 'MIME types or file extensions, separated by commas. Leave empty to accept anything.'),
+        default => '',
+    };
+    if ('date' === $selectedKey) {
+        $options = '<div class="form__row">'
+            . '<div class="form__col">' . $formField('opt-min-date', 'Earliest date', $view->render('forms/fields/datepicker', ['name' => 'options[min]', 'value' => (string) ($field['options']['min'] ?? ''), 'id' => 'opt-min-date'])) . '</div>'
+            . '<div class="form__col">' . $formField('opt-max-date', 'Latest date', $view->render('forms/fields/datepicker', ['name' => 'options[max]', 'value' => (string) ($field['options']['max'] ?? ''), 'id' => 'opt-max-date'])) . '</div>'
+            . '</div>';
+        $dateSiblings = array_values(array_filter($siblingFields, static fn(array $f): bool => 'date' === ($f['type'] ?? '')));
+        if ([] !== $dateSiblings) {
+            $dateOptions = function (string $selected, string $none) use ($dateSiblings, $view): string {
+                $html = '<option value="">' . $none . '</option>';
+                foreach ($dateSiblings as $sibling) {
+                    $html .= '<option value="' . $view->escape($sibling['name']) . '"' . ($selected === $sibling['name'] ? ' selected' : '') . '>' . $view->escape($sibling['label']) . '</option>';
+                }
+
+                return $html;
+            };
+            $options .= '<div class="form__row">'
+                . '<div class="form__col">' . $formField('opt-min-from-field', 'Earliest is on or after', '<select id="opt-min-from-field" name="options[min_from_field]" class="select">' . $dateOptions((string) ($field['options']['min_from_field'] ?? ''), 'Only the earliest date above') . '</select>', 'When set, this field cannot be earlier than the chosen field&rsquo;s value (check-out on or after check-in).') . '</div>'
+                . '<div class="form__col">' . $formField('opt-max-from-field', 'Latest is on or before', '<select id="opt-max-from-field" name="options[max_from_field]" class="select">' . $dateOptions((string) ($field['options']['max_from_field'] ?? ''), 'Only the latest date above') . '</select>', 'When set, this field cannot be later than the chosen field&rsquo;s value.') . '</div>'
+                . '</div>';
+        }
+    }
+?>
+        <?= $drawer('adjustments', 'Options', $options) ?>
+<?php endif ?>
+<?php if ($has('validation') && [] !== $orderedValidatorTypes): ?>
+<?php ob_start() ?>
+            <p class="form__description">Tick what should be checked. Rules run in the order shown; drag a rule to move it.</p>
+            <div class="builder__rules" data-validator-rows>
+<?php foreach ($orderedValidatorTypes as $i => $vtype): ?>
+<?php
+    $isOn         = in_array($vtype['type'], $savedTypes, true);
+    $saved        = $savedByType[$vtype['type']] ?? [];
+    $savedOptions = is_array($saved['options'] ?? null) ? $saved['options'] : [];
+    $prefix       = 'validators[' . $i . ']';
+?>
+                <div class="builder__rule" data-validator-row>
+                    <span class="builder__handle" data-handle data-tooltip="Drag to reorder" aria-hidden="true"><?= $view->icon('grip-vertical') ?></span>
+                    <input type="hidden" name="<?= $prefix ?>[present]" value="0">
+                    <label class="checkbox"><input type="checkbox" name="<?= $prefix ?>[type]" value="<?= $view->escape($vtype['type']) ?>" class="checkbox__input"<?= $isOn ? ' checked' : '' ?> data-validator-toggle><span class="checkbox__label"><?= $view->escape($vtype['label']) ?></span></label>
+                    <div class="builder__rule-options" data-validator-options<?= $isOn ? '' : ' hidden' ?>>
+<?php if ($vtype['requires_options']): ?>
+<?php if (in_array($vtype['type'], ['string_length', 'between'], true)): ?>
+                        <input type="number" name="<?= $prefix ?>[options][min]" placeholder="Minimum" aria-label="Minimum" class="input" value="<?= $view->escape((string) ($savedOptions['min'] ?? '')) ?>">
+                        <input type="number" name="<?= $prefix ?>[options][max]" placeholder="Maximum" aria-label="Maximum" class="input" value="<?= $view->escape((string) ($savedOptions['max'] ?? '')) ?>">
+<?php elseif ('regex' === $vtype['type']): ?>
+                        <input type="text" name="<?= $prefix ?>[options][pattern]" placeholder="/^.+$/" aria-label="Pattern" class="input text--mono" value="<?= $view->escape((string) ($savedOptions['pattern'] ?? '')) ?>">
+<?php elseif ('confirm' === $vtype['type']): ?>
+                        <input type="text" name="<?= $prefix ?>[options][field]" placeholder="Other field&rsquo;s ID" aria-label="Field to match" class="input" value="<?= $view->escape((string) ($savedOptions['field'] ?? '')) ?>">
+<?php endif ?>
+<?php endif ?>
+                        <input type="text" name="<?= $prefix ?>[message]" placeholder="Custom error message (optional)" aria-label="Custom error message" class="input" value="<?= $view->escape((string) ($saved['message'] ?? '')) ?>">
+                    </div>
+                </div>
+<?php endforeach ?>
+            </div>
+<?php $validation = (string) ob_get_clean() ?>
+        <?= $drawer('shield-check', 'Validation', $validation) ?>
+<?php endif ?>
+<?php if ($has('conditional')): ?>
+<?php ob_start() ?>
+            <p class="form__description">Show this field only when conditions on other fields are met. Leave empty to always show it.</p>
+<?php if ([] === $siblingFields): ?>
+            <p class="form__description">Add other fields to this form first: a condition needs another field to refer to.</p>
+<?php else: ?>
+            <div class="builder__rules" data-conditional-editor data-valueless-ops="<?= $view->escape((string) json_encode($valuelessOps)) ?>" data-combinator="<?= $view->escape($conditionalCombo) ?>">
+                <div class="builder__rules" data-conditional-rows>
+<?php foreach ($conditionalRules as $i => $rule): ?>
+<?php if (! is_array($rule)) continue ?>
+<?php $ruleOp = (string) ($rule['op'] ?? '') ?>
+                    <?= $conditionRow((string) $i, (string) ($rule['field'] ?? ''), $ruleOp, (string) ($rule['value'] ?? ''), $conditionalCombo, 0 === $i, ! in_array($ruleOp, $valuelessOps, true)) ?>
+
+<?php endforeach ?>
+                </div>
+                <template data-conditional-template><?= $conditionRow('__INDEX__', '', '', '', 'all', false, true) ?></template>
+                <div><button type="button" class="btn btn--outline btn--sm" data-conditional-add><?= $view->icon('plus') ?><span>Add condition</span></button></div>
+            </div>
+<?php endif ?>
+<?php $conditions = (string) ob_get_clean() ?>
+        <?= $drawer('git-branch', 'Conditional logic', $conditions) ?>
+<?php endif ?>
+    </div>
+</div>
