@@ -8,7 +8,9 @@ use Contenir\Extension\Api\Handler\ResultKind;
 use Contenir\Extension\Api\Handler\Tab;
 use Contenir\Extension\Api\Mail\MailerInterface;
 use Contenir\Extension\Api\Mail\Message;
+use Contenir\Extension\Api\Settings\SiteSettingsInterface;
 use Contenir\Extension\Api\Testing\MemoryMailer;
+use Contenir\Extension\Api\Testing\MemorySiteSettings;
 use Contenir\Extension\Formbuilder\Admin\Preview\PreviewHandler;
 use Contenir\Extension\Formbuilder\Tests\Trait\FieldsEditorTrait;
 use Nyholm\Psr7\Factory\Psr17Factory;
@@ -47,6 +49,24 @@ final class PreviewHandlerTest extends TestCase
             'looking, by a role viewing'   => ['GET', ['forms:view'], 200],
             'testing, by a role viewing'   => ['POST', ['forms:view'], 200],
             'looking, by a role with none' => ['GET', [], 403],
+        ];
+    }
+
+    /**
+     * @return array<string, array{array<string, object>, string}>
+     */
+    public static function siteSettingsProvider(): array
+    {
+        return [
+            'lent by the host'     => [
+                [
+                    SiteSettingsInterface::class => new MemorySiteSettings(['contact' => [
+                        'telephone' => '01234 567890',
+                    ]]),
+                ],
+                'Test: Call 01234 567890 or ',
+            ],
+            'not lent by the host' => [[], 'Test: Call {settings:contact.telephone} or {settings:contact.fax}'],
         ];
     }
 
@@ -103,6 +123,35 @@ final class PreviewHandlerTest extends TestCase
 
         static::assertSame(
             ['Test: From 203.0.113.9 at https://example.com/admin'],
+            array_map(static fn(Message $message): string => $message->subject, $this->mailer->sent()),
+        );
+    }
+
+    /**
+     * @param array<string, object> $services
+     */
+    #[Test]
+    #[DataProvider('siteSettingsProvider')]
+    public function fillsSiteSettingsTagsWhenTheHostLendsThem(array $services, string $subject): void
+    {
+        $this->mailer = new MemoryMailer();
+        $this->setUpHost([MailerInterface::class => $this->mailer] + $services);
+        $ids = $this->layOut();
+        $this->repository()->createNotification($ids['form'], [
+            'name'          => 'Team',
+            'to_address'    => 'team@example.com',
+            'subject'       => 'Call {settings:contact.telephone} or {settings:contact.fax}',
+            'body_template' => '<p>{field:message}</p>',
+        ]);
+        $this->page(
+            PreviewHandler::class,
+            'POST',
+            ['form' => $ids['form']],
+            $this->drawnToken($ids['form']) + ['name' => 'Ada', 'email' => 'ada@example.com', 'message' => 'Hello'],
+        );
+
+        static::assertSame(
+            [$subject],
             array_map(static fn(Message $message): string => $message->subject, $this->mailer->sent()),
         );
     }
