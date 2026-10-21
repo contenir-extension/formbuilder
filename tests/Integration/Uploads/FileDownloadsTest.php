@@ -206,8 +206,10 @@ final class FileDownloadsTest extends TestCase
         $entry = $this->addEntry($ids['form'], ['cv' => 'forms/contact/cv.pdf'], 'spam');
         $this->private->putFile('forms/contact/cv.pdf', 'Linked CV');
         (new EntryStatusHandler())->handle(
-            (new ServerRequest('POST', 'https://www.example.com/admin/extension/formbuilder/entry-status'))
-                ->withQueryParams(['form' => $ids['form'], 'entry' => $entry, 'status' => 'complete']),
+            (new ServerRequest(
+                'POST',
+                'https://www.example.com/admin/extension/formbuilder/entry-status',
+            ))->withQueryParams(['form' => $ids['form'], 'entry' => $entry, 'status' => 'complete']),
             $this->context(),
         );
         $html = $mailer->sent()[0]->html ?? '';
