@@ -4,8 +4,117 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5310a3cebe1991663a953dbd7f5fece0",
+    "content-hash": "34d61e98eedf59ce5fcdba7c9501b68b",
     "packages": [
+        {
+            "name": "contenir/contenir-extension-api",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:contenir/contenir-extension-api.git",
+                "reference": "b90a9c949710a1d541d2395b43637f030b91e07c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/b90a9c949710a1d541d2395b43637f030b91e07c",
+                "reference": "b90a9c949710a1d541d2395b43637f030b91e07c",
+                "shasum": ""
+            },
+            "require": {
+                "ext-dom": "*",
+                "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
+                "psr/clock": "^1.0",
+                "psr/container": "^1.1 || ^2.0",
+                "psr/event-dispatcher": "^1.0",
+                "psr/http-factory": "^1.1",
+                "psr/http-message": "^1.1 || ^2.0",
+                "psr/log": "^2.0 || ^3.0"
+            },
+            "replace": {
+                "contenir/extension-api": "self.version"
+            },
+            "require-dev": {
+                "contenir/contenir-qa-tools": "0.1.x-dev",
+                "infection/infection": "^0.34.1",
+                "nyholm/psr7": "^1.8.2",
+                "phpunit/phpunit": "^11.5.42"
+            },
+            "suggest": {
+                "nyholm/psr7": "A PSR-7 and PSR-17 implementation for the in-memory host (Testing\\InMemoryHost), or use any other",
+                "phpunit/phpunit": "Runs the conformance suite (Conformance\\Abstract*ConformanceTestCase) against a host"
+            },
+            "default-branch": true,
+            "bin": [
+                "bin/extension-boundary"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "0.6.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Contenir\\Extension\\Api\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Contenir\\Extension\\Api\\Tests\\": "tests/",
+                    "Contenir\\Extension\\Example\\": "tests/Fixture/Example/src/",
+                    "Contenir\\Extension\\Example\\Tests\\": "tests/Fixture/Example/tests/"
+                }
+            },
+            "scripts": {
+                "check": [
+                    "@cs-check",
+                    "@static-analysis",
+                    "@test",
+                    "@test-integration",
+                    "@mutation-test"
+                ],
+                "cs-check": [
+                    "mago format --check",
+                    "mago lint"
+                ],
+                "cs-fix": [
+                    "mago format",
+                    "mago lint --fix"
+                ],
+                "static-analysis": [
+                    "mago analyze"
+                ],
+                "test": [
+                    "phpunit --colors=always --testsuite unit"
+                ],
+                "test-integration": [
+                    "phpunit --colors=always --testsuite integration"
+                ],
+                "test-coverage": [
+                    "phpunit --colors=always --coverage-clover clover.xml"
+                ],
+                "mutation-test": [
+                    "infection"
+                ]
+            },
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "The add-on API for Contenir CMS: the contracts add-ons build against, the event catalogue, a conformance suite for hosts and an in-memory host. Framework free: PSR-3, PSR-7, PSR-11, PSR-14 and PSR-20 only.",
+            "homepage": "https://contenir.com.au",
+            "keywords": [
+                "add-on",
+                "cms",
+                "contenir",
+                "extension",
+                "plugin"
+            ],
+            "support": {
+                "issues": "https://github.com/contenir/contenir-extension-api/issues",
+                "source": "https://github.com/contenir/contenir-extension-api"
+            },
+            "time": "2026-10-21T02:19:20+00:00"
+        },
         {
             "name": "contenir/contenir-formbuilder",
             "version": "v2.0.0-RC3",
@@ -77,73 +186,6 @@
                 "source": "https://github.com/contenir/contenir-formbuilder/tree/v2.0.0-RC3"
             },
             "time": "2026-10-20T09:24:05+00:00"
-        },
-        {
-            "name": "contenir/extension-api",
-            "version": "v0.5.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/contenir/contenir-extension-api.git",
-                "reference": "14241e1dd02ee2d135c64b19e69a963085e702a0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/14241e1dd02ee2d135c64b19e69a963085e702a0",
-                "reference": "14241e1dd02ee2d135c64b19e69a963085e702a0",
-                "shasum": ""
-            },
-            "require": {
-                "ext-dom": "*",
-                "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
-                "psr/clock": "^1.0",
-                "psr/container": "^1.1 || ^2.0",
-                "psr/event-dispatcher": "^1.0",
-                "psr/http-factory": "^1.1",
-                "psr/http-message": "^1.1 || ^2.0",
-                "psr/log": "^2.0 || ^3.0"
-            },
-            "require-dev": {
-                "contenir/contenir-qa-tools": "0.1.x-dev",
-                "infection/infection": "^0.34.1",
-                "nyholm/psr7": "^1.8.2",
-                "phpunit/phpunit": "^11.5.42"
-            },
-            "suggest": {
-                "nyholm/psr7": "A PSR-7 and PSR-17 implementation for the in-memory host (Testing\\InMemoryHost), or use any other",
-                "phpunit/phpunit": "Runs the conformance suite (Conformance\\Abstract*ConformanceTestCase) against a host"
-            },
-            "bin": [
-                "bin/extension-boundary"
-            ],
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "0.1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Contenir\\Extension\\Api\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "The add-on API for Contenir CMS: the contracts add-ons build against, the event catalogue, a conformance suite for hosts and an in-memory host. Framework free: PSR-3, PSR-7, PSR-11, PSR-14 and PSR-20 only.",
-            "homepage": "https://contenir.com.au",
-            "keywords": [
-                "add-on",
-                "cms",
-                "contenir",
-                "extension",
-                "plugin"
-            ],
-            "support": {
-                "issues": "https://github.com/contenir/contenir-extension-api/issues",
-                "source": "https://github.com/contenir/contenir-extension-api"
-            },
-            "time": "2026-10-20T10:55:29+00:00"
         },
         {
             "name": "laminas/laminas-escaper",
@@ -5634,6 +5676,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "contenir/contenir-extension-api": 20,
         "contenir/contenir-qa-tools": 20
     },
     "prefer-stable": true,

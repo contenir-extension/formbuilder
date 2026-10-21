@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Contenir\Extension\Formbuilder\Tests\TestAsset\Operation;
 
+use Contenir\Extension\Api\Context\ExtensionContextInterface;
 use Contenir\Extension\Api\Operation\OperationContextInterface;
 use Contenir\Extension\Api\Operation\SectionViewInterface;
 use Contenir\Extension\Api\Testing\MemoryLogger;
@@ -33,6 +34,16 @@ final readonly class PressedOperation implements OperationContextInterface
     public function allPost(): array
     {
         return [];
+    }
+
+    /**
+     * A described screen's operation, not a settings section's: no add-on's
+     * settings come with it.
+     */
+    #[Override]
+    public function extension(): ?ExtensionContextInterface
+    {
+        return null;
     }
 
     #[Override]

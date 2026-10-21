@@ -1,0 +1,33 @@
+<?php
+/**
+ * One field of the fields editor as a tile: its drag handle, type, label and whether it is required
+ * or its label hidden, then Edit (in the field modal) and its menu.
+ *
+ * @var array{
+ *     form: \Contenir\FormBuilder\Definition\FormDefinition,
+ *     field: \Contenir\FormBuilder\Definition\FieldDefinition,
+ *     types: \Contenir\Extension\Formbuilder\Admin\Fields\FieldTypes,
+ * } $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+$field  = $values['field'];
+$query  = ['form' => (int) $values['form']->id, 'field' => (int) $field->id];
+$label  = $values['types']->label($field->type);
+$tokens = (string) json_encode([
+    'deleteUrl'  => $view->url('field-delete', $query),
+    'formTarget' => '[data-field-id="' . (int) $field->id . '"]',
+]);
+?>
+                                        <div class="builder__field" data-formbuilder-field data-field-id="<?= (int) $field->id ?>">
+                                            <span class="builder__handle" data-formbuilder-field-handle data-tooltip="Drag to reorder field" aria-hidden="true"><?= $view->icon('grip-vertical') ?></span>
+                                            <span class="builder__type" data-tooltip="<?= $view->escape($label) ?>"><?= $view->icon($values['types']->icon($field->type)) ?><span class="sr-only"><?= $view->escape($label) ?></span></span>
+                                            <span class="builder__label"><?= $view->escape($field->label ?: $field->name) ?></span>
+<?php if ($field->required): ?>
+                                            <span class="builder__required" data-tooltip="Required" aria-label="Required">*</span>
+<?php endif ?>
+<?php if (! $field->showLabel): ?>
+                                            <span class="builder__flag" data-tooltip="Label hidden" aria-label="Label hidden"><?= $view->icon('eye-off') ?></span>
+<?php endif ?>
+                                            <a class="btn btn--ghost btn--icon btn--sm" data-field-modal-trigger href="<?= $view->escape($view->url('field-edit', $query)) ?>" aria-label="Edit field" data-tooltip="Edit field"><?= $view->icon('pencil') ?></a>
+                                            <button class="btn btn--ghost btn--icon btn--sm" type="button" data-toggle="dropdown" data-menu-template="formbuilder-field-actions" data-menu-tokens="<?= $view->escape($tokens) ?>" aria-label="Field actions" data-tooltip="More"><?= $view->icon('dots-vertical') ?></button>
+                                        </div>

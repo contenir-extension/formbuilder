@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Contenir\Extension\Formbuilder;
 
 use Contenir\Extension\Api\ExtensionInterface;
+use Contenir\Extension\Api\Handler\HandlerInterface;
 use Contenir\Extension\Api\Handler\Privilege;
 use Contenir\Extension\Api\Registry;
 use Contenir\Extension\Formbuilder\Admin\AddFormHandler;
+use Contenir\Extension\Formbuilder\Admin\Fields;
 use Contenir\Extension\Formbuilder\Admin\FormHandler;
 use Contenir\Extension\Formbuilder\Admin\FormsHandler;
 use Contenir\FormBuilder\ConfigProvider;
@@ -32,6 +34,46 @@ final readonly class FormbuilderExtension implements ExtensionInterface
      */
     public const string AREA = 'forms';
 
+    /**
+     * The dashboard components the form screens use, by the elements they
+     * enhance, each a script built into the add-on's assets.
+     *
+     * @var array<string, string>
+     */
+    private const array COMPONENTS = [
+        '[data-formbuilder-rows]'   => 'js/FieldsEditor.js',
+        '[data-formbuilder-inline]' => 'js/FormbuilderInlineForm.js',
+        '[data-formbuilder-delete]' => 'js/FormbuilderDelete.js',
+        '[data-editable-legend]'    => 'js/EditableLegend.js',
+        '[data-field-modal]'        => 'js/FieldFormModal.js',
+        '[data-field-form]'         => 'js/FieldForm.js',
+        '[data-conditional-editor]' => 'js/ConditionalEditor.js',
+        '[data-identifier]'         => 'js/DataIdentifier.js',
+    ];
+
+    /**
+     * The fields editor's handlers, each needing Update in the Forms area, as
+     * the built-in module's fields screen did.
+     *
+     * @var array<string, class-string<HandlerInterface>>
+     */
+    private const array EDITOR = [
+        Fields\FieldsHandler::NAME        => Fields\FieldsHandler::class,
+        Fields\SectionInsertHandler::NAME => Fields\SectionInsertHandler::class,
+        Fields\SectionDeleteHandler::NAME => Fields\SectionDeleteHandler::class,
+        Fields\SectionLegendHandler::NAME => Fields\SectionLegendHandler::class,
+        Fields\GroupInsertHandler::NAME   => Fields\GroupInsertHandler::class,
+        Fields\GroupDeleteHandler::NAME   => Fields\GroupDeleteHandler::class,
+        Fields\GroupLegendHandler::NAME   => Fields\GroupLegendHandler::class,
+        Fields\RowInsertHandler::NAME     => Fields\RowInsertHandler::class,
+        Fields\RowDeleteHandler::NAME     => Fields\RowDeleteHandler::class,
+        Fields\RowReorderHandler::NAME    => Fields\RowReorderHandler::class,
+        Fields\FieldAddHandler::NAME      => Fields\FieldAddHandler::class,
+        Fields\FieldEditHandler::NAME     => Fields\FieldEditHandler::class,
+        Fields\FieldDeleteHandler::NAME   => Fields\FieldDeleteHandler::class,
+        Fields\FieldReorderHandler::NAME  => Fields\FieldReorderHandler::class,
+    ];
+
     #[Override]
     public function register(Registry $registry): void
     {
@@ -42,5 +84,14 @@ final readonly class FormbuilderExtension implements ExtensionInterface
         $registry->handler(FormsHandler::NAME, FormsHandler::class);
         $registry->handler(AddFormHandler::NAME, AddFormHandler::class, Privilege::Add);
         $registry->handler(FormHandler::NAME, FormHandler::class);
+
+        $registry->assets("{$root}/public");
+        foreach (self::COMPONENTS as $selector => $script) {
+            $registry->component($selector, $script);
+        }
+
+        foreach (self::EDITOR as $name => $class) {
+            $registry->handler($name, $class, Privilege::Update);
+        }
     }
 }

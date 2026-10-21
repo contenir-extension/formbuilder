@@ -1,0 +1,30 @@
+<?php
+/**
+ * One row of the fields editor: its drag handle, its fields side by side, the menu that adds a
+ * field of a chosen type, and its delete. The row's insert button belongs to its group. Drawn
+ * alone for a row just added.
+ *
+ * @var array{
+ *     form: \Contenir\FormBuilder\Definition\FormDefinition,
+ *     row: \Contenir\FormBuilder\Definition\RowDefinition,
+ *     types: \Contenir\Extension\Formbuilder\Admin\Fields\FieldTypes,
+ * } $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+$form   = $values['form'];
+$row    = $values['row'];
+$tokens = (string) json_encode(['formId' => (int) $form->id, 'rowId' => (int) $row->id]);
+?>
+                                <div class="builder__row" data-formbuilder-row data-row-id="<?= (int) $row->id ?>">
+                                    <span class="builder__handle" data-formbuilder-row-handle data-tooltip="Drag to reorder row" aria-hidden="true"><?= $view->icon('grip-vertical') ?></span>
+                                    <div class="builder__fields" data-formbuilder-fields data-row-id="<?= (int) $row->id ?>">
+<?php foreach ($row->fields as $field): ?>
+<?= $view->render('forms/fields/field', ['form' => $form, 'field' => $field, 'types' => $values['types']]) ?>
+<?php endforeach ?>
+                                    </div>
+                                    <button class="btn btn--ghost btn--icon btn--sm" type="button" data-formbuilder-append data-toggle="dropdown" data-menu-template="formbuilder-add-field" data-menu-tokens="<?= $view->escape($tokens) ?>" aria-label="Add field" data-tooltip="Add field"><?= $view->icon('plus') ?></button>
+                                    <form method="post" action="<?= $view->escape($view->url('row-delete', ['form' => (int) $form->id, 'row' => (int) $row->id])) ?>" class="builder__inline" data-formbuilder-inline data-formbuilder-inline-target='[data-formbuilder-row][data-row-id="<?= (int) $row->id ?>"]'>
+                                        <?= $view->token() ?>
+                                        <button type="submit" class="btn btn--ghost btn--icon btn--sm builder__delete" aria-label="Delete row" data-tooltip="Delete row"><?= $view->icon('trash') ?></button>
+                                    </form>
+                                </div>

@@ -1,0 +1,51 @@
+<?php
+/**
+ * A form's Fields tab: its title and tabs, then its sections as cards holding groups, rows and
+ * fields, arranged by dragging (FieldsEditor), added and removed in place (FormbuilderInlineForm,
+ * FormbuilderDelete) and edited in the field modal (FieldFormModal). The menus each part opens are
+ * templates the dashboard's Dropdown fills in; the scripts take the handler token from the hidden
+ * field at the end.
+ *
+ * @var array{
+ *     form: \Contenir\FormBuilder\Definition\FormDefinition,
+ *     types: \Contenir\Extension\Formbuilder\Admin\Fields\FieldTypes,
+ * } $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+$form       = $values['form'];
+$id         = (int) $form->id;
+$deleteMenu = static fn(string $label): string => '<div class="dropdown__menu dropdown__menu--sm" role="menu">'
+    . '<a class="dropdown__item dropdown__item--destructive" role="menuitem" data-formbuilder-delete data-formbuilder-target="__formTarget__" href="__deleteUrl__">'
+    . $view->icon('trash') . '<span class="dropdown__item-text">' . $label . '</span></a></div>';
+?>
+                <div class="pageheader pageheader--row">
+                    <div class="pageheader__content">
+                        <h1 class="pageheader__title"><?= $view->escape($form->title) ?></h1>
+                        <p class="pageheader__description">Drag rows and fields by their handles to arrange the form.</p>
+                    </div>
+                </div>
+<?= $view->tabs() ?>
+
+                <div class="builder">
+<?php foreach ($form->sections as $section): ?>
+<?= $view->render('forms/fields/section', ['form' => $form, 'section' => $section, 'types' => $values['types']]) ?>
+<?php endforeach ?>
+                    <form method="post" action="<?= $view->escape($view->url('section-insert', ['form' => $id, 'position' => count($form->sections)])) ?>" class="builder__insert" data-formbuilder-inline>
+                        <?= $view->token() ?>
+                        <button class="btn btn--outline btn--sm" type="submit"><?= $view->icon('plus') ?><span>Add section</span></button>
+                    </form>
+                </div>
+
+                <template id="formbuilder-add-field">
+                    <div class="dropdown__menu" role="menu">
+<?php foreach ($values['types']->all() as $type): ?>
+                        <a class="dropdown__item" role="menuitem" data-field-modal-trigger href="<?= $view->escape($view->url('field-add', ['form' => '__formId__', 'row' => '__rowId__', 'type' => $type->key()])) ?>"><?= $view->icon($type->icon()) ?><span class="dropdown__item-text"><?= $view->escape($values['types']->label($type->key())) ?></span></a>
+<?php endforeach ?>
+                    </div>
+                </template>
+                <template id="formbuilder-field-actions"><?= $deleteMenu('Delete') ?></template>
+                <template id="formbuilder-group-actions"><?= $deleteMenu('Delete group') ?></template>
+                <template id="formbuilder-section-actions"><?= $deleteMenu('Delete section') ?></template>
+
+                <p-modal id="field-modal" data-field-modal data-modal-size="lg" data-modal-backdrop-close="false"></p-modal>
+                <div data-formbuilder-token hidden><?= $view->token() ?></div>

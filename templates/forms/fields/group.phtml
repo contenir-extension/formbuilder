@@ -1,0 +1,39 @@
+<?php
+/**
+ * One group of the fields editor: its legend, renamed in place, and its menu, then its rows and the
+ * button that adds one. The fieldset carries `data-group-id` for its delete to find it; the rows'
+ * container carries its own for FieldsEditor's drag and drop, with the URLs that save the order.
+ * Drawn alone for a group just added.
+ *
+ * @var array{
+ *     form: \Contenir\FormBuilder\Definition\FormDefinition,
+ *     group: \Contenir\FormBuilder\Definition\GroupDefinition,
+ *     types: \Contenir\Extension\Formbuilder\Admin\Fields\FieldTypes,
+ * } $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+$form     = $values['form'];
+$group    = $values['group'];
+$query    = ['form' => (int) $form->id, 'group' => (int) $group->id];
+$tokens   = (string) json_encode([
+    'deleteUrl'  => $view->url('group-delete', $query),
+    'formTarget' => '.builder__group[data-group-id="' . (int) $group->id . '"]',
+]);
+$untitled = '' === (string) ($group->legend ?? '');
+?>
+                        <fieldset class="builder__group" data-group-id="<?= (int) $group->id ?>">
+                            <legend class="builder__legend">
+                                <span data-editable-legend data-update-url="<?= $view->escape($view->url('group-update', $query)) ?>"<?= $untitled ? ' data-empty="true"' : '' ?>><?= $untitled ? 'Untitled' : $view->escape((string) $group->legend) ?></span>
+                                <button type="button" class="btn btn--ghost btn--icon btn--sm" data-edit-legend aria-label="Rename group" data-tooltip="Rename group"><?= $view->icon('pencil') ?></button>
+                                <button type="button" class="btn btn--ghost btn--icon btn--sm" data-toggle="dropdown" data-menu-template="formbuilder-group-actions" data-menu-tokens="<?= $view->escape($tokens) ?>" aria-label="Group actions" data-tooltip="More"><?= $view->icon('dots-vertical') ?></button>
+                            </legend>
+                            <div class="builder__rows" data-formbuilder-rows data-group-id="<?= (int) $group->id ?>" data-row-reorder-url="<?= $view->escape($view->url('row-reorder', $query)) ?>" data-field-reorder-url="<?= $view->escape($view->url('field-reorder', ['form' => (int) $form->id])) ?>">
+<?php foreach ($group->rows as $row): ?>
+<?= $view->render('forms/fields/row', ['form' => $form, 'row' => $row, 'types' => $values['types']]) ?>
+<?php endforeach ?>
+                                <form method="post" action="<?= $view->escape($view->url('row-insert', $query + ['position' => count($group->rows)])) ?>" class="builder__insert" data-formbuilder-inline>
+                                    <?= $view->token() ?>
+                                    <button class="btn btn--ghost btn--sm" type="submit"><?= $view->icon('plus') ?><span>Add row</span></button>
+                                </form>
+                            </div>
+                        </fieldset>
