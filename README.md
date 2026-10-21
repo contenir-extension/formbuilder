@@ -57,7 +57,7 @@ adapter over the site's own connection.
 ## Requirements
 
 - PHP 8.3, 8.4 or 8.5
-- contenir/extension-api with tabs on template screens (contenir/contenir-extension-api#12 and #14, until they are tagged)
+- contenir/contenir-extension-api with tabs on template screens (contenir/contenir-extension-api#12 and #14, until they are tagged)
 - contenir/contenir-formbuilder 2.0 (one persistence layer over php-db)
 - Node 22, to build the scripts and styles
 
