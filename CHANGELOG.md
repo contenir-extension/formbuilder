@@ -4,7 +4,9 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
-## [Unreleased] - 2026-10-21
+## [0.1.0] - 2026-10-22
+
+The form builder as an add-on, in place of the CMS's built-in Forms module, road-tested on a copy of a live site.
 
 ### Added
 
@@ -13,7 +15,8 @@ adheres to [Semantic Versioning](https://semver.org/).
 - The Forms home, `/admin/extension/formbuilder/forms`: a card per form with its status, slug and layout, its title
   leading to its entries and its footer to each of its screens, and Add form offering the built-in templates (contact,
   newsletter, product enquiry, event registration, booking request and feedback) or a blank form.
-- Requires contenir/extension-api `^0.4 || ^0.5` (0.4 for tabs on described screens) and contenir/contenir-formbuilder `^2.0.0-RC3` (the first release with its single persistence layer) from Packagist.
+- Requires contenir/contenir-extension-api `^0.7` (tabs, mail, downloads, parent pages, private storage and site
+  settings) and contenir/contenir-formbuilder `^2.0.1` from Packagist.
 - The `form` and `form_*` tables through contenir/contenir-formbuilder's baseline migration, which leaves a site's
   existing tables as they are (P10).
 - A form's Fields tab, `/admin/extension/formbuilder/fields?form=<id>` (phase 9, step 2b): its sections, groups, rows

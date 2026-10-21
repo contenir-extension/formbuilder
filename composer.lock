@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c2f61f265701b625e9e5b2c25fc26f69",
+    "content-hash": "d22f388db5baf036ea5628c895a89e3a",
     "packages": [
         {
             "name": "contenir/contenir-extension-api",
-            "version": "dev-main",
+            "version": "v0.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/contenir/contenir-extension-api.git",
-                "reference": "cb32822d750a040c108a38993569d018135cafa0"
+                "reference": "7b65fbcf342aeff84ba9ee8eafdbd0305d833da4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/cb32822d750a040c108a38993569d018135cafa0",
-                "reference": "cb32822d750a040c108a38993569d018135cafa0",
+                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/7b65fbcf342aeff84ba9ee8eafdbd0305d833da4",
+                "reference": "7b65fbcf342aeff84ba9ee8eafdbd0305d833da4",
                 "shasum": ""
             },
             "require": {
@@ -45,14 +45,13 @@
                 "nyholm/psr7": "A PSR-7 and PSR-17 implementation for the in-memory host (Testing\\InMemoryHost), or use any other",
                 "phpunit/phpunit": "Runs the conformance suite (Conformance\\Abstract*ConformanceTestCase) against a host"
             },
-            "default-branch": true,
             "bin": [
                 "bin/extension-boundary"
             ],
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "0.6.x-dev"
+                    "dev-main": "0.7.x-dev"
                 }
             },
             "autoload": {
@@ -60,45 +59,7 @@
                     "Contenir\\Extension\\Api\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Contenir\\Extension\\Api\\Tests\\": "tests/",
-                    "Contenir\\Extension\\Example\\": "tests/Fixture/Example/src/",
-                    "Contenir\\Extension\\Example\\Tests\\": "tests/Fixture/Example/tests/"
-                }
-            },
-            "scripts": {
-                "check": [
-                    "@cs-check",
-                    "@static-analysis",
-                    "@test",
-                    "@test-integration",
-                    "@mutation-test"
-                ],
-                "cs-check": [
-                    "mago format --check",
-                    "mago lint"
-                ],
-                "cs-fix": [
-                    "mago format",
-                    "mago lint --fix"
-                ],
-                "static-analysis": [
-                    "mago analyze"
-                ],
-                "test": [
-                    "phpunit --colors=always --testsuite unit"
-                ],
-                "test-integration": [
-                    "phpunit --colors=always --testsuite integration"
-                ],
-                "test-coverage": [
-                    "phpunit --colors=always --coverage-clover clover.xml"
-                ],
-                "mutation-test": [
-                    "infection"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
@@ -115,20 +76,20 @@
                 "issues": "https://github.com/contenir/contenir-extension-api/issues",
                 "source": "https://github.com/contenir/contenir-extension-api"
             },
-            "time": "2026-10-21T02:50:51+00:00"
+            "time": "2026-10-21T12:57:35+00:00"
         },
         {
             "name": "contenir/contenir-formbuilder",
-            "version": "v2.0.0-RC3",
+            "version": "v2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/contenir/contenir-formbuilder.git",
-                "reference": "cb1efcd91c1d6d9365d5d7dbcff8ef611580264e"
+                "reference": "bae27ff8073d80f2dd91902ca4508d62daef67f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/contenir/contenir-formbuilder/zipball/cb1efcd91c1d6d9365d5d7dbcff8ef611580264e",
-                "reference": "cb1efcd91c1d6d9365d5d7dbcff8ef611580264e",
+                "url": "https://api.github.com/repos/contenir/contenir-formbuilder/zipball/bae27ff8073d80f2dd91902ca4508d62daef67f7",
+                "reference": "bae27ff8073d80f2dd91902ca4508d62daef67f7",
                 "shasum": ""
             },
             "require": {
@@ -185,9 +146,9 @@
             "description": "Framework-agnostic form-builder engine for Contenir CMS — runtime-editable form definitions, builder-form construction, server-side submission validation, and their storage with php-db on MySQL or SQLite.",
             "support": {
                 "issues": "https://github.com/contenir/contenir-formbuilder/issues",
-                "source": "https://github.com/contenir/contenir-formbuilder/tree/v2.0.0-RC3"
+                "source": "https://github.com/contenir/contenir-formbuilder/tree/v2.0.1"
             },
-            "time": "2026-10-20T09:24:05+00:00"
+            "time": "2026-10-21T13:19:35+00:00"
         },
         {
             "name": "contenir/contenir-storage",
@@ -5922,7 +5883,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "contenir/contenir-extension-api": 20,
         "contenir/contenir-qa-tools": 20
     },
     "prefer-stable": true,
