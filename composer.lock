@@ -193,12 +193,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/contenir/contenir-storage.git",
-                "reference": "39620230b12788682b1913d9a4bd34e8d20b475f"
+                "reference": "fb9c55699cd61e08ffa4166143060c68809fd21e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/contenir/contenir-storage/zipball/39620230b12788682b1913d9a4bd34e8d20b475f",
-                "reference": "39620230b12788682b1913d9a4bd34e8d20b475f",
+                "url": "https://api.github.com/repos/contenir/contenir-storage/zipball/fb9c55699cd61e08ffa4166143060c68809fd21e",
+                "reference": "fb9c55699cd61e08ffa4166143060c68809fd21e",
                 "shasum": ""
             },
             "require": {
@@ -242,7 +242,7 @@
                 "issues": "https://github.com/contenir/contenir-storage/issues",
                 "source": "https://github.com/contenir/contenir-storage/tree/main"
             },
-            "time": "2026-10-07T03:12:00+00:00"
+            "time": "2026-10-21T02:36:33+00:00"
         },
         {
             "name": "laminas/laminas-escaper",
