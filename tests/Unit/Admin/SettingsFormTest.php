@@ -128,7 +128,7 @@ final class SettingsFormTest extends TestCase
 
         static::assertSame(
             [
-                ['', '', null, 'active', 'single', 'Submit', 'left', null, 'redirect_referrer'],
+                ['', '', null, 'active', 'single', 'Submit', 'left', 365, 'redirect_referrer'],
                 ['Contact us', 'contact', $template?->description],
             ],
             [

@@ -8,8 +8,10 @@ use Contenir\Extension\Api\ExtensionInterface;
 use Contenir\Extension\Api\Handler\HandlerInterface;
 use Contenir\Extension\Api\Handler\Privilege;
 use Contenir\Extension\Api\Registry;
+use Contenir\Extension\Api\Schedule\Frequency;
 use Contenir\Extension\Formbuilder\Admin\AddFormHandler;
 use Contenir\Extension\Formbuilder\Admin\Entries;
+use Contenir\Extension\Formbuilder\Admin\EntriesRedactHandler;
 use Contenir\Extension\Formbuilder\Admin\Fields;
 use Contenir\Extension\Formbuilder\Admin\FormHandler;
 use Contenir\Extension\Formbuilder\Admin\FormsHandler;
@@ -17,6 +19,7 @@ use Contenir\Extension\Formbuilder\Admin\Notifications;
 use Contenir\Extension\Formbuilder\Admin\Preview\PreviewHandler;
 use Contenir\Extension\Formbuilder\Admin\UploadsMoveHandler;
 use Contenir\Extension\Formbuilder\Admin\Webhooks;
+use Contenir\Extension\Formbuilder\Retention\RedactExpiredTask;
 use Contenir\Extension\Formbuilder\Uploads\FileWebhook;
 use Contenir\FormBuilder\ConfigProvider;
 use Override;
@@ -141,6 +144,8 @@ final readonly class FormbuilderExtension implements ExtensionInterface
         $registry->handler(FormHandler::NAME, FormHandler::class);
         $registry->handler(PreviewHandler::NAME, PreviewHandler::class, Privilege::View);
         $registry->handler(UploadsMoveHandler::NAME, UploadsMoveHandler::class, Privilege::Update);
+        $registry->handler(EntriesRedactHandler::NAME, EntriesRedactHandler::class, Privilege::Delete);
+        $registry->schedule(RedactExpiredTask::NAME, RedactExpiredTask::class, Frequency::cron(RedactExpiredTask::AT));
         $registry->webhook(FileWebhook::NAME, FileWebhook::class);
 
         $registry->assets("{$root}/public");

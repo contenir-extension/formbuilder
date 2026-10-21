@@ -22,6 +22,12 @@ use function is_scalar;
 final class SettingsForm
 {
     /**
+     * How long a new form keeps its submissions' personal details: twelve
+     * months (FRM-3). A form made before this keeps what it had.
+     */
+    public const int RETENTION_DAYS = 365;
+
+    /**
      * @var array<string, string>
      */
     public const array STATUSES = [
@@ -66,7 +72,7 @@ final class SettingsForm
             'layout_mode'      => FormDefinition::LAYOUT_SINGLE,
             'submit_label'     => 'Submit',
             'submit_alignment' => 'left',
-            'retention_days'   => null,
+            'retention_days'   => self::RETENTION_DAYS,
             'success_mode'     => FormDefinition::SUCCESS_REDIRECT_REFERRER,
         ];
     }
