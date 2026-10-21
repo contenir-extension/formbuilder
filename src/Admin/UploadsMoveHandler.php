@@ -20,8 +20,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 
 /**
- * Move uploads to private storage, on the Forms home, which asks first:
- * moves every form's uploads from the site's public storage to the private
+ * Move uploads to private storage, under Tools in the Forms menu: a page
+ * saying what it does, whose button moves every form's uploads from the site's public storage to the private
  * storage the host lends, then goes back to the Forms home saying how many
  * it moved and how many it couldn't find (FRM-2).
  */
@@ -44,11 +44,17 @@ final class UploadsMoveHandler implements HandlerInterface
     #[Override]
     public function handle(ServerRequestInterface $request, ExtensionContextInterface $context): HandlerResult
     {
-        $result  = HandlerResult::redirect(Urls::handler(FormsHandler::NAME));
         $storage = UploadStorage::of($context);
         if ('POST' !== $request->getMethod()) {
-            return $result;
+            return HandlerResult::template(
+                'forms/uploads-move',
+                'Move uploads to private storage',
+                ['private' => null !== $storage],
+                parent: FormsHandler::parent(),
+            );
         }
+
+        $result = HandlerResult::redirect(Urls::handler(FormsHandler::NAME));
 
         if (null === $storage) {
             return $result->withMessage('danger', 'This site has no private storage, so uploads can\'t be moved.');

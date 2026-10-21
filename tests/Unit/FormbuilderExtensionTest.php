@@ -9,6 +9,7 @@ use Contenir\Extension\Api\Migration\Target;
 use Contenir\Extension\Api\Registration;
 use Contenir\Extension\Api\Registry;
 use Contenir\Extension\Formbuilder\Admin\FormsHandler;
+use Contenir\Extension\Formbuilder\Admin\FormsToolsMenu;
 use Contenir\Extension\Formbuilder\FormbuilderExtension;
 use Contenir\Extension\Formbuilder\Retention\RedactExpiredTask;
 use Contenir\FormBuilder\ConfigProvider;
@@ -24,6 +25,12 @@ use function is_file;
 #[Group('unit')]
 final class FormbuilderExtensionTest extends TestCase
 {
+    #[Test]
+    public function addsItsToolsToTheFormsMenu(): void
+    {
+        static::assertSame(FormsToolsMenu::class, $this->registration()->module->menu);
+    }
+
     #[Test]
     public function drawsTheFormsHomeFromItsHandler(): void
     {

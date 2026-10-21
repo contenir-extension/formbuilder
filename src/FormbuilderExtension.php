@@ -15,6 +15,7 @@ use Contenir\Extension\Formbuilder\Admin\EntriesRedactHandler;
 use Contenir\Extension\Formbuilder\Admin\Fields;
 use Contenir\Extension\Formbuilder\Admin\FormHandler;
 use Contenir\Extension\Formbuilder\Admin\FormsHandler;
+use Contenir\Extension\Formbuilder\Admin\FormsToolsMenu;
 use Contenir\Extension\Formbuilder\Admin\Notifications;
 use Contenir\Extension\Formbuilder\Admin\Preview\PreviewHandler;
 use Contenir\Extension\Formbuilder\Admin\UploadsMoveHandler;
@@ -136,6 +137,7 @@ final readonly class FormbuilderExtension implements ExtensionInterface
     {
         $root = dirname(__DIR__);
         $registry->module("{$root}/config/admin.xml");
+        $registry->menu(FormsToolsMenu::class);
         $registry->templates("{$root}/templates");
         $registry->migrations(ConfigProvider::schemaPath(), ConfigProvider::SCHEMA_NAMESPACE);
         $registry->migrations(__DIR__ . '/Schema', self::SCHEMA_NAMESPACE);

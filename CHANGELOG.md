@@ -63,6 +63,10 @@ adheres to [Semantic Versioning](https://semver.org/).
 - The token picker offers `{settings:<key>}` under Site settings, for any of the site's settings the host
   lends read-only.
 
+- Tools in the Forms menu (Simon, 21 Oct): Redact expired entries and Move uploads to private storage each open a
+  page saying what they do (how many entries a redaction would take now), with the button there, instead of sitting
+  in the Forms home's header. `FormsToolsMenu` declares the group.
+
 ### Changed
 
 - A webhook's method is POST or PUT, as its screen offers; anything else posted is read as POST.
