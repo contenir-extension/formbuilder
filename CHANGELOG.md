@@ -24,6 +24,12 @@ adheres to [Semantic Versioning](https://semver.org/).
   into `public/css/formbuilder.css`, which the dashboard loads on every page. Every post carries the host's handler
   token. `npm run build` rebuilds them, and CI checks the committed build matches its sources.
 
+- A form's Preview tab, `/admin/extension/formbuilder/preview?form=<id>`: the form as the site renders it, and a test
+  submission that runs its checks and sends its notifications with `Test: ` before their subjects, storing no entry
+  and calling no webhook. It needs View, as the built-in preview did. Its mail goes through the site's, which the
+  host lends as `Contenir\Extension\Api\Mail\MailerInterface` (contenir/contenir-extension-api#15); without it,
+  each notification is logged as not sent.
+
 ### Changed
 
 - A field added in the modal goes at its row's end, and an edited field keeps its place. The built-in module posted

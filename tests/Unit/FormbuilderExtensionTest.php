@@ -90,6 +90,12 @@ final class FormbuilderExtensionTest extends TestCase
     }
 
     #[Test]
+    public function letsARoleViewingFormsTestThemInThePreview(): void
+    {
+        static::assertSame(Privilege::View, $this->registration()->handlers['preview']?->privilege);
+    }
+
+    #[Test]
     public function shipsTheEditorsScriptsBuiltInItsAssets(): void
     {
         $module  = $this->registration()->module;
