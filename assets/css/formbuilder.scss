@@ -1,9 +1,10 @@
 /**
  * The form builder's fields editor on the dashboard: sections, groups, rows and field tiles with
  * their drag handles (FieldsEditor) and legends renamed in place (EditableLegend); a field's choices
- * and its validation and condition rules. Built to public/css/formbuilder.css; the dashboard's own
- * stylesheet provides the theme, so only its variables are used here: its mixins module would
- * repeat the theme's keyframes.
+ * and its validation and condition rules; and the Preview tab, which renders the form in the site's
+ * own markup, stepped (FormStepper) and with its conditional columns live (FormConditional), inside
+ * a card. Built to public/css/formbuilder.css; the dashboard's own stylesheet provides the theme, so
+ * only its variables are used here: its mixins module would repeat the theme's keyframes.
  */
 @use "@parallelogram-js/dashboard/scss/variables" as *;
 
@@ -239,4 +240,268 @@
         width: auto;
         min-width: 0;
     }
+}
+
+/**
+ * The Preview tab: the form as the site renders it, in the theme's controls. The theme's label,
+ * input, textarea and select rules live in the dashboard's own stylesheet, which @extend cannot
+ * reach from here, so their declarations are repeated on the preview's classes instead
+ */
+.form-preview {
+    .formbuilder__form {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-md;
+        max-width: 48rem;
+    }
+
+    .formbuilder__section-title,
+    .formbuilder__step-title {
+        margin: 0 0 $spacing-2xs;
+        font-size: $font-size-lg;
+        font-weight: $font-weight-semibold;
+    }
+
+    .formbuilder__section-description {
+        margin: 0 0 $spacing-sm;
+        font-size: $font-size-sm;
+        color: var(--fg-muted);
+    }
+
+    .form-preview__group,
+    .formbuilder__panel {
+        min-width: 0;
+        margin: 0 0 $spacing-sm;
+        padding: $spacing-xs $spacing-sm $spacing-sm;
+        border: 1px solid var(--border);
+        border-radius: $radius-md;
+    }
+
+    .formbuilder__legend {
+        padding: 0 $spacing-3xs;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-semibold;
+    }
+
+    .form-preview__group-body,
+    .formbuilder__panel-body {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-sm;
+    }
+
+    .form-preview__row,
+    .formbuilder__row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: $spacing-sm;
+    }
+
+    .form-preview__field,
+    .formbuilder__field {
+        display: flex;
+        flex: 1 1 12rem;
+        flex-direction: column;
+        gap: $spacing-3xs;
+        min-width: 0;
+    }
+
+    /**
+     * The theme's .form__label
+     */
+    .formbuilder__label {
+        display: flex;
+        align-items: center;
+        gap: $spacing-3xs;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-medium;
+        color: var(--fg);
+
+        &--required::after {
+            content: " *";
+            color: var(--destructive);
+        }
+    }
+
+    /**
+     * The theme's .input, which its .textarea and .select build on
+     */
+    input.formbuilder__control:not([type="checkbox"], [type="radio"]),
+    textarea.formbuilder__control,
+    select.formbuilder__control {
+        display: flex;
+        width: 100%;
+        height: $input-height-md;
+        padding: 0 $spacing-xs;
+        font-size: $font-size-sm;
+        background-color: transparent;
+        border: var(--control-border-width) solid var(--input);
+        border-radius: $radius-md;
+        color: var(--fg);
+        transition: var(--transition-colors);
+
+        &::placeholder {
+            color: var(--input-placeholder);
+        }
+
+        &:focus {
+            outline: var(--framework-focus-width) solid var(--framework-focus-color);
+            outline-offset: var(--framework-focus-offset);
+            border-color: var(--ring);
+        }
+
+        &:disabled {
+            pointer-events: none;
+            opacity: 0.5;
+            background-color: var(--bg-muted);
+        }
+
+        &[readonly] {
+            background-color: var(--bg-muted);
+            cursor: default;
+        }
+
+        &[aria-invalid="true"],
+        &:user-invalid {
+            border-color: var(--destructive);
+
+            &:focus {
+                outline-color: var(--destructive);
+            }
+        }
+    }
+
+    /**
+     * The theme's .textarea
+     */
+    textarea.formbuilder__control {
+        height: auto;
+        min-height: 5rem;
+        padding: $spacing-xs;
+        resize: vertical;
+        line-height: $line-height-normal;
+    }
+
+    /**
+     * The theme's .select
+     */
+    select.formbuilder__control {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right $spacing-xs center;
+        padding-right: $spacing-2xl;
+        cursor: pointer;
+
+        &:disabled {
+            cursor: not-allowed;
+        }
+    }
+
+    .formbuilder__control--checkbox-list {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-3xs;
+    }
+
+    .formbuilder__description,
+    .formbuilder__panel-description {
+        font-size: $font-size-xs;
+        color: var(--fg-muted);
+    }
+
+    .formbuilder__errors {
+        font-size: $font-size-xs;
+        color: var(--destructive);
+    }
+
+    .formbuilder__content > :first-child {
+        margin-top: 0;
+    }
+
+    .formbuilder__content > :last-child {
+        margin-bottom: 0;
+    }
+
+    /**
+     * The theme's sr-only mixin
+     */
+    .formbuilder__honeypot {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .formbuilder__steps {
+        display: flex;
+        flex-wrap: wrap;
+        gap: $spacing-3xs;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .formbuilder__step-tab {
+        display: inline-flex;
+        align-items: center;
+        gap: $spacing-2xs;
+        padding: $spacing-2xs $spacing-xs;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-medium;
+        color: var(--fg-muted);
+        background: none;
+        border: 0;
+        border-radius: $radius-md;
+
+        &.is-active {
+            color: var(--fg);
+            background-color: var(--bg-muted);
+        }
+    }
+
+    .formbuilder__step-tab-index {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.25rem;
+        height: 1.25rem;
+        font-size: $font-size-xs;
+        border: 1px solid var(--border);
+        border-radius: $radius-full;
+    }
+
+    .formbuilder__step-nav,
+    .formbuilder__actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: $spacing-2xs;
+    }
+
+    .formbuilder__actions--right {
+        justify-content: flex-end;
+    }
+
+    .formbuilder__actions--full > .btn {
+        flex: 1 1 auto;
+    }
+}
+
+.form-preview__success {
+    margin-top: $spacing-sm;
+    padding: $spacing-sm;
+    border: 1px solid var(--border);
+    border-radius: $radius-md;
+}
+
+.form-preview__success-title {
+    margin: 0 0 $spacing-2xs;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
 }

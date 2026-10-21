@@ -27,7 +27,10 @@ trait FormbuilderHostTrait
         return $this->host->context(FormbuilderExtension::HANDLE);
     }
 
-    private function setUpHost(): void
+    /**
+     * @param array<string, object> $services What else the host offers the add-on, by name
+     */
+    private function setUpHost(array $services = []): void
     {
         $this->setUpDatabase();
         $http       = new Psr17Factory();
@@ -35,7 +38,7 @@ trait FormbuilderHostTrait
         $this->host->boot(
             [FormbuilderExtension::HANDLE => new FormbuilderExtension()],
             [FormbuilderExtension::HANDLE],
-            [SiteDatabase::SERVICE => $this->database],
+            [SiteDatabase::SERVICE => $this->database] + $services,
         );
     }
 }

@@ -34,6 +34,7 @@ data, it is a described screen, drawn like a settings screen. The few that can't
 | `forms` | the Forms home: a card per form with its status, slug and layout, and Add form | `templates/forms/index.phtml` |
 | `form-add`, `form` | Add form, and a form's Settings tab with Delete form | described screens |
 | `fields` | a form's Fields tab: its sections, groups, rows and fields, arranged by dragging | `templates/forms/fields.phtml` |
+| `preview` | a form's Preview tab: the form as the site renders it, and a test submission | `templates/forms/preview.phtml` |
 | `field-add`, `field-edit` | a field's settings, in the fields editor's modal, or on a page without scripts | `templates/forms/fields/modal.phtml`, `templates/forms/field.phtml` |
 
 The fields editor's other handlers (`section-insert`, `group-delete`, `row-reorder` and the like) answer its scripts

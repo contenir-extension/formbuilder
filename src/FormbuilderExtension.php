@@ -12,6 +12,7 @@ use Contenir\Extension\Formbuilder\Admin\AddFormHandler;
 use Contenir\Extension\Formbuilder\Admin\Fields;
 use Contenir\Extension\Formbuilder\Admin\FormHandler;
 use Contenir\Extension\Formbuilder\Admin\FormsHandler;
+use Contenir\Extension\Formbuilder\Admin\Preview\PreviewHandler;
 use Contenir\FormBuilder\ConfigProvider;
 use Override;
 
@@ -49,6 +50,8 @@ final readonly class FormbuilderExtension implements ExtensionInterface
         '[data-field-form]'         => 'js/FieldForm.js',
         '[data-conditional-editor]' => 'js/ConditionalEditor.js',
         '[data-identifier]'         => 'js/DataIdentifier.js',
+        '[data-form-stepper]'       => 'js/FormStepper.js',
+        '[data-form-conditional]'   => 'js/FormConditional.js',
     ];
 
     /**
@@ -84,6 +87,7 @@ final readonly class FormbuilderExtension implements ExtensionInterface
         $registry->handler(FormsHandler::NAME, FormsHandler::class);
         $registry->handler(AddFormHandler::NAME, AddFormHandler::class, Privilege::Add);
         $registry->handler(FormHandler::NAME, FormHandler::class);
+        $registry->handler(PreviewHandler::NAME, PreviewHandler::class, Privilege::View);
 
         $registry->assets("{$root}/public");
         foreach (self::COMPONENTS as $selector => $script) {

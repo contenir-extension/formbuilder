@@ -6,6 +6,7 @@ namespace Contenir\Extension\Formbuilder\Tests\Integration\Contract;
 
 use Contenir\Extension\Formbuilder\Admin\Fields\FieldEditHandler;
 use Contenir\Extension\Formbuilder\Admin\Fields\FieldsHandler;
+use Contenir\Extension\Formbuilder\Admin\Preview\PreviewHandler;
 use Contenir\Extension\Formbuilder\Tests\Trait\FieldsEditorTrait;
 use DOMDocument;
 use DOMXPath;
@@ -20,6 +21,7 @@ use function file_get_contents;
 use function file_put_contents;
 use function getenv;
 use function libxml_use_internal_errors;
+use function preg_replace;
 use function sprintf;
 
 use const LIBXML_HTML_NODEFDTD;
@@ -49,6 +51,12 @@ final class ComponentFixtureTest extends TestCase
                 FieldsHandler::class,
                 ['form' => 501],
                 '//div[@class="builder"]',
+            ],
+            'the stepper, in the preview of a stepped form'                => [
+                'form-stepper-preview',
+                PreviewHandler::class,
+                ['form' => 501],
+                '//form[@data-form-stepper]',
             ],
             'the conditional editor, in a field whose form has others'     => [
                 'conditional-editor-field',
@@ -92,7 +100,8 @@ final class ComponentFixtureTest extends TestCase
     }
 
     /**
-     * The first element the path finds, as its markup.
+     * The first element the path finds, as its markup, with a form's
+     * anti-forgery token, which changes on every draw, made a fixed value.
      */
     private function element(string $html, string $path): string
     {
@@ -106,7 +115,9 @@ final class ComponentFixtureTest extends TestCase
         $node = (new DOMXPath($document))->query($path)
             ?->item(0);
 
-        return null === $node ? '' : (string) $document->saveHTML($node);
+        $markup = null === $node ? '' : (string) $document->saveHTML($node);
+
+        return (string) preg_replace('/(name="_csrf" value=")[^"]*"/', replacement: '$1token"', subject: $markup);
     }
 
     /**

@@ -90,6 +90,12 @@ final class FormbuilderExtensionTest extends TestCase
     }
 
     #[Test]
+    public function letsARoleViewingFormsTestThemInThePreview(): void
+    {
+        static::assertSame(Privilege::View, $this->registration()->handlers['preview']?->privilege);
+    }
+
+    #[Test]
     public function shipsTheEditorsScriptsBuiltInItsAssets(): void
     {
         $module  = $this->registration()->module;
@@ -103,7 +109,7 @@ final class FormbuilderExtensionTest extends TestCase
         }
 
         static::assertSame(
-            [dirname(__DIR__, levels: 2) . '/public', 8, [], true],
+            [dirname(__DIR__, levels: 2) . '/public', 10, [], true],
             [
                 $module?->assets,
                 count($module->components ?? []),

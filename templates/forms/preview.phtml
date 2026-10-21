@@ -1,0 +1,67 @@
+<?php
+/**
+ * A form's Preview tab: its title and tabs, a note that the preview runs in test mode, then the
+ * form as the site renders it, or after a valid test submission, what the live form would do next.
+ * The form posts back here, so the handler token goes in straight after its opening tag: the
+ * renderer draws the whole form, and the token's field is the host's.
+ *
+ * @var array{
+ *     form: \Contenir\FormBuilder\Definition\FormDefinition,
+ *     markup: string,
+ *     success: \Contenir\Extension\Formbuilder\Admin\Preview\PreviewSuccess|null,
+ * } $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+$form    = $values['form'];
+$success = $values['success'];
+?>
+                <div class="pageheader pageheader--row">
+                    <div class="pageheader__content">
+                        <h1 class="pageheader__title"><?= $view->escape($form->title) ?></h1>
+                    </div>
+                </div>
+<?= $view->tabs() ?>
+
+                <div class="alert alert--info mb--md" role="status">
+                    <span class="alert__icon"><?= $view->icon('info-circle') ?></span>
+                    <div class="alert__content">
+                        <p class="alert__title">Test mode</p>
+                        <p class="alert__description">Entries are not stored, and notifications are sent with a <code>Test:</code> subject prefix.</p>
+                    </div>
+                </div>
+
+                <div class="card form-preview">
+                    <div class="card__content card__content--pt">
+<?php if (null !== $success): ?>
+                        <div class="alert alert--success" role="status">
+                            <span class="alert__icon"><?= $view->icon('circle-check') ?></span>
+                            <div class="alert__content">
+                                <p class="alert__title">Submission valid</p>
+<?php if (\Contenir\FormBuilder\Definition\FormDefinition::SUCCESS_REDIRECT_URL === $success->mode && null !== $success->redirectUrl): ?>
+                                <p class="alert__description">The live form would redirect to <code><?= $view->escape($success->redirectUrl) ?></code>.</p>
+<?php elseif (\Contenir\FormBuilder\Definition\FormDefinition::SUCCESS_INLINE_MESSAGE === $success->mode): ?>
+                                <p class="alert__description">The live form would show its confirmation in place of the form:</p>
+<?php else: ?>
+                                <p class="alert__description">The live form would reload the page that hosted it.</p>
+<?php endif ?>
+                                <p class="alert__description">Notifications were sent with <code>Test:</code> subjects. No entry was stored.</p>
+                            </div>
+                        </div>
+<?php if (\Contenir\FormBuilder\Definition\FormDefinition::SUCCESS_INLINE_MESSAGE === $success->mode): ?>
+                        <div class="form-preview__success">
+<?php if (null !== $success->title && '' !== $success->title): ?>
+                            <h2 class="form-preview__success-title"><?= $view->escape($success->title) ?></h2>
+<?php endif ?>
+<?php if (null !== $success->message && '' !== $success->message): ?>
+                            <div class="form-preview__success-message"><?= $success->message ?></div>
+<?php endif ?>
+                        </div>
+<?php endif ?>
+                        <div class="mt--md">
+                            <a class="btn btn--outline" href="<?= $view->escape($view->url('preview', ['form' => (int) $form->id])) ?>"><?= $view->icon('refresh') ?><span>Run another test</span></a>
+                        </div>
+<?php else: ?>
+                        <?= (string) preg_replace('/<form\b[^>]*>/', '$0' . str_replace(['\\', '$'], ['\\\\', '\\$'], $view->token()), $values['markup'], 1) ?>
+<?php endif ?>
+                    </div>
+                </div>

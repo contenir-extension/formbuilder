@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:contenir/contenir-extension-api.git",
-                "reference": "b90a9c949710a1d541d2395b43637f030b91e07c"
+                "reference": "cb32822d750a040c108a38993569d018135cafa0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/b90a9c949710a1d541d2395b43637f030b91e07c",
-                "reference": "b90a9c949710a1d541d2395b43637f030b91e07c",
+                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/cb32822d750a040c108a38993569d018135cafa0",
+                "reference": "cb32822d750a040c108a38993569d018135cafa0",
                 "shasum": ""
             },
             "require": {
@@ -35,11 +35,13 @@
             },
             "require-dev": {
                 "contenir/contenir-qa-tools": "0.1.x-dev",
+                "contenir/contenir-storage": "^2.2",
                 "infection/infection": "^0.34.1",
                 "nyholm/psr7": "^1.8.2",
                 "phpunit/phpunit": "^11.5.42"
             },
             "suggest": {
+                "contenir/contenir-storage": "Lets a test lend an add-on storage with the private profile (Testing\\MemoryStorage), as a host lends its own",
                 "nyholm/psr7": "A PSR-7 and PSR-17 implementation for the in-memory host (Testing\\InMemoryHost), or use any other",
                 "phpunit/phpunit": "Runs the conformance suite (Conformance\\Abstract*ConformanceTestCase) against a host"
             },
@@ -113,7 +115,7 @@
                 "issues": "https://github.com/contenir/contenir-extension-api/issues",
                 "source": "https://github.com/contenir/contenir-extension-api"
             },
-            "time": "2026-10-21T02:19:20+00:00"
+            "time": "2026-10-21T02:50:51+00:00"
         },
         {
             "name": "contenir/contenir-formbuilder",
