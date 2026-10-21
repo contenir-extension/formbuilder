@@ -4,11 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-<<<<<<< HEAD
-    "content-hash": "aa13ec12cf75312029953e6056709016",
-=======
     "content-hash": "21d2592fd3b44162fcab9149684a778e",
->>>>>>> feat/fields-editor
     "packages": [
         {
             "name": "contenir/contenir-formbuilder",
@@ -84,18 +80,6 @@
         },
         {
             "name": "contenir/extension-api",
-<<<<<<< HEAD
-            "version": "dev-feat/mailer",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:contenir/contenir-extension-api.git",
-                "reference": "f85e62e1e99ede1b201155024be53a4ab40aaee1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/f85e62e1e99ede1b201155024be53a4ab40aaee1",
-                "reference": "f85e62e1e99ede1b201155024be53a4ab40aaee1",
-=======
             "version": "dev-main",
             "source": {
                 "type": "git",
@@ -106,7 +90,6 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/080cca513844b6bfc49801259b55bf018256be5d",
                 "reference": "080cca513844b6bfc49801259b55bf018256be5d",
->>>>>>> feat/fields-editor
                 "shasum": ""
             },
             "require": {
@@ -199,11 +182,7 @@
                 "issues": "https://github.com/contenir/contenir-extension-api/issues",
                 "source": "https://github.com/contenir/contenir-extension-api"
             },
-<<<<<<< HEAD
-            "time": "2026-10-21T00:08:07+00:00"
-=======
             "time": "2026-10-21T00:00:32+00:00"
->>>>>>> feat/fields-editor
         },
         {
             "name": "laminas/laminas-escaper",
@@ -5691,18 +5670,7 @@
             "time": "2025-11-17T20:03:58+00:00"
         }
     ],
-<<<<<<< HEAD
-    "aliases": [
-        {
-            "package": "contenir/extension-api",
-            "version": "dev-feat/mailer",
-            "alias": "0.5.1",
-            "alias_normalized": "0.5.1.0"
-        }
-    ],
-=======
     "aliases": [],
->>>>>>> feat/fields-editor
     "minimum-stability": "dev",
     "stability-flags": {
         "contenir/extension-api": 20,
