@@ -1,0 +1,75 @@
+<?php
+/**
+ * A notification's details, new or saved: the page's title and the form's tabs, a saved one's
+ * Details and Layout pills, what stopped the last save, then its name and whether it sends, who it
+ * goes to, is from and replies to, and its subject in a card, the Save bar and the token picker's
+ * menu. The addresses and subject each offer the picker (TokenInsert).
+ *
+ * @var array{
+ *     form: \Contenir\FormBuilder\Definition\FormDefinition,
+ *     notification: ?int,
+ *     item: array{name: string, to_address: string, from_address: string, reply_to: string, subject: string, enabled: bool},
+ *     errors: array<string, string>,
+ *     tags: list<array{label: string, items: list<array{tag: string, description: string}>}>,
+ * } $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+$form         = $values['form'];
+$id           = (int) $form->id;
+$notification = $values['notification'];
+$item         = $values['item'];
+$errors       = $values['errors'];
+$adding       = null === $notification;
+$title        = $adding ? 'New notification' : ('' === $item['name'] ? 'Notification' : $item['name']);
+$action       = $adding ? $view->url('notification-add', ['form' => $id]) : $view->url('notification', ['form' => $id, 'notification' => $notification]);
+$field        = static fn(array $args): string => $view->render('forms/notifications/field', $args);
+$tags         = static fn(string $control, string $target): string => '<div class="form__group">' . $control
+    . '<button type="button" class="form__addon" data-toggle="dropdown" data-menu-template="token-picker-details" data-menu-tokens=\'{"target":"#' . $target . '"}\' aria-label="Insert a token" data-tooltip="Insert a token">'
+    . $view->icon('braces') . '</button></div>';
+$input        = static fn(string $id, string $name, string $value, string $extra = ''): string => '<input type="text" id="' . $id . '" name="' . $name . '" class="input" value="' . $view->escape($value) . '"' . $extra . '>';
+?>
+                <div class="pageheader pageheader--row">
+                    <div class="pageheader__content">
+                        <h1 class="pageheader__title"><?= $view->escape($title) ?></h1>
+                    </div>
+                </div>
+<?= $view->tabs() ?>
+<?php if (! $adding): ?>
+<?= $view->render('forms/notifications/pills', ['form' => $id, 'notification' => $notification, 'current' => 'notification']) ?>
+<?php endif ?>
+<?php if ([] !== $errors): ?>
+                <div class="alert alert--destructive mb--md" role="alert">
+                    <span class="alert__icon"><?= $view->icon('alert-triangle') ?></span>
+                    <div class="alert__content">
+                        <p class="alert__title">Check the highlighted fields</p>
+                    </div>
+                </div>
+<?php endif ?>
+
+                <form action="<?= $view->escape($action) ?>" method="post" class="form form--record">
+                    <?= $view->token() ?>
+                    <fieldset class="card form__card">
+                        <h2 class="card__header form__card-title"><?= $adding ? 'New notification' : 'Details' ?></h2>
+                        <div class="card__content form__card-body">
+                            <div class="form__row">
+                                <div class="form__col"><?= $field(['id' => 'ntf-name', 'label' => 'Name', 'control' => $input('ntf-name', 'name', $item['name'])]) ?></div>
+                                <div class="form__col form__field">
+                                    <span class="form__label">Status</span>
+                                    <input type="hidden" name="enabled" value="0">
+                                    <label class="switch"><input type="checkbox" id="ntf-enabled" name="enabled" value="1" class="switch__input"<?= $item['enabled'] ? ' checked' : '' ?>><span class="switch__label">Send when the form is submitted</span></label>
+                                </div>
+                            </div>
+                            <?= $field(['id' => 'ntf-to', 'label' => 'To address(es)', 'required' => true, 'error' => $errors['to_address'] ?? '', 'control' => $tags($input('ntf-to', 'to_address', $item['to_address'], ' placeholder="alice@example.com, {field:email}"'), 'ntf-to'), 'description' => 'Separate addresses with commas or semicolons. They may contain merge tags such as <code>{field:email}</code>.']) ?>
+                            <div class="form__row">
+                                <div class="form__col"><?= $field(['id' => 'ntf-from', 'label' => 'From address', 'control' => $input('ntf-from', 'from_address', $item['from_address'])]) ?></div>
+                                <div class="form__col"><?= $field(['id' => 'ntf-reply', 'label' => 'Reply-to address', 'control' => $tags($input('ntf-reply', 'reply_to', $item['reply_to'], ' placeholder="{field:email}"'), 'ntf-reply')]) ?></div>
+                            </div>
+                            <?= $field(['id' => 'ntf-subject', 'label' => 'Subject', 'required' => true, 'error' => $errors['subject'] ?? '', 'control' => $tags($input('ntf-subject', 'subject', $item['subject'], ' placeholder="New {form:title} submission"'), 'ntf-subject')]) ?>
+                        </div>
+                    </fieldset>
+                    <fieldset class="form__actions form__actions--bar">
+                        <a class="btn btn--outline" href="<?= $view->escape($view->url('notifications', ['form' => $id])) ?>"><?= $view->icon('x') ?><span>Cancel</span></a>
+                        <button type="submit" class="btn btn--primary"><?= $view->icon($adding ? 'plus' : 'check') ?><span><?= $adding ? 'Create notification' : 'Save' ?></span></button>
+                    </fieldset>
+                </form>
+<?= $view->render('forms/notifications/tag-picker', ['id' => 'details', 'tags' => $values['tags']]) ?>

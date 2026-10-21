@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Contenir\Extension\Formbuilder\Admin;
 
+use Contenir\Extension\Api\Handler\ParentPage;
 use Contenir\Extension\Api\Handler\Tab;
 
 /**
@@ -50,5 +51,15 @@ final class FormTabs
         }
 
         return $tabs;
+    }
+
+    /**
+     * The form as the parent page of one of its records, such as a
+     * notification, linking to the tab that lists them, so the breadcrumb
+     * reads Forms › the form › the record.
+     */
+    public static function parent(int $formId, string $formTitle, string $tab): ParentPage
+    {
+        return new ParentPage($formTitle, $tab, ['form' => $formId]);
     }
 }

@@ -1,0 +1,166 @@
+<?php
+/**
+ * One entry, under its form's tabs: its number with Back to entries, the status changes and
+ * Delete (which asks first), then when and from where it was submitted and its status, then the
+ * answers, a card per group of the form as it stands, and any values stored under fields the form
+ * no longer has. A choice shows its label, a checkbox Yes or No, a file, URL or email address a
+ * link, and each value of a list on its own line. A file downloads through entry-file, from
+ * private storage. Status changes post a hidden form to their handler
+ * (the dashboard's FormSubmit), carrying the handler token.
+ *
+ * @var array{
+ *     form: \Contenir\FormBuilder\Definition\FormDefinition,
+ *     entry: \Contenir\Extension\Formbuilder\Admin\Entries\EntryRow,
+ *     answers: \Contenir\Extension\Formbuilder\Admin\Entries\EntryAnswers,
+ *     statuses: array<string, array{string, string}>,
+ *     changes: array<string, array{string, string}>
+ * } $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+$form    = $values['form'];
+$entry   = $values['entry'];
+$answers = $values['answers'];
+$id      = (int) $form->id;
+$keys    = ['form' => $id, 'entry' => $entry->id];
+$title   = "Entry #{$entry->id}";
+$notSet  = '<span class="text--muted">Not set</span>';
+
+[$statusLabel, $tone] = $values['statuses'][$entry->status] ?? [ucfirst($entry->status), 'outline'];
+
+/**
+ * A stored value as a person reads it.
+ *
+ * @param string|list<string> $stored
+ */
+$shown = static function (string|array $stored, ?\Contenir\FormBuilder\Definition\FieldDefinition $field) use ($view, $notSet, $keys): string {
+    if ('' === $stored || [] === $stored) {
+        return $notSet;
+    }
+    if (null === $field) {
+        return is_array($stored) ? $view->escape(implode(', ', $stored)) : nl2br($view->escape($stored));
+    }
+
+    $choices = [];
+    foreach ((array) ($field->options['choices'] ?? []) as $choice) {
+        if (is_array($choice) && isset($choice['value'])) {
+            $choices[(string) $choice['value']] = (string) ($choice['label'] ?? $choice['value']);
+        }
+    }
+
+    if (is_array($stored)) {
+        return implode('<br>', array_map(static fn(string $value): string => $view->escape($choices[$value] ?? $value), $stored));
+    }
+
+    return match (true) {
+        'file' === $field->type     => '<a href="' . $view->escape($view->url('entry-file', $keys + ['field' => $field->name])) . '">' . $view->escape(basename($stored)) . '</a>',
+        'checkbox' === $field->type => '0' !== $stored ? 'Yes' : 'No',
+        in_array($field->type, ['select', 'radio'], true) && [] !== $choices => $view->escape($choices[$stored] ?? $stored),
+        'url' === $field->type      => '<a href="' . $view->escape($stored) . '" target="_blank" rel="noopener">' . $view->escape($stored) . '</a>',
+        'email' === $field->type    => '<a href="mailto:' . $view->escape($stored) . '">' . $view->escape($stored) . '</a>',
+        default                     => nl2br($view->escape($stored)),
+    };
+};
+?>
+                <div class="pageheader pageheader--row">
+                    <div class="pageheader__content">
+                        <h1 class="pageheader__title"><?= $view->escape($title) ?></h1>
+                    </div>
+                    <div class="pageheader__actions">
+                        <a class="btn btn--outline" href="<?= $view->escape($view->url('entries', ['form' => $id])) ?>"><?= $view->icon('arrow-back') ?><span>Back to entries</span></a>
+                        <form id="entry-status" method="post" action="" hidden><?= $view->token() ?></form>
+                        <div class="dropdown dropdown--right">
+                            <button type="button" class="btn btn--outline dropdown__trigger" aria-haspopup="menu" aria-expanded="false" data-toggle data-toggle-target="#entry-status-menu" data-toggle-capture="true"><?= $view->icon('adjustments-horizontal') ?><span>Status</span><?= $view->icon('chevron-down') ?></button>
+                            <div class="dropdown__menu dropdown__menu--sm" id="entry-status-menu" role="menu">
+<?php foreach ($values['changes'] as $status => [$label, $icon]): ?>
+<?php if ($status !== $entry->status): ?>
+                                <a class="dropdown__item" role="menuitem" href="<?= $view->escape($view->url('entry-status', $keys + ['status' => $status])) ?>" data-form-submit="entry-status"><?= $view->icon($icon) ?><span class="dropdown__item-text"><?= $view->escape($label) ?></span></a>
+<?php endif ?>
+<?php endforeach ?>
+                            </div>
+                        </div>
+                        <form method="post" action="<?= $view->escape($view->url('entry-delete', $keys)) ?>" data-confirm="<?= $view->escape("Delete {$title}? Its uploaded files are deleted too. This cannot be undone.") ?>">
+                            <?= $view->token() ?>
+                            <button type="submit" class="btn btn--destructive"><?= $view->icon('trash') ?><span>Delete</span></button>
+                        </form>
+                    </div>
+                </div>
+<?= $view->tabs() ?>
+
+                <section class="card mb--lg">
+                    <div class="card__header">
+                        <h2 class="card__title">Submission</h2>
+                    </div>
+                    <div class="card__content">
+                        <dl class="datalist datalist--grid">
+                            <div class="datalist__item">
+                                <dt class="datalist__label">Submitted</dt>
+                                <dd class="datalist__value"><time datetime="<?= $view->escape($entry->submittedAt->format(DATE_ATOM)) ?>"><?= $view->escape($entry->submittedAt->format('j M Y g:ia')) ?></time></dd>
+                            </div>
+                            <div class="datalist__item">
+                                <dt class="datalist__label">Status</dt>
+                                <dd class="datalist__value"><span class="badge badge--<?= $view->escape($tone) ?>"><?= $view->escape($statusLabel) ?></span></dd>
+                            </div>
+                            <div class="datalist__item">
+                                <dt class="datalist__label">IP</dt>
+                                <dd class="datalist__value"><?= '' !== $entry->ip ? '<code>' . $view->escape($entry->ip) . '</code>' : $notSet ?></dd>
+                            </div>
+                        </dl>
+                    </div>
+                </section>
+
+<?php foreach ($form->sections as $section): ?>
+<?php foreach ($section->groups as $index => $group): ?>
+<?php
+    $fields = [];
+    foreach ($group->rows as $row) {
+        foreach ($row->fields as $field) {
+            if (! in_array($field->type, ['hidden', 'content'], true)) {
+                $fields[] = $field;
+            }
+        }
+    }
+    if ([] === $fields) {
+        continue;
+    }
+    $heading     = (string) ($group->legend ?? '') ?: (string) ($section->legend ?? '') ?: 'Answers';
+    $description = (string) ($group->description ?? '') ?: (0 === $index ? (string) ($section->description ?? '') : '');
+?>
+                <section class="card mb--lg">
+                    <div class="card__header">
+                        <h2 class="card__title"><?= $view->escape($heading) ?></h2>
+<?php if ('' !== $description): ?>
+                        <p class="card__description"><?= $view->escape($description) ?></p>
+<?php endif ?>
+                    </div>
+                    <div class="card__content">
+                        <dl class="datalist datalist--grid">
+<?php foreach ($fields as $field): ?>
+                            <div class="datalist__item<?= 'textarea' === $field->type ? ' datalist__item--wide' : '' ?>">
+                                <dt class="datalist__label"><?= $view->escape((string) ($field->label ?: $field->name)) ?></dt>
+                                <dd class="datalist__value"><?= $shown($answers->byName[$field->name] ?? '', $field) ?></dd>
+                            </div>
+<?php endforeach ?>
+                        </dl>
+                    </div>
+                </section>
+<?php endforeach ?>
+<?php endforeach ?>
+
+<?php if ([] !== $answers->orphans): ?>
+                <section class="card mb--lg">
+                    <div class="card__header">
+                        <h2 class="card__title">Other submitted values</h2>
+                        <p class="card__description">Stored under field names that no longer exist on the form.</p>
+                    </div>
+                    <div class="card__content">
+                        <dl class="datalist datalist--grid">
+<?php foreach ($answers->orphans as $name => $stored): ?>
+                            <div class="datalist__item">
+                                <dt class="datalist__label"><?= $view->escape($name) ?></dt>
+                                <dd class="datalist__value"><?= $shown($stored, null) ?></dd>
+                            </div>
+<?php endforeach ?>
+                        </dl>
+                    </div>
+                </section>
+<?php endif ?>

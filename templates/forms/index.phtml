@@ -1,7 +1,7 @@
 <?php
 /**
- * The Forms area's home: the page header with Add form, which offers the templates to start from
- * where there are any, then a card per form with its status, slug and layout, its title leading to
+ * The Forms area's home: the page header with Move uploads to private storage, which asks first,
+ * and Add form, which offers the templates to start from where there are any, then a card per form with its status, slug and layout, its title leading to
  * its entries and its footer to each of its screens.
  *
  * @var array{
@@ -19,6 +19,10 @@ $addUrl  = $view->url('form-add');
                         <p class="pageheader__description">Build editable forms, capture entries and send notifications.</p>
                     </div>
                     <div class="pageheader__actions">
+                        <form method="post" action="<?= $view->escape($view->url('uploads-move')) ?>" data-confirm="Move every form's uploads from public storage to private? Links to them from before stop working; emails link them afresh.">
+                            <?= $view->token() ?>
+                            <button type="submit" class="btn btn--outline"><?= $view->icon('lock') ?><span>Move uploads to private storage</span></button>
+                        </form>
 <?php if ([] !== $values['templates']): ?>
                         <div class="dropdown dropdown--right">
                             <button type="button" class="btn btn--primary dropdown__trigger" aria-haspopup="menu" aria-expanded="false"

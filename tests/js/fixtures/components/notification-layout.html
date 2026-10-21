@@ -1,0 +1,17 @@
+<form class="card notification-layout" action="/admin/extension/formbuilder/notification-layout?form=501&amp;notification=951" method="post" data-notification-layout data-preview-url="/admin/extension/formbuilder/notification-preview?form=501&amp;notification=951">
+                    <input type="hidden" name="token" value="in-memory">                    <div class="card__header card__header--row">
+                        <p class="card__description">Edit the email’s HTML on the left; the right shows it as it will look, with recognised tokens highlighted.</p>
+                        <div class="cluster cluster--sm">
+                            <button type="button" class="btn btn--outline btn--sm" data-toggle="dropdown" data-menu-template="token-picker-layout" data-menu-tokens='{"target":"codemirror"}'><svg class="icon" data-icon="braces" aria-hidden="true"></svg><span>Insert token</span></button>
+                            <button type="submit" class="btn btn--primary btn--sm"><svg class="icon" data-icon="check" aria-hidden="true"></svg><span>Save</span></button>
+                        </div>
+                    </div>
+                    <div class="notification-layout__panes">
+                        <div class="notification-layout__editor">
+                            <textarea data-notification-layout-editor name="body_template" aria-label="Email HTML">&lt;p&gt;Hello {field:name}&lt;/p&gt;</textarea>
+                        </div>
+                        <div class="notification-layout__preview">
+                            <iframe data-notification-layout-preview title="Email preview"></iframe>
+                        </div>
+                    </div>
+                </form>

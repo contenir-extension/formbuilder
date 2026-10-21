@@ -14,6 +14,7 @@ permit = [
     'Contenir\Extension\Formbuilder\**',
     'Contenir\FormBuilder\**',
     'Contenir\FormBuilder\Schema\**',
+    'Contenir\Storage\**',
     'PhpDb\**',
     'CustomRule\PHPUnit\**',
 ]

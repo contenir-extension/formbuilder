@@ -1,0 +1,19 @@
+<?php
+/**
+ * One field in the record forms' markup: its label (marked when required), the control, then its
+ * description and any error, the control pointed at both.
+ *
+ * @var array{id: string, label: string, control: string, description?: string, error?: string, required?: bool} $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+$id          = $values['id'];
+$error       = $values['error'] ?? '';
+$description = $values['description'] ?? '';
+$describedBy = trim(('' !== $description ? "{$id}-desc " : '') . ('' !== $error ? "{$id}-error" : ''));
+$control     = str_replace(
+    " id=\"{$id}\"",
+    " id=\"{$id}\"" . ('' !== $describedBy ? " aria-describedby=\"{$describedBy}\"" : '') . ('' !== $error ? ' aria-invalid="true"' : ''),
+    $values['control'],
+);
+?>
+<div class="form__field<?= '' !== $error ? ' form__field--error' : '' ?>"><label for="<?= $id ?>" class="form__label"><?= $values['label'] ?><?php if (! empty($values['required'])): ?> <span class="form__required" aria-hidden="true">*</span><?php endif ?></label><?= $control ?><?php if ('' !== $description): ?><p class="form__description" id="<?= $id ?>-desc"><?= $description ?></p><?php endif ?><?php if ('' !== $error): ?><p class="form__error" id="<?= $id ?>-error" role="alert"><?= $view->escape($error) ?></p><?php endif ?></div>

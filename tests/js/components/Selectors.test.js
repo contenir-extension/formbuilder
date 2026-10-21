@@ -9,6 +9,8 @@ import FormbuilderDelete from '../../../assets/js/components/FormbuilderDelete.j
 import FormbuilderInlineForm from '../../../assets/js/components/FormbuilderInlineForm.js'
 import FormConditional from '../../../assets/js/components/FormConditional.js'
 import FormStepper from '../../../assets/js/components/FormStepper.js'
+import NotificationLayout from '../../../assets/js/components/NotificationLayout.js'
+import TokenInsert from '../../../assets/js/components/TokenInsert.js'
 
 /**
  * Each component's data attribute, which the host's registry mounts it on
@@ -27,6 +29,8 @@ describe('Component selectors', () => {
         ['DataIdentifier', DataIdentifier, 'data-identifier'],
         ['FormStepper', FormStepper, 'data-form-stepper'],
         ['FormConditional', FormConditional, 'data-form-conditional'],
+        ['NotificationLayout', NotificationLayout, 'data-notification-layout'],
+        ['TokenInsert', TokenInsert, 'data-token-insert'],
     ])('%s keeps its state under %s', (_name, Component, selector) => {
         const component = new Component({ eventBus: null, logger: null, router: null })
         const element = document.createElement('div')

@@ -31,9 +31,35 @@ adheres to [Semantic Versioning](https://semver.org/).
   each notification is logged as not sent. The preview's scripts (FormStepper for a stepped form, FormConditional for
   fields shown by condition) and its styles move into the add-on with it.
 
+- A form's Notifications tab: its notifications, each turned on or off, deleted, or opened on its Details (who it goes
+  to, is from and replies to, and its subject, with the token picker) and Layout (its email's HTML in CodeMirror beside
+  a live preview filled in with sample values). Each sub-tab saves without touching the other's settings.
+- A form's Integrations tab: its webhooks, each added and edited on a described screen and deleted from the list.
+- The scripts these use, NotificationLayout and TokenInsert, and their styles. CodeMirror comes with
+  NotificationLayout, which loads only on a notification's Layout.
+
+- A form's Entries tab (phase 9, step 2d): its entries newest first, fifty to a page, found by entry number or
+  address, status (with each status's count) and period, each with a menu to view it, move it to complete, spam or
+  archive, or delete it. An entry shows its answers a card per group of the form, and values stored under fields the
+  form no longer has. An entry held as spam and marked complete has its notifications and webhooks sent then, once.
+  Viewing needs View, a status Update and deleting Delete, as the built-in module's did.
+- Export CSV, without spam or including it, needing Export: streamed as it is read through the host's download
+  (contenir/contenir-extension-api#17), with no limit on rows, and a cell a spreadsheet would read as a formula
+  written so it can't run.
+
+- Private uploads (FRM-2): an entry's file downloads from the storage the host lends as contenir/contenir-storage's
+  `StorageManager`, from its `private` profile, which no URL reaches, or from the site's public storage until it is
+  moved. Notification emails link a file with the new `{file:<field>}` tag, offered in the tag picker: a link signed
+  with the add-on's own key (`ext_formbuilder_key`, made on first use) that `/api/extension/formbuilder/file` honours
+  for seven days. Move uploads to private storage, on the Forms home, needing Update, moves every form's uploads
+  there once, following a file private storage renamed. Deleting an entry deletes its files too.
+- Requires contenir/contenir-storage's main (`2.2.x-dev`), for `StorageInterface::read()`
+  (contenir/contenir-storage#12).
+
 ### Changed
 
+- A webhook's method is POST or PUT, as its screen offers; anything else posted is read as POST.
 - A field added in the modal goes at its row's end, and an edited field keeps its place. The built-in module posted
-  no sort, read it as 0, and so put both first in their row.
+  no sort, read it as 0, and so put both first in their row. Editing a webhook keeps its place too.
 - Requires contenir/contenir-extension-api (the API's name since v0.6.1) with tabs on template screens (contenir/contenir-extension-api#12 and #14), from its main
   until that is tagged.

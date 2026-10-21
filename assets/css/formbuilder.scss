@@ -3,8 +3,10 @@
  * their drag handles (FieldsEditor) and legends renamed in place (EditableLegend); a field's choices
  * and its validation and condition rules; and the Preview tab, which renders the form in the site's
  * own markup, stepped (FormStepper) and with its conditional columns live (FormConditional), inside
- * a card. Built to public/css/formbuilder.css; the dashboard's own stylesheet provides the theme, so
- * only its variables are used here: its mixins module would repeat the theme's keyframes.
+ * a card. Then a form's notifications: the Layout tab, its HTML editor (NotificationLayout) beside
+ * a live preview; the token picker, whose items insert merge tags (TokenInsert); and the webhooks list.
+ * Built to public/css/formbuilder.css; the dashboard's own stylesheet provides the theme, so only its
+ * variables are used here: its mixins module would repeat the theme's keyframes.
  */
 @use "@parallelogram-js/dashboard/scss/variables" as *;
 
@@ -504,4 +506,92 @@
     margin: 0 0 $spacing-2xs;
     font-size: $font-size-lg;
     font-weight: $font-weight-semibold;
+}
+
+/**
+ * A notification's Layout: the editor and the preview side by side, as tall as the screen allows,
+ * stacked on a narrow one. The textarea stays in the form, hidden, for a plain post; CodeMirror
+ * mounts in the host the script (NotificationLayout) adds beside it.
+ */
+.notification-layout {
+    overflow: hidden;
+}
+
+/**
+ * The theme's max-md mixin, written out as its media query (below the md breakpoint), since the
+ * mixins module is not used here.
+ */
+.notification-layout__panes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    height: max(28rem, calc(100dvh - 22rem));
+    border-top: 1px solid var(--border);
+
+    @media (max-width: #{$breakpoint-md - 1px}) {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: repeat(2, minmax(20rem, 1fr));
+        height: auto;
+    }
+}
+
+.notification-layout__editor,
+.notification-layout__preview {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.notification-layout__editor {
+    border-right: 1px solid var(--border);
+
+    > textarea {
+        display: none;
+    }
+}
+
+.notification-layout__codemirror {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+
+    .cm-editor {
+        flex: 1;
+        height: 100%;
+    }
+
+    .cm-scroller {
+        font-family: $font-mono;
+        font-size: $font-size-sm;
+        line-height: 1.5;
+    }
+}
+
+.notification-layout__preview {
+    background-color: #fff;
+
+    > iframe {
+        flex: 1;
+        width: 100%;
+        border: 0;
+    }
+}
+
+/** A webhook's URL breaks anywhere rather than pushing its row's buttons out of the table */
+.webhook__url {
+    word-break: break-all;
+}
+
+/** A delete that posts from a list's actions cell (a webhook's) sits in line with the cell's buttons */
+.table__actions > form {
+    display: inline-flex;
+    margin: 0 0 0 $spacing-3xs;
+}
+
+/** A token picker item (TokenInsert): the merge tag, then what it fills in */
+.token-picker__item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
 }

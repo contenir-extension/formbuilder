@@ -1,0 +1,83 @@
+<?php
+/**
+ * A form's Notifications tab: its title with Add notification, its tabs, then each notification with
+ * whom it goes to, its subject and whether it sends, and a menu to edit it, turn it on or off, or
+ * delete it. Turning on or off and deleting post the list's form to their handler (the dashboard's
+ * FormSubmit), carrying the handler token.
+ *
+ * @var array{form: \Contenir\FormBuilder\Definition\FormDefinition} $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+$form   = $values['form'];
+$id     = (int) $form->id;
+$addUrl = $view->url('notification-add', ['form' => $id]);
+?>
+                <div class="pageheader pageheader--row">
+                    <div class="pageheader__content">
+                        <h1 class="pageheader__title"><?= $view->escape($form->title) ?></h1>
+                    </div>
+                    <div class="pageheader__actions">
+                        <a class="btn btn--primary" href="<?= $view->escape($addUrl) ?>"><?= $view->icon('plus') ?><span>Add notification</span></a>
+                    </div>
+                </div>
+<?= $view->tabs() ?>
+
+                <div class="card">
+<?php if ([] === $form->notifications): ?>
+                    <div class="card__content card__content--pt">
+                        <div class="empty">
+                            <div class="empty__content">
+                                <h2 class="empty__title">No notifications</h2>
+                                <p class="empty__description">Add one to email someone when this form is submitted.</p>
+                            </div>
+                            <div class="empty__actions">
+                                <a class="btn btn--primary" href="<?= $view->escape($addUrl) ?>"><?= $view->icon('plus') ?><span>Add notification</span></a>
+                            </div>
+                        </div>
+                    </div>
+<?php else: ?>
+                    <form class="card__content card__content--flush" id="notification-actions" method="post" action="">
+                        <?= $view->token() ?>
+                        <div class="table__wrapper table__wrapper--borderless">
+                            <table class="table table--hoverable table--card">
+                                <thead class="table__header">
+                                    <tr class="table__row">
+                                        <th class="table__head">Name</th>
+                                        <th class="table__head">To</th>
+                                        <th class="table__head">Subject</th>
+                                        <th class="table__head">Status</th>
+                                        <th class="table__head table__actions"><span class="sr-only">Actions</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table__body">
+<?php foreach ($form->notifications as $notification): ?>
+<?php
+    $keys    = ['form' => $id, 'notification' => (int) $notification->id];
+    $editUrl = $view->url('notification', $keys);
+    $menuId  = 'notification-actions-' . (int) $notification->id;
+?>
+                                    <tr class="table__row" data-record="<?= (int) $notification->id ?>">
+                                        <td class="table__cell"><a class="text--medium" href="<?= $view->escape($editUrl) ?>"><?= $view->escape('' === $notification->name ? 'Untitled' : $notification->name) ?></a></td>
+                                        <td class="table__cell"><?= $view->escape($notification->toAddress) ?></td>
+                                        <td class="table__cell"><?= $view->escape($notification->subject) ?></td>
+                                        <td class="table__cell"><span class="badge badge--<?= $notification->enabled ? 'success-muted' : 'outline' ?>"><?= $notification->enabled ? 'Sending' : 'Off' ?></span></td>
+                                        <td class="table__cell table__actions">
+                                            <div class="dropdown dropdown--right">
+                                                <button type="button" class="btn btn--ghost btn--icon btn--sm dropdown__trigger" aria-haspopup="menu" aria-expanded="false" aria-label="Actions for <?= $view->escape($notification->name) ?>"
+                                                        data-toggle data-toggle-target="#<?= $menuId ?>" data-toggle-capture="true"><?= $view->icon('dots-vertical') ?></button>
+                                                <div class="dropdown__menu dropdown__menu--sm" id="<?= $menuId ?>" role="menu">
+                                                    <a class="dropdown__item" role="menuitem" href="<?= $view->escape($editUrl) ?>"><?= $view->icon('pencil') ?><span class="dropdown__item-text">Edit</span></a>
+                                                    <a class="dropdown__item" role="menuitem" href="<?= $view->escape($view->url('notification-toggle', $keys)) ?>" data-form-submit="notification-actions"><?= $view->icon($notification->enabled ? 'toggle-left' : 'toggle-right') ?><span class="dropdown__item-text"><?= $notification->enabled ? 'Turn off' : 'Turn on' ?></span></a>
+                                                    <div class="dropdown__divider" role="separator"></div>
+                                                    <a class="dropdown__item dropdown__item--destructive" role="menuitem" href="<?= $view->escape($view->url('notification-delete', $keys)) ?>" data-form-submit="notification-actions"><?= $view->icon('trash') ?><span class="dropdown__item-text">Delete</span></a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+<?php endforeach ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+<?php endif ?>
+                </div>

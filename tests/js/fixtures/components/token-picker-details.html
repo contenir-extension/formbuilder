@@ -1,0 +1,14 @@
+<div class="form__group"><input type="text" id="ntf-subject" name="subject" class="input" value="New submission" placeholder="New {form:title} submission"><button type="button" class="form__addon" data-toggle="dropdown" data-menu-template="token-picker-details" data-menu-tokens='{"target":"#ntf-subject"}' aria-label="Insert a token" data-tooltip="Insert a token"></button></div>
+<div class="dropdown__menu dropdown__menu--lg" role="menu">
+    <div class="dropdown__label">Form</div>
+    <a class="dropdown__item token-picker__item" role="menuitem" href="#" data-token-insert="{form:title}" data-token-target="#ntf-subject">
+        <code class="text--xs">{form:title}</code>
+        <span class="text--xs text--muted">The form&rsquo;s title</span>
+    </a>
+    <div class="dropdown__divider" role="separator"></div>
+    <div class="dropdown__label">Fields</div>
+    <a class="dropdown__item token-picker__item" role="menuitem" href="#" data-token-insert="{field:email}" data-token-target="#ntf-subject">
+        <code class="text--xs">{field:email}</code>
+        <span class="text--xs text--muted">Email</span>
+    </a>
+</div>

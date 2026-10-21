@@ -6,6 +6,7 @@ namespace Contenir\Extension\Formbuilder\Tests\Integration\Contract;
 
 use Contenir\Extension\Formbuilder\Admin\Fields\FieldEditHandler;
 use Contenir\Extension\Formbuilder\Admin\Fields\FieldsHandler;
+use Contenir\Extension\Formbuilder\Admin\Notifications\NotificationLayoutHandler;
 use Contenir\Extension\Formbuilder\Admin\Preview\PreviewHandler;
 use Contenir\Extension\Formbuilder\Tests\Trait\FieldsEditorTrait;
 use DOMDocument;
@@ -57,6 +58,12 @@ final class ComponentFixtureTest extends TestCase
                 PreviewHandler::class,
                 ['form' => 501],
                 '//form[@data-form-stepper]',
+            ],
+            'the notification layout, editor beside its preview'           => [
+                'notification-layout',
+                NotificationLayoutHandler::class,
+                ['form' => 501, 'notification' => 951],
+                '//form[@data-notification-layout]',
             ],
             'the conditional editor, in a field whose form has others'     => [
                 'conditional-editor-field',
@@ -158,6 +165,10 @@ final class ComponentFixtureTest extends TestCase
             701,
             1,
         ]);
+        $this->database->query(
+            'INSERT INTO form_notification (form_notification_id, form_id, name, to_address, subject, body_template) VALUES (?, ?, ?, ?, ?, ?)',
+            [951, 501, 'Team', 'team@example.com', 'New enquiry', '<p>Hello {field:name}</p>'],
+        );
         foreach ([
             [901, 801, 'text',     'name',      'Name',      0, 1],
             [902, 801, 'email',    'email',     'Email',     1, 0],

@@ -1,0 +1,159 @@
+<?php
+/**
+ * A form's Entries tab: its title with Export CSV (a menu of the entries without spam or including
+ * it), its tabs, then the toolbar's search by entry number or address, status (with each status's
+ * count) and period, then the entries newest first as a table, each with its status and a menu to
+ * view it, move it to another status or delete it, and the pages. The toolbar asks by GET, so its
+ * address can be shared. Status changes and Delete post the list's form to their handler (the
+ * dashboard's FormSubmit), carrying the handler token.
+ *
+ * @var array{
+ *     form: \Contenir\FormBuilder\Definition\FormDefinition,
+ *     filter: \Contenir\Extension\Formbuilder\Admin\Entries\EntryFilter,
+ *     counts: array<string, int>,
+ *     pages: \Contenir\Extension\Formbuilder\Admin\Entries\EntryPages,
+ *     statuses: array<string, array{string, string}>,
+ *     changes: array<string, array{string, string}>,
+ *     entries: list<\Contenir\Extension\Formbuilder\Admin\Entries\EntryRow>
+ * } $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+$form     = $values['form'];
+$filter   = $values['filter'];
+$counts   = $values['counts'];
+$pages    = $values['pages'];
+$id       = (int) $form->id;
+$pageUrl  = static fn(int $page): string => $view->url('entries', ['form' => $id] + $filter->query() + ['pg' => $page]);
+?>
+                <div class="pageheader pageheader--row">
+                    <div class="pageheader__content">
+                        <h1 class="pageheader__title"><?= $view->escape($form->title) ?></h1>
+                    </div>
+                    <div class="pageheader__actions">
+                        <div class="dropdown dropdown--right">
+                            <button type="button" class="btn btn--outline dropdown__trigger" aria-haspopup="menu" aria-expanded="false" data-toggle data-toggle-target="#entries-export" data-toggle-capture="true"><?= $view->icon('table-export') ?><span>Export CSV</span><?= $view->icon('chevron-down') ?></button>
+                            <div class="dropdown__menu" id="entries-export" role="menu">
+                                <a class="dropdown__item" role="menuitem" href="<?= $view->escape($view->url('entries-export', ['form' => $id])) ?>"><?= $view->icon('table-export') ?><span class="dropdown__item-text">Without spam</span></a>
+                                <a class="dropdown__item" role="menuitem" href="<?= $view->escape($view->url('entries-export', ['form' => $id, 'spam' => 1])) ?>"><?= $view->icon('alert-octagon') ?><span class="dropdown__item-text">Including spam</span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<?= $view->tabs() ?>
+
+                <div class="card">
+
+                    <div class="card__content card__content--pt">
+                        <div class="toolbar">
+                            <form class="cluster cluster--sm flex--1" method="get" action="<?= $view->escape($view->url('entries')) ?>">
+                                <input type="hidden" name="form" value="<?= $id ?>">
+                                <div class="toolbar__group">
+                                    <span class="toolbar__icon" aria-hidden="true"><?= $view->icon('search') ?></span>
+                                    <input type="search" name="q" value="<?= $view->escape($filter->search) ?>" class="toolbar__input" placeholder="Search by IP or #ID" aria-label="Search by IP or entry number">
+                                </div>
+                                <select name="status" class="select select--auto" aria-label="Status" data-autosubmit="1">
+                                    <option value="">All statuses (<?= (int) array_sum($counts) ?>)</option>
+<?php foreach ($values['statuses'] as $key => [$label]): ?>
+                                    <option value="<?= $view->escape($key) ?>"<?= $filter->status === $key ? ' selected' : '' ?>><?= $view->escape($label) ?> (<?= (int) ($counts[$key] ?? 0) ?>)</option>
+<?php endforeach ?>
+                                </select>
+                                <select name="since" class="select select--auto" aria-label="Period" data-autosubmit="1">
+<?php foreach (\Contenir\Extension\Formbuilder\Admin\Entries\EntryFilter::PERIODS as $key => [$label]): ?>
+                                    <option value="<?= $view->escape($key) ?>"<?= $filter->since === $key ? ' selected' : '' ?>><?= $view->escape($label) ?></option>
+<?php endforeach ?>
+                                </select>
+                                <button type="submit" class="sr-only">Search</button>
+                            </form>
+                        </div>
+                    </div>
+
+<?php if ([] === $values['entries']): ?>
+                    <div class="card__content">
+                        <div class="empty empty--sm">
+                            <div class="empty__content">
+                                <h2 class="empty__title">No entries</h2>
+                                <p class="empty__description">Nothing has been submitted that matches. Try other filters.</p>
+                            </div>
+                        </div>
+                    </div>
+<?php else: ?>
+                    <form class="card__content card__content--flush" id="entry-actions" method="post" action="">
+                        <?= $view->token() ?>
+                        <div class="table__wrapper table__wrapper--borderless">
+                            <table class="table table--hoverable table--card">
+                                <thead class="table__header">
+                                    <tr class="table__row">
+                                        <th class="table__head">Entry</th>
+                                        <th class="table__head">Submitted</th>
+                                        <th class="table__head">Status</th>
+                                        <th class="table__head">IP</th>
+                                        <th class="table__head table__actions"><span class="sr-only">Actions</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table__body">
+<?php foreach ($values['entries'] as $entry): ?>
+<?php
+    [$statusLabel, $tone] = $values['statuses'][$entry->status] ?? [ucfirst($entry->status), 'outline'];
+    $keys    = ['form' => $id, 'entry' => $entry->id];
+    $viewUrl = $view->url('entry', $keys);
+    $menuId  = "entry-actions-{$entry->id}";
+?>
+                                    <tr class="table__row" data-record="<?= $entry->id ?>">
+                                        <td class="table__cell"><a class="text--medium" href="<?= $view->escape($viewUrl) ?>">#<?= $entry->id ?></a></td>
+                                        <td class="table__cell text--muted"><time datetime="<?= $view->escape($entry->submittedAt->format(DATE_ATOM)) ?>"><?= $view->escape($entry->submittedAt->format('j M Y g:ia')) ?></time></td>
+                                        <td class="table__cell"><span class="badge badge--<?= $view->escape($tone) ?>"><?= $view->escape($statusLabel) ?></span></td>
+                                        <td class="table__cell"><?= $view->escape($entry->ip) ?></td>
+                                        <td class="table__cell table__actions">
+                                            <div class="dropdown dropdown--right">
+                                                <button type="button" class="btn btn--ghost btn--icon btn--sm dropdown__trigger" aria-haspopup="menu" aria-expanded="false" aria-label="Actions for entry #<?= $entry->id ?>"
+                                                        data-toggle data-toggle-target="#<?= $menuId ?>" data-toggle-capture="true"><?= $view->icon('dots-vertical') ?></button>
+                                                <div class="dropdown__menu dropdown__menu--sm" id="<?= $menuId ?>" role="menu">
+                                                    <a class="dropdown__item" role="menuitem" href="<?= $view->escape($viewUrl) ?>"><?= $view->icon('eye') ?><span class="dropdown__item-text">View</span></a>
+<?php foreach ($values['changes'] as $status => [$label, $icon]): ?>
+<?php if ($status !== $entry->status): ?>
+                                                    <a class="dropdown__item" role="menuitem" href="<?= $view->escape($view->url('entry-status', $keys + ['status' => $status])) ?>" data-form-submit="entry-actions"><?= $view->icon($icon) ?><span class="dropdown__item-text"><?= $view->escape($label) ?></span></a>
+<?php endif ?>
+<?php endforeach ?>
+                                                    <div class="dropdown__divider" role="separator"></div>
+                                                    <a class="dropdown__item dropdown__item--destructive" role="menuitem" href="<?= $view->escape($view->url('entry-delete', $keys)) ?>" data-form-submit="entry-actions"><?= $view->icon('trash') ?><span class="dropdown__item-text">Delete</span></a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+<?php endforeach ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+<?php endif ?>
+
+<?php if ($pages->count > 0): ?>
+                    <div class="card__footer card__footer--border">
+                        <div class="pagination__info">
+                            <div class="pagination__text">Showing <strong><?= $pages->from ?></strong> to <strong><?= $pages->to ?></strong> of <strong><?= $pages->count ?></strong></div>
+<?php if ($pages->pages > 1): ?>
+                            <nav class="pagination" aria-label="Pages">
+<?php if ($pages->page > 1): ?>
+                                <a class="pagination__prev" href="<?= $view->escape($pageUrl($pages->page - 1)) ?>" aria-label="Previous page"><?= $view->icon('chevron-left') ?></a>
+<?php endif ?>
+<?php if (null !== $pages->first): ?>
+                                <a class="pagination__item" href="<?= $view->escape($pageUrl($pages->first)) ?>"><?= $pages->first ?></a>
+                                <span class="pagination__ellipsis" aria-hidden="true">&hellip;</span>
+<?php endif ?>
+<?php foreach ($pages->range as $page): ?>
+                                <a class="pagination__item" href="<?= $view->escape($pageUrl($page)) ?>"<?= $page === $pages->page ? ' aria-current="page"' : '' ?>><?= $page ?></a>
+<?php endforeach ?>
+<?php if (null !== $pages->last): ?>
+                                <span class="pagination__ellipsis" aria-hidden="true">&hellip;</span>
+                                <a class="pagination__item" href="<?= $view->escape($pageUrl($pages->last)) ?>"><?= $pages->last ?></a>
+<?php endif ?>
+<?php if ($pages->page < $pages->pages): ?>
+                                <a class="pagination__next" href="<?= $view->escape($pageUrl($pages->page + 1)) ?>" aria-label="Next page"><?= $view->icon('chevron-right') ?></a>
+<?php endif ?>
+                            </nav>
+<?php endif ?>
+                        </div>
+                    </div>
+<?php endif ?>
+
+                </div>

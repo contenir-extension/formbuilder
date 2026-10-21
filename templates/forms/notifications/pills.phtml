@@ -1,0 +1,17 @@
+<?php
+/**
+ * A notification's Details and Layout, as pills under the form's tabs. Each saves without clearing
+ * the other's.
+ *
+ * @var array{form: int, notification: int, current: string} $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+$keys = ['form' => $values['form'], 'notification' => $values['notification']];
+?>
+                <nav class="tabs tabs--pills mb--md" aria-label="Notification">
+                    <div class="tabs__list">
+<?php foreach (['notification' => ['Details', 'list-details'], 'notification-layout' => ['Layout', 'layout']] as $handler => [$label, $icon]): ?>
+                        <a class="tabs__trigger<?= $handler === $values['current'] ? ' tabs__trigger--active' : '' ?>" href="<?= $view->escape($view->url($handler, $keys)) ?>"<?php if ($handler === $values['current']): ?> aria-current="page"<?php endif ?>><?= $view->icon($icon) ?><span><?= $label ?></span></a>
+<?php endforeach ?>
+                    </div>
+                </nav>

@@ -35,6 +35,9 @@ data, it is a described screen, drawn like a settings screen. The few that can't
 | `form-add`, `form` | Add form, and a form's Settings tab with Delete form | described screens |
 | `fields` | a form's Fields tab: its sections, groups, rows and fields, arranged by dragging | `templates/forms/fields.phtml` |
 | `preview` | a form's Preview tab: the form as the site renders it, and a test submission | `templates/forms/preview.phtml` |
+| `notifications`, `notification-add`, `notification`, `notification-layout` | a form's Notifications tab, and each notification's Details and Layout | `templates/forms/notification*.phtml` |
+| `webhooks` | a form's Integrations tab | `templates/forms/webhooks.phtml` |
+| `webhook-add`, `webhook` | a webhook's settings | described screens |
 | `field-add`, `field-edit` | a field's settings, in the fields editor's modal, or on a page without scripts | `templates/forms/fields/modal.phtml`, `templates/forms/field.phtml` |
 
 The fields editor's other handlers (`section-insert`, `group-delete`, `row-reorder` and the like) answer its scripts
