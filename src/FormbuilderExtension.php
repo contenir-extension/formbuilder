@@ -15,7 +15,9 @@ use Contenir\Extension\Formbuilder\Admin\FormHandler;
 use Contenir\Extension\Formbuilder\Admin\FormsHandler;
 use Contenir\Extension\Formbuilder\Admin\Notifications;
 use Contenir\Extension\Formbuilder\Admin\Preview\PreviewHandler;
+use Contenir\Extension\Formbuilder\Admin\UploadsMoveHandler;
 use Contenir\Extension\Formbuilder\Admin\Webhooks;
+use Contenir\Extension\Formbuilder\Uploads\FileWebhook;
 use Contenir\FormBuilder\ConfigProvider;
 use Override;
 
@@ -31,6 +33,11 @@ use function dirname;
 final readonly class FormbuilderExtension implements ExtensionInterface
 {
     public const string HANDLE = 'formbuilder';
+
+    /**
+     * The namespace of the add-on's own migrations, in src/Schema.
+     */
+    public const string SCHEMA_NAMESPACE = __NAMESPACE__ . '\\Schema';
 
     /**
      * The area its admin.xml declares, which guards its screens as the CMS's
@@ -72,6 +79,7 @@ final readonly class FormbuilderExtension implements ExtensionInterface
         Entries\EntryStatusHandler::NAME               => [Entries\EntryStatusHandler::class, Privilege::Update],
         Entries\EntryDeleteHandler::NAME               => [Entries\EntryDeleteHandler::class, Privilege::Delete],
         Entries\EntriesExportHandler::NAME             => [Entries\EntriesExportHandler::class, Privilege::Export],
+        Entries\EntryFileHandler::NAME                 => [Entries\EntryFileHandler::class, null],
         Notifications\NotificationsHandler::NAME       => [Notifications\NotificationsHandler::class, null],
         Notifications\NotificationAddHandler::NAME     => [Notifications\NotificationAddHandler::class, Privilege::Add],
         Notifications\NotificationHandler::NAME        => [Notifications\NotificationHandler::class, Privilege::Update],
@@ -127,10 +135,13 @@ final readonly class FormbuilderExtension implements ExtensionInterface
         $registry->module("{$root}/config/admin.xml");
         $registry->templates("{$root}/templates");
         $registry->migrations(ConfigProvider::schemaPath(), ConfigProvider::SCHEMA_NAMESPACE);
+        $registry->migrations(__DIR__ . '/Schema', self::SCHEMA_NAMESPACE);
         $registry->handler(FormsHandler::NAME, FormsHandler::class);
         $registry->handler(AddFormHandler::NAME, AddFormHandler::class, Privilege::Add);
         $registry->handler(FormHandler::NAME, FormHandler::class);
         $registry->handler(PreviewHandler::NAME, PreviewHandler::class, Privilege::View);
+        $registry->handler(UploadsMoveHandler::NAME, UploadsMoveHandler::class, Privilege::Update);
+        $registry->webhook(FileWebhook::NAME, FileWebhook::class);
 
         $registry->assets("{$root}/public");
         foreach (self::COMPONENTS as $selector => $script) {

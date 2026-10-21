@@ -79,6 +79,17 @@ final class FormbuilderExtensionTest extends TestCase
     }
 
     #[Test]
+    public function keepsItsSigningKeyThroughItsOwnMigration(): void
+    {
+        $migrations = $this->registration()->migrations[1] ?? null;
+
+        static::assertSame(
+            [dirname(__DIR__, levels: 2) . '/src/Schema', FormbuilderExtension::SCHEMA_NAMESPACE, Target::Site],
+            [$migrations?->path, $migrations?->namespace, $migrations?->target],
+        );
+    }
+
+    #[Test]
     public function keepsTheFormTablesThroughTheLibrarysMigration(): void
     {
         $migrations = $this->registration()->migrations[0] ?? null;

@@ -57,13 +57,17 @@ final class EntryHandlerTest extends TestCase
                 '<a href="https://example.com/?a=1&amp;b=2" target="_blank" rel="noopener">',
             ],
             'an email address'           => ['<a href="mailto:grace@example.com">grace@example.com</a>'],
-            'a file by its name'         => ['<dd class="datalist__value">cv.pdf</dd>'],
+            'a file as its download'     => [
+                '<dd class="datalist__value"><a href="/admin/extension/formbuilder/entry-file?form=1&amp;entry=1&amp;field=cv">cv.pdf</a></dd>',
+            ],
             'a value the form lost'      => [
                 '<dt class="datalist__label">old_field</dt>'
                     . "\n"
                     . '                                <dd class="datalist__value">a, b</dd>',
             ],
-            'Delete, asking first'       => ['data-confirm="Delete Entry #1? This cannot be undone."'],
+            'Delete, asking first'       => [
+                'data-confirm="Delete Entry #1? Its uploaded files are deleted too. This cannot be undone."',
+            ],
             'a status change'            => [
                 'entry-status?form=1&amp;entry=1&amp;status=spam" data-form-submit="entry-status"',
             ],

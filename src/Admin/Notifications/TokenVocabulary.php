@@ -32,8 +32,23 @@ final class TokenVocabulary
 
         $fields[] = ['tag' => '{field:<name>}', 'description' => 'Any other field — replace <name>'];
 
+        $files = [];
+        foreach ($form->getAllFields() as $field) {
+            if ('file' !== $field->type) {
+                continue;
+            }
+
+            $files[] = [
+                'tag'         => "{file:{$field->name}}",
+                'description' => 'Link to '
+                    . (null === $field->label || '' === $field->label ? 'the upload' : $field->label)
+                    . ', for 7 days',
+            ];
+        }
+
         return [
             ['label' => 'Fields', 'items' => $fields],
+            ...([] === $files ? [] : [['label' => 'Files', 'items' => $files]]),
             [
                 'label' => 'Form',
                 'items' => [

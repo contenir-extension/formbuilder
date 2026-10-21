@@ -47,6 +47,15 @@ adheres to [Semantic Versioning](https://semver.org/).
   (contenir/contenir-extension-api#17), with no limit on rows, and a cell a spreadsheet would read as a formula
   written so it can't run.
 
+- Private uploads (FRM-2): an entry's file downloads from the storage the host lends as contenir/contenir-storage's
+  `StorageManager`, from its `private` profile, which no URL reaches, or from the site's public storage until it is
+  moved. Notification emails link a file with the new `{file:<field>}` tag, offered in the tag picker: a link signed
+  with the add-on's own key (`ext_formbuilder_key`, made on first use) that `/api/extension/formbuilder/file` honours
+  for seven days. Move uploads to private storage, on the Forms home, needing Update, moves every form's uploads
+  there once, following a file private storage renamed. Deleting an entry deletes its files too.
+- Requires contenir/contenir-storage's main (`2.2.x-dev`), for `StorageInterface::read()`
+  (contenir/contenir-storage#12).
+
 ### Changed
 
 - A webhook's method is POST or PUT, as its screen offers; anything else posted is read as POST.

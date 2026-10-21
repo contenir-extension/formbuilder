@@ -20,6 +20,34 @@ use function array_column;
 final class TokenVocabularyTest extends TestCase
 {
     #[Test]
+    public function offersALinkToEachUploadUnderFiles(): void
+    {
+        $tags = TokenVocabulary::of(new FormDefinition(
+            id: 1,
+            slug: 'contact',
+            title: 'Contact',
+            sections: [
+                new SectionDefinition(1, 'main', groups: [new GroupDefinition(1, rows: [new RowDefinition(1, fields: [
+                    new FieldDefinition(1, 'text', 'name', 'Your name'),
+                    new FieldDefinition(2, 'file', 'cv', 'Your CV'),
+                    new FieldDefinition(3, 'file', 'photo', ''),
+                ])])]),
+            ],
+        ));
+
+        static::assertSame(
+            [
+                ['Fields', 'Files', 'Form', 'Entry', 'Site'],
+                [
+                    ['tag' => '{file:cv}', 'description' => 'Link to Your CV, for 7 days'],
+                    ['tag' => '{file:photo}', 'description' => 'Link to the upload, for 7 days'],
+                ],
+            ],
+            [array_column($tags, 'label'), $tags[1]['items']],
+        );
+    }
+
+    #[Test]
     public function offersEachFieldButHiddenOnesThenTheFormEntryAndSite(): void
     {
         $tags = TokenVocabulary::of(new FormDefinition(

@@ -254,6 +254,27 @@ final class NotificationHandlersTest extends TestCase
     }
 
     #[Test]
+    public function previewsALinkToAnUploadAsASample(): void
+    {
+        $ids = $this->layOut();
+        $this->repository()->createField($ids['rows'][1], ['type' => 'file', 'name' => 'cv']);
+        $html = $this->drawn($this->answer(
+            NotificationPreviewHandler::class,
+            'POST',
+            ['form' => $ids['form']],
+            ['body_template' => '<p>{file:cv} {file:name}</p>'],
+        ));
+
+        static::assertSame(
+            [true, true],
+            [
+                str_contains($html, '">:///api/extension/formbuilder/file?field=cv&sample=1</span>'),
+                str_contains($html, ' {file:name}</p>'),
+            ],
+        );
+    }
+
+    #[Test]
     public function previewsTheBodyWithSamplesAsAPageOfItsOwn(): void
     {
         $ids    = $this->layOut();

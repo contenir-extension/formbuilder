@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Contenir\Extension\Formbuilder\Tests\Trait;
 
+use Contenir\Extension\Formbuilder\FormbuilderExtension;
 use Contenir\FormBuilder\ConfigProvider;
 use PDO;
 use PhpDb\Adapter\Adapter;
@@ -11,6 +12,8 @@ use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Migration\MigrationRunner;
 use PhpDb\Migration\MismatchStrategy;
 use PhpDb\Sqlite;
+
+use function dirname;
 
 /**
  * An in-memory SQLite site database with the form builder's tables,
@@ -42,14 +45,19 @@ trait FormsDatabaseTrait
         $driver         = new Sqlite\Pdo\Driver(connection: new Sqlite\Pdo\Connection($pdo));
         $this->database = new Adapter($driver, new Sqlite\AdapterPlatform($driver));
 
-        $runner = new MigrationRunner(
-            $this->database,
-            ConfigProvider::schemaPath(),
-            ConfigProvider::SCHEMA_NAMESPACE,
-            MismatchStrategy::Report,
-            new Sqlite\Metadata\Source($this->database),
-        );
-        $runner->ensureMigrationsTable();
-        $runner->runPending();
+        foreach ([
+            ConfigProvider::SCHEMA_NAMESPACE       => ConfigProvider::schemaPath(),
+            FormbuilderExtension::SCHEMA_NAMESPACE => dirname(__DIR__, levels: 2) . '/src/Schema',
+        ] as $namespace => $path) {
+            $runner = new MigrationRunner(
+                $this->database,
+                $path,
+                $namespace,
+                MismatchStrategy::Report,
+                new Sqlite\Metadata\Source($this->database),
+            );
+            $runner->ensureMigrationsTable();
+            $runner->runPending();
+        }
     }
 }

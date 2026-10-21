@@ -3,8 +3,9 @@
  * One entry, under its form's tabs: its number with Back to entries, the status changes and
  * Delete (which asks first), then when and from where it was submitted and its status, then the
  * answers, a card per group of the form as it stands, and any values stored under fields the form
- * no longer has. A choice shows its label, a checkbox Yes or No, a URL or email address a link,
- * and each value of a list on its own line. Status changes post a hidden form to their handler
+ * no longer has. A choice shows its label, a checkbox Yes or No, a file, URL or email address a
+ * link, and each value of a list on its own line. A file downloads through entry-file, from
+ * private storage. Status changes post a hidden form to their handler
  * (the dashboard's FormSubmit), carrying the handler token.
  *
  * @var array{
@@ -31,7 +32,7 @@ $notSet  = '<span class="text--muted">Not set</span>';
  *
  * @param string|list<string> $stored
  */
-$shown = static function (string|array $stored, ?\Contenir\FormBuilder\Definition\FieldDefinition $field) use ($view, $notSet): string {
+$shown = static function (string|array $stored, ?\Contenir\FormBuilder\Definition\FieldDefinition $field) use ($view, $notSet, $keys): string {
     if ('' === $stored || [] === $stored) {
         return $notSet;
     }
@@ -51,7 +52,7 @@ $shown = static function (string|array $stored, ?\Contenir\FormBuilder\Definitio
     }
 
     return match (true) {
-        'file' === $field->type     => $view->escape(basename($stored)),
+        'file' === $field->type     => '<a href="' . $view->escape($view->url('entry-file', $keys + ['field' => $field->name])) . '">' . $view->escape(basename($stored)) . '</a>',
         'checkbox' === $field->type => '0' !== $stored ? 'Yes' : 'No',
         in_array($field->type, ['select', 'radio'], true) && [] !== $choices => $view->escape($choices[$stored] ?? $stored),
         'url' === $field->type      => '<a href="' . $view->escape($stored) . '" target="_blank" rel="noopener">' . $view->escape($stored) . '</a>',
@@ -77,7 +78,7 @@ $shown = static function (string|array $stored, ?\Contenir\FormBuilder\Definitio
 <?php endforeach ?>
                             </div>
                         </div>
-                        <form method="post" action="<?= $view->escape($view->url('entry-delete', $keys)) ?>" data-confirm="<?= $view->escape("Delete {$title}? This cannot be undone.") ?>">
+                        <form method="post" action="<?= $view->escape($view->url('entry-delete', $keys)) ?>" data-confirm="<?= $view->escape("Delete {$title}? Its uploaded files are deleted too. This cannot be undone.") ?>">
                             <?= $view->token() ?>
                             <button type="submit" class="btn btn--destructive"><?= $view->icon('trash') ?><span>Delete</span></button>
                         </form>

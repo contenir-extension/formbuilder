@@ -7,6 +7,9 @@ namespace Contenir\Extension\Formbuilder\Admin\Notifications;
 use Contenir\Extension\Api\Handler\HandlerResult;
 use Contenir\Extension\Formbuilder\Admin\AbstractFormHandler;
 use Contenir\Extension\Formbuilder\Admin\FormRequest;
+use Contenir\Extension\Formbuilder\Admin\Urls;
+use Contenir\Extension\Formbuilder\Uploads\FileTokens;
+use Contenir\Extension\Formbuilder\Uploads\FileWebhook;
 use Contenir\FormBuilder\Service\TokenReplacer;
 use Override;
 
@@ -21,14 +24,16 @@ final class NotificationPreviewHandler extends AbstractFormHandler
     #[Override]
     protected function answer(FormRequest $form): HandlerResult
     {
-        $uri     = $form->request->getUri();
-        $preview = new NotificationPreview(
-            new TokenReplacer([
-                'admin_url' => '/admin',
-                'base_url'  => "{$uri->getScheme()}://{$uri->getAuthority()}",
-            ]),
-            $form->context->clock()->now(),
+        $uri    = $form->request->getUri();
+        $base   = "{$uri->getScheme()}://{$uri->getAuthority()}";
+        $tokens = new TokenReplacer(['admin_url' => '/admin', 'base_url' => $base]);
+        FileTokens::register(
+            $tokens,
+            $form->form,
+            static fn(string $field): string => $base
+            . Urls::webhook(FileWebhook::NAME, ['field' => $field, 'sample' => 1]),
         );
+        $preview = new NotificationPreview($tokens, $form->context->clock()->now());
 
         return HandlerResult::fragment('forms/notifications/preview', [
             'body' => $preview->body($form->text('body_template'), $form->form),

@@ -55,7 +55,13 @@ final class EntryStatusHandler extends AbstractFormHandler
 
         $sent = (new EntryStatusChanger(
             $form->forms->entries,
-            EntryNotifiers::of($form->request, $form->context),
+            EntryNotifiers::of(
+                $form->request,
+                $form->context,
+                $form->form,
+                $entry->id,
+                $form->forms->entries->fetchValues($entry->id),
+            ),
         ))->change($form->form, $entry->id, $status);
 
         return $result->withMessage(
