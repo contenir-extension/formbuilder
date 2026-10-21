@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Contenir\Extension\Formbuilder\Tests\Integration\Admin\Webhooks;
 
+use Contenir\Extension\Api\Handler\ParentPage;
 use Contenir\Extension\Api\Handler\ResultKind;
 use Contenir\Extension\Formbuilder\Admin\Webhooks\WebhookAddHandler;
 use Contenir\Extension\Formbuilder\Admin\Webhooks\WebhookDeleteHandler;
@@ -323,6 +324,28 @@ final class WebhookHandlersTest extends TestCase
         $result = $this->page(WebhookAddHandler::class, 'GET', ['form' => $ids['form']]);
 
         static::assertSame(['New webhook', []], [$result->screen?->title, $result->messages]);
+    }
+
+    #[Test]
+    public function showsAWebhooksScreensUnderItsForm(): void
+    {
+        $ids     = $this->layOut();
+        $webhook = $this->repository()->createWebhook($ids['form'], [
+            'name' => 'Zapier',
+            'url'  => 'https://z.example.com',
+        ]);
+        $parent = new ParentPage('Contact', 'webhooks', ['form' => $ids['form']]);
+
+        static::assertEquals(
+            [$parent, $parent],
+            [
+                $this->page(WebhookHandler::class, 'GET', [
+                    'form'    => $ids['form'],
+                    'webhook' => $webhook,
+                ])->screen?->parent,
+                $this->page(WebhookAddHandler::class, 'GET', ['form' => $ids['form']])->screen?->parent,
+            ],
+        );
     }
 
     #[Override]
