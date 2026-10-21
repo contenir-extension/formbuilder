@@ -10,6 +10,7 @@ use Contenir\Extension\Api\Registration;
 use Contenir\Extension\Api\Registry;
 use Contenir\Extension\Formbuilder\Admin\FormsHandler;
 use Contenir\Extension\Formbuilder\FormbuilderExtension;
+use Contenir\Extension\Formbuilder\Retention\RedactExpiredTask;
 use Contenir\FormBuilder\ConfigProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -104,6 +105,17 @@ final class FormbuilderExtensionTest extends TestCase
     public function letsARoleViewingFormsTestThemInThePreview(): void
     {
         static::assertSame(Privilege::View, $this->registration()->handlers['preview']?->privilege);
+    }
+
+    #[Test]
+    public function redactsExpiredEntriesEveryNight(): void
+    {
+        $schedule = $this->registration()->schedules[RedactExpiredTask::NAME] ?? null;
+
+        static::assertSame(
+            [RedactExpiredTask::class, '0 3 * * *', null],
+            [$schedule?->class, $schedule?->frequency->cron, $schedule?->frequency->minutes],
+        );
     }
 
     #[Test]

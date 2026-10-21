@@ -55,6 +55,11 @@ adheres to [Semantic Versioning](https://semver.org/).
   there once, following a file private storage renamed. Deleting an entry deletes its files too.
 - Requires contenir/contenir-storage's main (`2.2.x-dev`), for `StorageInterface::read()`
   (contenir/contenir-storage#12).
+- Retention (FRM-3): a new form keeps its submissions' personal details for 365 days, shown in its Retention field,
+  which an editor can clear to keep them for ever; forms made before keep what they had. Entries past their form's
+  period are redacted every night at 03:00 (their answers and uploaded files deleted, their address cleared), and
+  Redact expired entries on the Forms home, needing Delete, does it at once. An entry whose files can't be deleted is
+  kept and tried again next time.
 
 ### Changed
 
