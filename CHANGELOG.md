@@ -28,5 +28,5 @@ adheres to [Semantic Versioning](https://semver.org/).
 
 - A field added in the modal goes at its row's end, and an edited field keeps its place. The built-in module posted
   no sort, read it as 0, and so put both first in their row.
-- Requires contenir/extension-api with tabs on template screens (contenir/contenir-extension-api#12), from its branch
+- Requires contenir/extension-api with tabs on template screens (contenir/contenir-extension-api#12 and #14), from #12's branch
   until that is tagged.
