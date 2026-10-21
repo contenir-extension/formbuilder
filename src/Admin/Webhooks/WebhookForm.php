@@ -13,7 +13,8 @@ use Contenir\Extension\Formbuilder\Admin\FormTabs;
 
 /**
  * A webhook's settings as its Add and Edit screens describe them, in the
- * built-in module's words, under the form's tabs with Integrations current.
+ * built-in module's words, under the form's tabs with Integrations current
+ * and under the form in the breadcrumb.
  */
 final class WebhookForm
 {
@@ -23,13 +24,19 @@ final class WebhookForm
      * @param array<string, scalar|null> $values
      * @param list<string>               $problems
      */
-    public static function screen(string $title, int $form, array $values, array $problems = []): HandlerResult
-    {
+    public static function screen(
+        string $title,
+        int $form,
+        string $formTitle,
+        array $values,
+        array $problems = [],
+    ): HandlerResult {
         $result = HandlerResult::screen(new Screen(
             $title,
             'Each submission is sent to the URL as JSON.',
             self::of($values),
             tabs: FormTabs::of($form, FormTabs::INTEGRATIONS),
+            parent: FormTabs::parent($form, $formTitle, FormTabs::INTEGRATIONS),
         ));
         foreach ($problems as $problem) {
             $result = $result->withMessage('danger', $problem);

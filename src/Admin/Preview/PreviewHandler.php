@@ -10,6 +10,7 @@ use Contenir\Extension\Api\Handler\HandlerResult;
 use Contenir\Extension\Api\Mail\MailerInterface;
 use Contenir\Extension\Formbuilder\Admin\FormId;
 use Contenir\Extension\Formbuilder\Admin\FormTabs;
+use Contenir\Extension\Formbuilder\Admin\SiteTokens;
 use Contenir\Extension\Formbuilder\Persistence\Forms;
 use Contenir\FormBuilder\Definition\FormDefinition;
 use Contenir\FormBuilder\Delivery\ImmediateDelivery;
@@ -37,7 +38,8 @@ use function is_string;
  * notifications with "Test: " before their subjects, through the site's
  * mail when the host lends it; it stores no entry and calls no webhook, so
  * of where it came from only the address its notifications can show is
- * passed on. After a valid test the tab says what the live form would do
+ * passed on. Its notifications fill {settings:*} tags from the site's
+ * settings when the host lends them. After a valid test the tab says what the live form would do
  * next.
  */
 final class PreviewHandler implements HandlerInterface
@@ -95,16 +97,20 @@ final class PreviewHandler implements HandlerInterface
     /**
      * The tokens a test's notifications and success settings fill in, as
      * the built-in module's preview filled them: the admin's and the site's
-     * address.
+     * address, and the site's settings when the host lends them.
+     *
+     * @throws ContainerExceptionInterface When the host can't give its settings.
      */
-    private static function tokens(ServerRequestInterface $request): TokenReplacer
+    private static function tokens(ServerRequestInterface $request, ExtensionContextInterface $context): TokenReplacer
     {
-        $uri = $request->getUri();
-
-        return new TokenReplacer([
+        $uri    = $request->getUri();
+        $tokens = new TokenReplacer([
             'admin_url' => '/admin',
             'base_url'  => "{$uri->getScheme()}://{$uri->getAuthority()}",
         ]);
+        SiteTokens::register($tokens, $context);
+
+        return $tokens;
     }
 
     /**
@@ -129,7 +135,7 @@ final class PreviewHandler implements HandlerInterface
             return self::screen($form, $id, (new FormMarkup())->render($form, $builder->build($form), preview: true));
         }
 
-        $tokens  = self::tokens($request);
+        $tokens  = self::tokens($request, $context);
         $service = new FormSubmissionService($builder);
         $service->attach(new EmailNotificationRegistrar(
             $tokens,
