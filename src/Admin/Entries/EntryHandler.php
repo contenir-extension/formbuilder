@@ -17,7 +17,8 @@ use Override;
  * One entry, under its form's Entries tab: when and from where it was
  * submitted and its status, then its answers, a card per group of the form
  * as it stands, and any values stored under fields the form no longer has,
- * with Back to entries, the status changes and Delete. An entry that isn't
+ * with Back to entries, the status changes and Delete. The breadcrumb
+ * shows it under its form. An entry that isn't
  * the form's goes back to the Entries tab.
  */
 final class EntryHandler extends AbstractFormHandler
@@ -47,6 +48,7 @@ final class EntryHandler extends AbstractFormHandler
                 'changes'  => EntryStatus::CHANGES,
             ],
             FormTabs::of($form->id, FormTabs::ENTRIES),
+            FormTabs::parent($form->id, $form->form->title, FormTabs::ENTRIES),
         );
     }
 }

@@ -39,7 +39,7 @@ final class WebhookHandler extends AbstractFormHandler
         }
 
         if (! $form->posts()) {
-            return WebhookForm::screen($webhook->name, $form->id, WebhookInput::values($webhook));
+            return WebhookForm::screen($webhook->name, $form->id, $form->form->title, WebhookInput::values($webhook));
         }
 
         $input    = WebhookInput::fromBody($form->body());
@@ -48,6 +48,7 @@ final class WebhookHandler extends AbstractFormHandler
             return WebhookForm::screen(
                 $webhook->name,
                 $form->id,
+                $form->form->title,
                 $input->shown(),
                 $problems,
             );

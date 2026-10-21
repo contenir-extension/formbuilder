@@ -20,7 +20,7 @@ final class WebhookFormTest extends TestCase
     #[Test]
     public function describesAWebhooksSettingsInTheBuiltInModulesWords(): void
     {
-        $form = WebhookForm::screen('New webhook', 3, WebhookInput::values(null))->screen?->form;
+        $form = WebhookForm::screen('New webhook', 3, 'Contact', WebhookInput::values(null))->screen?->form;
 
         static::assertSame(
             [
@@ -65,7 +65,7 @@ final class WebhookFormTest extends TestCase
     #[Test]
     public function explainsEachSettingThatNeedsIt(): void
     {
-        $form = WebhookForm::screen('New webhook', 3, WebhookInput::values(null))->screen?->form;
+        $form = WebhookForm::screen('New webhook', 3, 'Contact', WebhookInput::values(null))->screen?->form;
 
         static::assertSame(
             [

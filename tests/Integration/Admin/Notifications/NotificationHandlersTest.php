@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Contenir\Extension\Formbuilder\Tests\Integration\Admin\Notifications;
 
+use Contenir\Extension\Api\Handler\ParentPage;
 use Contenir\Extension\Api\Handler\ResultKind;
+use Contenir\Extension\Api\Settings\SiteSettingsInterface;
+use Contenir\Extension\Api\Testing\MemorySiteSettings;
 use Contenir\Extension\Formbuilder\Admin\Notifications\NotificationAddHandler;
 use Contenir\Extension\Formbuilder\Admin\Notifications\NotificationDeleteHandler;
 use Contenir\Extension\Formbuilder\Admin\Notifications\NotificationHandler;
@@ -275,6 +278,23 @@ final class NotificationHandlersTest extends TestCase
     }
 
     #[Test]
+    public function previewsSiteSettingsTagsFromTheSitesSettings(): void
+    {
+        $this->setUpHost([
+            SiteSettingsInterface::class => new MemorySiteSettings(['contact' => ['telephone' => '01234 567890']]),
+        ]);
+        $ids  = $this->layOut();
+        $html = $this->drawn($this->answer(
+            NotificationPreviewHandler::class,
+            'POST',
+            ['form' => $ids['form']],
+            ['body_template' => '<p>Call {settings:contact.telephone}</p>'],
+        ));
+
+        static::assertStringContainsString('title="{settings:contact.telephone}">01234 567890</span>', $html);
+    }
+
+    #[Test]
     public function previewsTheBodyWithSamplesAsAPageOfItsOwn(): void
     {
         $ids    = $this->layOut();
@@ -427,6 +447,34 @@ final class NotificationHandlersTest extends TestCase
             [
                 $this->page(NotificationHandler::class, 'GET', $query)->url,
                 $this->page(NotificationLayoutHandler::class, 'GET', $query)->url,
+            ],
+        );
+    }
+
+    #[Test]
+    public function showsANotificationsPagesUnderItsForm(): void
+    {
+        $ids          = $this->layOut();
+        $notification = $this->repository()->createNotification($ids['form'], [
+            'name'       => 'Team',
+            'to_address' => 'a@example.com',
+            'subject'    => 'New enquiry',
+        ]);
+        $parent = new ParentPage('Contact', 'notifications', ['form' => $ids['form']]);
+
+        static::assertEquals(
+            [$parent, $parent],
+            [
+                $this->page(NotificationHandler::class, 'GET', [
+                    'form'         => $ids['form'],
+                    'notification' => $notification,
+                ])
+                    ->template?->parent,
+                $this->page(NotificationLayoutHandler::class, 'GET', [
+                    'form'         => $ids['form'],
+                    'notification' => $notification,
+                ])
+                    ->template?->parent,
             ],
         );
     }

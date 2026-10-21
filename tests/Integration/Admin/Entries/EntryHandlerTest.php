@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Contenir\Extension\Formbuilder\Tests\Integration\Admin\Entries;
 
+use Contenir\Extension\Api\Handler\ParentPage;
 use Contenir\Extension\Api\Handler\ResultKind;
 use Contenir\Extension\Formbuilder\Admin\Entries\EntryHandler;
 use Contenir\Extension\Formbuilder\Tests\Trait\EntriesTrait;
@@ -124,6 +125,17 @@ final class EntryHandlerTest extends TestCase
         static::assertSame(
             [ResultKind::Redirect, "/admin/extension/formbuilder/entries?form={$other}"],
             [$result->kind, $result->url],
+        );
+    }
+
+    #[Test]
+    public function showsTheEntryUnderItsForm(): void
+    {
+        $form = $this->form();
+
+        static::assertEquals(
+            new ParentPage('Contact', 'entries', ['form' => $form]),
+            $this->page(EntryHandler::class, 'GET', ['form' => $form, 'entry' => 1])->template?->parent,
         );
     }
 
