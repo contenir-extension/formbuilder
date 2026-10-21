@@ -53,7 +53,7 @@ adheres to [Semantic Versioning](https://semver.org/).
   with the add-on's own key (`ext_formbuilder_key`, made on first use) that `/api/extension/formbuilder/file` honours
   for seven days. Move uploads to private storage, on the Forms home, needing Update, moves every form's uploads
   there once, following a file private storage renamed. Deleting an entry deletes its files too.
-- Requires contenir/contenir-storage's main (`2.2.x-dev`), for `StorageInterface::read()`
+- Requires contenir/contenir-storage `^2.3`, for `StorageInterface::read()`
   (contenir/contenir-storage#12).
 - Retention (FRM-3): a new form keeps its submissions' personal details for 365 days, shown in its Retention field,
   which an editor can clear to keep them for ever; forms made before keep what they had. Entries past their form's
