@@ -9,6 +9,7 @@ use Contenir\Extension\Api\Handler\HandlerInterface;
 use Contenir\Extension\Api\Handler\Privilege;
 use Contenir\Extension\Api\Registry;
 use Contenir\Extension\Formbuilder\Admin\AddFormHandler;
+use Contenir\Extension\Formbuilder\Admin\Entries;
 use Contenir\Extension\Formbuilder\Admin\Fields;
 use Contenir\Extension\Formbuilder\Admin\FormHandler;
 use Contenir\Extension\Formbuilder\Admin\FormsHandler;
@@ -59,13 +60,18 @@ final readonly class FormbuilderExtension implements ExtensionInterface
     ];
 
     /**
-     * A form's notifications and webhooks screens, with the privilege each
-     * needs as the built-in module's did; null where reading needs View and
-     * posting Update.
+     * A form's entries, notifications and webhooks screens, with the
+     * privilege each needs as the built-in module's did; null where reading
+     * needs View and posting Update.
      *
      * @var array<string, array{class-string<HandlerInterface>, ?Privilege}>
      */
     private const array SCREENS = [
+        Entries\EntriesHandler::NAME                   => [Entries\EntriesHandler::class, null],
+        Entries\EntryHandler::NAME                     => [Entries\EntryHandler::class, null],
+        Entries\EntryStatusHandler::NAME               => [Entries\EntryStatusHandler::class, Privilege::Update],
+        Entries\EntryDeleteHandler::NAME               => [Entries\EntryDeleteHandler::class, Privilege::Delete],
+        Entries\EntriesExportHandler::NAME             => [Entries\EntriesExportHandler::class, Privilege::Export],
         Notifications\NotificationsHandler::NAME       => [Notifications\NotificationsHandler::class, null],
         Notifications\NotificationAddHandler::NAME     => [Notifications\NotificationAddHandler::class, Privilege::Add],
         Notifications\NotificationHandler::NAME        => [Notifications\NotificationHandler::class, Privilege::Update],

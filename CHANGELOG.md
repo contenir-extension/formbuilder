@@ -38,6 +38,15 @@ adheres to [Semantic Versioning](https://semver.org/).
 - The scripts these use, NotificationLayout and TokenInsert, and their styles. CodeMirror comes with
   NotificationLayout, which loads only on a notification's Layout.
 
+- A form's Entries tab (phase 9, step 2d): its entries newest first, fifty to a page, found by entry number or
+  address, status (with each status's count) and period, each with a menu to view it, move it to complete, spam or
+  archive, or delete it. An entry shows its answers a card per group of the form, and values stored under fields the
+  form no longer has. An entry held as spam and marked complete has its notifications and webhooks sent then, once.
+  Viewing needs View, a status Update and deleting Delete, as the built-in module's did.
+- Export CSV, without spam or including it, needing Export: streamed as it is read through the host's download
+  (contenir/contenir-extension-api#17), with no limit on rows, and a cell a spreadsheet would read as a formula
+  written so it can't run.
+
 ### Changed
 
 - A webhook's method is POST or PUT, as its screen offers; anything else posted is read as POST.
