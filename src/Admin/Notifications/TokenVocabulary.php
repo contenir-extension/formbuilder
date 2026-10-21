@@ -9,7 +9,8 @@ use Contenir\FormBuilder\Definition\FormDefinition;
 /**
  * The merge tags the token picker offers, grouped: each of the form's
  * fields but hidden ones, by name, and a placeholder for any other; the
- * form's, the entry's and the site's.
+ * form's, the entry's and the site's; and a placeholder for any of the
+ * site's settings, which the host lends read-only.
  */
 final class TokenVocabulary
 {
@@ -72,6 +73,15 @@ final class TokenVocabulary
                 'items' => [
                     ['tag' => '{site:admin_url}', 'description' => 'CMS admin URL'],
                     ['tag' => '{site:base_url}', 'description' => 'Site base URL'],
+                ],
+            ],
+            [
+                'label' => 'Site settings',
+                'items' => [
+                    [
+                        'tag'         => '{settings:<key>}',
+                        'description' => 'Any site setting — replace <key> with its dotted name',
+                    ],
                 ],
             ],
         ];

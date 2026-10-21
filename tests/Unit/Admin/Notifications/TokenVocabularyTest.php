@@ -37,7 +37,7 @@ final class TokenVocabularyTest extends TestCase
 
         static::assertSame(
             [
-                ['Fields', 'Files', 'Form', 'Entry', 'Site'],
+                ['Fields', 'Files', 'Form', 'Entry', 'Site', 'Site settings'],
                 [
                     ['tag' => '{file:cv}', 'description' => 'Link to Your CV, for 7 days'],
                     ['tag' => '{file:photo}', 'description' => 'Link to the upload, for 7 days'],
@@ -48,7 +48,7 @@ final class TokenVocabularyTest extends TestCase
     }
 
     #[Test]
-    public function offersEachFieldButHiddenOnesThenTheFormEntryAndSite(): void
+    public function offersEachFieldButHiddenOnesThenTheFormEntrySiteAndSettings(): void
     {
         $tags = TokenVocabulary::of(new FormDefinition(
             id: 1,
@@ -66,7 +66,7 @@ final class TokenVocabularyTest extends TestCase
 
         static::assertSame(
             [
-                ['Fields', 'Form', 'Entry', 'Site'],
+                ['Fields', 'Form', 'Entry', 'Site', 'Site settings'],
                 [
                     ['tag' => '{field:name}', 'description' => 'Your name'],
                     ['tag' => '{field:email}', 'description' => 'Submitted value'],
@@ -76,6 +76,10 @@ final class TokenVocabularyTest extends TestCase
                 ['{form:title}', '{form:slug}', '{form:description}'],
                 ['{entry:id}', '{entry:date}', '{entry:ip}', '{entry:status}', '{entry:fields}'],
                 ['{site:admin_url}', '{site:base_url}'],
+                [[
+                    'tag'         => '{settings:<key>}',
+                    'description' => 'Any site setting — replace <key> with its dotted name',
+                ]],
             ],
             [
                 array_column($tags, 'label'),
@@ -83,6 +87,7 @@ final class TokenVocabularyTest extends TestCase
                 array_column($tags[1]['items'], 'tag'),
                 array_column($tags[2]['items'], 'tag'),
                 array_column($tags[3]['items'], 'tag'),
+                $tags[4]['items'],
             ],
         );
     }
