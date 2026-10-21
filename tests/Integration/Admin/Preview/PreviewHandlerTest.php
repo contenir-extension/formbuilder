@@ -197,9 +197,9 @@ final class PreviewHandlerTest extends TestCase
             [true, true, true],
             [
                 str_contains($this->drawn($result), 'Submission valid'),
-                str_contains(
+                1 === preg_match(
+                    '#<div class="alert alert--warning"[^>]*>.*?1 notification failed to send; the log says why\.#s',
                     $this->drawn($result),
-                    '1 notification failed to send; the log says why. No entry was stored.',
                 ),
                 str_contains(
                     $this->logged(),
@@ -227,6 +227,36 @@ final class PreviewHandlerTest extends TestCase
         );
 
         static::assertSame($status, $response->getStatusCode());
+    }
+
+    #[Test]
+    public function saysWhatItSentWithTheValidSubmissionAndWarnsOfNothing(): void
+    {
+        $this->mailer = new MemoryMailer();
+        $this->setUpHost([MailerInterface::class => $this->mailer]);
+        $ids = $this->layOut();
+        $this->repository()->createNotification($ids['form'], [
+            'name'       => 'Team',
+            'to_address' => 'team@example.com',
+            'subject'    => 'New',
+        ]);
+        $html = $this->drawn($this->page(
+            PreviewHandler::class,
+            'POST',
+            ['form' => $ids['form']],
+            $this->drawnToken($ids['form']) + ['name' => 'Ada', 'email' => 'ada@example.com'],
+        ));
+
+        static::assertSame(
+            [1, false],
+            [
+                preg_match(
+                    '#<div class="alert alert--success"[^>]*>.*?Sent 1 notification with Test: subjects\. No entry was stored\.#s',
+                    $html,
+                ),
+                str_contains($html, 'alert--warning'),
+            ],
+        );
     }
 
     #[Test]

@@ -85,12 +85,18 @@ final class PreviewHandler implements HandlerInterface
         int $id,
         string $markup,
         ?PreviewSuccess $success = null,
-        string $sent = '',
+        ?CountedMail $mail = null,
     ): HandlerResult {
         return HandlerResult::template(
             'forms/preview',
             $form->title,
-            ['form' => $form, 'markup' => $markup, 'success' => $success, 'sent' => $sent],
+            [
+                'form'    => $form,
+                'markup'  => $markup,
+                'success' => $success,
+                'sent'    => $mail?->summary() ?? '',
+                'failed'  => $mail->failed ?? 0,
+            ],
             FormTabs::of($id, self::NAME),
         );
     }
@@ -151,7 +157,7 @@ final class PreviewHandler implements HandlerInterface
         ]);
 
         return $result->valid
-            ? self::screen($form, $id, '', PreviewSuccess::of($form, $result->values, $tokens), $mail->summary())
+            ? self::screen($form, $id, '', PreviewSuccess::of($form, $result->values, $tokens), $mail)
             : self::screen($form, $id, (new FormMarkup())->render($form, $result->form, preview: true));
     }
 }

@@ -10,6 +10,7 @@
  *     markup: string,
  *     success: \Contenir\Extension\Formbuilder\Admin\Preview\PreviewSuccess|null,
  *     sent: string,
+ *     failed: int,
  * } $values
  * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
  */
@@ -45,9 +46,22 @@ $success = $values['success'];
 <?php else: ?>
                                 <p class="alert__description">The live form would reload the page that hosted it.</p>
 <?php endif ?>
+<?php if (0 === $values['failed']): ?>
                                 <p class="alert__description" data-preview-sent><?= $view->escape($values['sent']) ?> No entry was stored.</p>
+<?php else: ?>
+                                <p class="alert__description">No entry was stored.</p>
+<?php endif ?>
                             </div>
                         </div>
+<?php if (0 !== $values['failed']): ?>
+                        <div class="alert alert--warning" role="alert" data-preview-failed>
+                            <span class="alert__icon"><?= $view->icon('alert-triangle') ?></span>
+                            <div class="alert__content">
+                                <p class="alert__title">Notifications failed</p>
+                                <p class="alert__description" data-preview-sent><?= $view->escape($values['sent']) ?></p>
+                            </div>
+                        </div>
+<?php endif ?>
 <?php if (\Contenir\FormBuilder\Definition\FormDefinition::SUCCESS_INLINE_MESSAGE === $success->mode): ?>
                         <div class="form-preview__success">
 <?php if (null !== $success->title && '' !== $success->title): ?>
