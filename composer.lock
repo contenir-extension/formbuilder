@@ -4,92 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "21d2592fd3b44162fcab9149684a778e",
+    "content-hash": "34d61e98eedf59ce5fcdba7c9501b68b",
     "packages": [
         {
-            "name": "contenir/contenir-formbuilder",
-            "version": "v2.0.0-RC3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/contenir/contenir-formbuilder.git",
-                "reference": "cb1efcd91c1d6d9365d5d7dbcff8ef611580264e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/contenir/contenir-formbuilder/zipball/cb1efcd91c1d6d9365d5d7dbcff8ef611580264e",
-                "reference": "cb1efcd91c1d6d9365d5d7dbcff8ef611580264e",
-                "shasum": ""
-            },
-            "require": {
-                "ext-fileinfo": "*",
-                "laminas/laminas-filter": "^2.30",
-                "laminas/laminas-form": "^3.20",
-                "laminas/laminas-inputfilter": "^2.30",
-                "laminas/laminas-session": "^2.16",
-                "laminas/laminas-validator": "^2.50 || ^3.0",
-                "peptolab/phpdb-migration": "^0.2",
-                "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
-                "php-db/phpdb": "^0.6.0",
-                "psr/clock": "^1.0",
-                "psr/log": "^1.0 || ^2.0 || ^3.0"
-            },
-            "conflict": {
-                "laminas/laminas-stdlib": "<3.21"
-            },
-            "replace": {
-                "contenir/formbuilder": "self.version"
-            },
-            "require-dev": {
-                "contenir/contenir-qa-tools": "0.1.x-dev",
-                "contenir/contenir-storage": "^2.2",
-                "infection/infection": "^0.34.1",
-                "php-db/phpdb-mysql": "0.5.x-dev",
-                "php-db/phpdb-sqlite": "0.3.x-dev",
-                "phpunit/phpunit": "^11.5.42"
-            },
-            "suggest": {
-                "contenir/contenir-storage": "Required for the file field type. Pass a Contenir\\Storage\\StorageManager into FormSubmissionService when uploads need to land on a configured storage profile.",
-                "php-db/phpdb-mysql": "The MySQL driver for php-db, for the form_* tables on a site's MySQL database.",
-                "php-db/phpdb-sqlite": "The SQLite driver for php-db, for the form_* tables on SQLite."
-            },
-            "type": "library",
-            "extra": {
-                "laminas": {
-                    "config-provider": "Contenir\\FormBuilder\\ConfigProvider"
-                },
-                "branch-alias": {
-                    "dev-main": "2.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Contenir\\FormBuilder\\": "src/",
-                    "Contenir\\FormBuilder\\Schema\\": "schema/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Framework-agnostic form-builder engine for Contenir CMS — runtime-editable form definitions, builder-form construction, server-side submission validation, and their storage with php-db on MySQL or SQLite.",
-            "support": {
-                "issues": "https://github.com/contenir/contenir-formbuilder/issues",
-                "source": "https://github.com/contenir/contenir-formbuilder/tree/v2.0.0-RC3"
-            },
-            "time": "2026-10-20T09:24:05+00:00"
-        },
-        {
-            "name": "contenir/extension-api",
+            "name": "contenir/contenir-extension-api",
             "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "git@github.com:contenir/contenir-extension-api.git",
-                "reference": "080cca513844b6bfc49801259b55bf018256be5d"
+                "reference": "b90a9c949710a1d541d2395b43637f030b91e07c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/080cca513844b6bfc49801259b55bf018256be5d",
-                "reference": "080cca513844b6bfc49801259b55bf018256be5d",
+                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/b90a9c949710a1d541d2395b43637f030b91e07c",
+                "reference": "b90a9c949710a1d541d2395b43637f030b91e07c",
                 "shasum": ""
             },
             "require": {
@@ -101,6 +29,9 @@
                 "psr/http-factory": "^1.1",
                 "psr/http-message": "^1.1 || ^2.0",
                 "psr/log": "^2.0 || ^3.0"
+            },
+            "replace": {
+                "contenir/extension-api": "self.version"
             },
             "require-dev": {
                 "contenir/contenir-qa-tools": "0.1.x-dev",
@@ -182,7 +113,79 @@
                 "issues": "https://github.com/contenir/contenir-extension-api/issues",
                 "source": "https://github.com/contenir/contenir-extension-api"
             },
-            "time": "2026-10-21T00:00:32+00:00"
+            "time": "2026-10-21T02:19:20+00:00"
+        },
+        {
+            "name": "contenir/contenir-formbuilder",
+            "version": "v2.0.0-RC3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/contenir/contenir-formbuilder.git",
+                "reference": "cb1efcd91c1d6d9365d5d7dbcff8ef611580264e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/contenir/contenir-formbuilder/zipball/cb1efcd91c1d6d9365d5d7dbcff8ef611580264e",
+                "reference": "cb1efcd91c1d6d9365d5d7dbcff8ef611580264e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-fileinfo": "*",
+                "laminas/laminas-filter": "^2.30",
+                "laminas/laminas-form": "^3.20",
+                "laminas/laminas-inputfilter": "^2.30",
+                "laminas/laminas-session": "^2.16",
+                "laminas/laminas-validator": "^2.50 || ^3.0",
+                "peptolab/phpdb-migration": "^0.2",
+                "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
+                "php-db/phpdb": "^0.6.0",
+                "psr/clock": "^1.0",
+                "psr/log": "^1.0 || ^2.0 || ^3.0"
+            },
+            "conflict": {
+                "laminas/laminas-stdlib": "<3.21"
+            },
+            "replace": {
+                "contenir/formbuilder": "self.version"
+            },
+            "require-dev": {
+                "contenir/contenir-qa-tools": "0.1.x-dev",
+                "contenir/contenir-storage": "^2.2",
+                "infection/infection": "^0.34.1",
+                "php-db/phpdb-mysql": "0.5.x-dev",
+                "php-db/phpdb-sqlite": "0.3.x-dev",
+                "phpunit/phpunit": "^11.5.42"
+            },
+            "suggest": {
+                "contenir/contenir-storage": "Required for the file field type. Pass a Contenir\\Storage\\StorageManager into FormSubmissionService when uploads need to land on a configured storage profile.",
+                "php-db/phpdb-mysql": "The MySQL driver for php-db, for the form_* tables on a site's MySQL database.",
+                "php-db/phpdb-sqlite": "The SQLite driver for php-db, for the form_* tables on SQLite."
+            },
+            "type": "library",
+            "extra": {
+                "laminas": {
+                    "config-provider": "Contenir\\FormBuilder\\ConfigProvider"
+                },
+                "branch-alias": {
+                    "dev-main": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Contenir\\FormBuilder\\": "src/",
+                    "Contenir\\FormBuilder\\Schema\\": "schema/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Framework-agnostic form-builder engine for Contenir CMS — runtime-editable form definitions, builder-form construction, server-side submission validation, and their storage with php-db on MySQL or SQLite.",
+            "support": {
+                "issues": "https://github.com/contenir/contenir-formbuilder/issues",
+                "source": "https://github.com/contenir/contenir-formbuilder/tree/v2.0.0-RC3"
+            },
+            "time": "2026-10-20T09:24:05+00:00"
         },
         {
             "name": "laminas/laminas-escaper",
@@ -5673,7 +5676,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "contenir/extension-api": 20,
+        "contenir/contenir-extension-api": 20,
         "contenir/contenir-qa-tools": 20
     },
     "prefer-stable": true,
