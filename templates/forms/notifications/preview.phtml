@@ -1,0 +1,38 @@
+<?php
+/**
+ * The Layout tab's live preview, a page of its own for the editor's preview frame: the email's body
+ * filled in with sample values, recognised merge tags highlighted.
+ *
+ * @var array{body: string} $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+?>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Notification preview</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.5;
+            color: #303036;
+            margin: 1.5rem;
+            background: #ffffff;
+        }
+        .token-replaced {
+            background-color: rgba(52, 167, 181, 0.12);
+            border-radius: 2px;
+            padding: 0 2px;
+        }
+        .preview-empty {
+            color: #a0a1a2;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+<?= $values['body'] ?>
+</body>
+</html>

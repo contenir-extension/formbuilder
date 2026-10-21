@@ -1,0 +1,27 @@
+<?php
+/**
+ * The token picker's menu, as a template each trigger on the page opens with its own target
+ * (`data-menu-tokens='{"target":"#input-id"}'`), which the dashboard's Dropdown puts in place of
+ * `__target__`. Each item inserts its merge tag at the target's caret, or for the Layout tab's
+ * editor sends a `token:insert` event (TokenInsert).
+ *
+ * @var array{id: string, tags: list<array{label: string, items: list<array{tag: string, description: string}>}>} $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+?>
+<template id="token-picker-<?= $view->escape($values['id']) ?>">
+    <div class="dropdown__menu dropdown__menu--lg" role="menu">
+<?php foreach ($values['tags'] as $index => $group): ?>
+<?php if ($index > 0): ?>
+        <div class="dropdown__divider" role="separator"></div>
+<?php endif ?>
+        <div class="dropdown__label"><?= $view->escape($group['label']) ?></div>
+<?php foreach ($group['items'] as $item): ?>
+        <a class="dropdown__item token-picker__item" role="menuitem" href="#" data-token-insert="<?= $view->escape($item['tag']) ?>" data-token-target="__target__">
+            <code class="text--xs"><?= $view->escape($item['tag']) ?></code>
+            <span class="text--xs text--muted"><?= $view->escape($item['description']) ?></span>
+        </a>
+<?php endforeach ?>
+<?php endforeach ?>
+    </div>
+</template>

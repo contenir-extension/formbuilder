@@ -12,7 +12,9 @@ use Contenir\Extension\Formbuilder\Admin\AddFormHandler;
 use Contenir\Extension\Formbuilder\Admin\Fields;
 use Contenir\Extension\Formbuilder\Admin\FormHandler;
 use Contenir\Extension\Formbuilder\Admin\FormsHandler;
+use Contenir\Extension\Formbuilder\Admin\Notifications;
 use Contenir\Extension\Formbuilder\Admin\Preview\PreviewHandler;
+use Contenir\Extension\Formbuilder\Admin\Webhooks;
 use Contenir\FormBuilder\ConfigProvider;
 use Override;
 
@@ -42,16 +44,51 @@ final readonly class FormbuilderExtension implements ExtensionInterface
      * @var array<string, string>
      */
     private const array COMPONENTS = [
-        '[data-formbuilder-rows]'   => 'js/FieldsEditor.js',
-        '[data-formbuilder-inline]' => 'js/FormbuilderInlineForm.js',
-        '[data-formbuilder-delete]' => 'js/FormbuilderDelete.js',
-        '[data-editable-legend]'    => 'js/EditableLegend.js',
-        '[data-field-modal]'        => 'js/FieldFormModal.js',
-        '[data-field-form]'         => 'js/FieldForm.js',
-        '[data-conditional-editor]' => 'js/ConditionalEditor.js',
-        '[data-identifier]'         => 'js/DataIdentifier.js',
-        '[data-form-stepper]'       => 'js/FormStepper.js',
-        '[data-form-conditional]'   => 'js/FormConditional.js',
+        '[data-formbuilder-rows]'    => 'js/FieldsEditor.js',
+        '[data-formbuilder-inline]'  => 'js/FormbuilderInlineForm.js',
+        '[data-formbuilder-delete]'  => 'js/FormbuilderDelete.js',
+        '[data-editable-legend]'     => 'js/EditableLegend.js',
+        '[data-field-modal]'         => 'js/FieldFormModal.js',
+        '[data-field-form]'          => 'js/FieldForm.js',
+        '[data-conditional-editor]'  => 'js/ConditionalEditor.js',
+        '[data-identifier]'          => 'js/DataIdentifier.js',
+        '[data-form-stepper]'        => 'js/FormStepper.js',
+        '[data-form-conditional]'    => 'js/FormConditional.js',
+        '[data-notification-layout]' => 'js/NotificationLayout.js',
+        '[data-token-insert]'        => 'js/TokenInsert.js',
+    ];
+
+    /**
+     * A form's notifications and webhooks screens, with the privilege each
+     * needs as the built-in module's did; null where reading needs View and
+     * posting Update.
+     *
+     * @var array<string, array{class-string<HandlerInterface>, ?Privilege}>
+     */
+    private const array SCREENS = [
+        Notifications\NotificationsHandler::NAME       => [Notifications\NotificationsHandler::class, null],
+        Notifications\NotificationAddHandler::NAME     => [Notifications\NotificationAddHandler::class, Privilege::Add],
+        Notifications\NotificationHandler::NAME        => [Notifications\NotificationHandler::class, Privilege::Update],
+        Notifications\NotificationLayoutHandler::NAME  => [
+            Notifications\NotificationLayoutHandler::class,
+            Privilege::Update,
+        ],
+        Notifications\NotificationPreviewHandler::NAME => [
+            Notifications\NotificationPreviewHandler::class,
+            Privilege::View,
+        ],
+        Notifications\NotificationToggleHandler::NAME  => [
+            Notifications\NotificationToggleHandler::class,
+            Privilege::Update,
+        ],
+        Notifications\NotificationDeleteHandler::NAME  => [
+            Notifications\NotificationDeleteHandler::class,
+            Privilege::Delete,
+        ],
+        Webhooks\WebhooksHandler::NAME                 => [Webhooks\WebhooksHandler::class, null],
+        Webhooks\WebhookAddHandler::NAME               => [Webhooks\WebhookAddHandler::class, Privilege::Add],
+        Webhooks\WebhookHandler::NAME                  => [Webhooks\WebhookHandler::class, Privilege::Update],
+        Webhooks\WebhookDeleteHandler::NAME            => [Webhooks\WebhookDeleteHandler::class, Privilege::Delete],
     ];
 
     /**
@@ -96,6 +133,10 @@ final readonly class FormbuilderExtension implements ExtensionInterface
 
         foreach (self::EDITOR as $name => $class) {
             $registry->handler($name, $class, Privilege::Update);
+        }
+
+        foreach (self::SCREENS as $name => [$class, $privilege]) {
+            $registry->handler($name, $class, $privilege);
         }
     }
 }

@@ -5,11 +5,14 @@ const FIXTURES = import.meta.glob('../fixtures/*/*.html', {
 })
 
 /**
- * Markup the fields screen renders, which tests load instead of
+ * Markup the add-on's screens render, which tests load instead of
  * hand-written markup so the JS is exercised against what the server
  * sends. They were captured from the CMS's built-in Forms module (the
  * fields page's `.builder` and a field's `[data-conditional-editor]`),
- * whose markup the add-on keeps.
+ * whose markup the add-on keeps. The notification fixtures are rendered from
+ * that module's notification views: a notification's Layout form, and the
+ * token picker's menu as the Dropdown opens it for the subject field and
+ * for the Layout editor.
  *
  * @param {string} name e.g. "components/fields-editor-form"
  * @returns {string} the saved HTML

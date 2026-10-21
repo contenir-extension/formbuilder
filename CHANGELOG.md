@@ -31,9 +31,17 @@ adheres to [Semantic Versioning](https://semver.org/).
   each notification is logged as not sent. The preview's scripts (FormStepper for a stepped form, FormConditional for
   fields shown by condition) and its styles move into the add-on with it.
 
+- A form's Notifications tab: its notifications, each turned on or off, deleted, or opened on its Details (who it goes
+  to, is from and replies to, and its subject, with the token picker) and Layout (its email's HTML in CodeMirror beside
+  a live preview filled in with sample values). Each sub-tab saves without touching the other's settings.
+- A form's Integrations tab: its webhooks, each added and edited on a described screen and deleted from the list.
+- The scripts these use, NotificationLayout and TokenInsert, and their styles. CodeMirror comes with
+  NotificationLayout, which loads only on a notification's Layout.
+
 ### Changed
 
+- A webhook's method is POST or PUT, as its screen offers; anything else posted is read as POST.
 - A field added in the modal goes at its row's end, and an edited field keeps its place. The built-in module posted
-  no sort, read it as 0, and so put both first in their row.
+  no sort, read it as 0, and so put both first in their row. Editing a webhook keeps its place too.
 - Requires contenir/extension-api with tabs on template screens (contenir/contenir-extension-api#12 and #14), from #12's branch
   until that is tagged.

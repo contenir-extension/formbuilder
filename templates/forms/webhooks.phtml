@@ -1,0 +1,74 @@
+<?php
+/**
+ * A form's Integrations tab: its title with Add webhook, its tabs, then each webhook with where and
+ * how it sends, whether it signs its requests and whether it is on, and its delete, which asks
+ * first.
+ *
+ * @var array{form: \Contenir\FormBuilder\Definition\FormDefinition} $values
+ * @var \Contenir\Extension\Api\Module\TemplateHelpersInterface $view
+ */
+$form   = $values['form'];
+$id     = (int) $form->id;
+$addUrl = $view->url('webhook-add', ['form' => $id]);
+?>
+                <div class="pageheader pageheader--row">
+                    <div class="pageheader__content">
+                        <h1 class="pageheader__title"><?= $view->escape($form->title) ?></h1>
+                    </div>
+                    <div class="pageheader__actions">
+                        <a class="btn btn--primary" href="<?= $view->escape($addUrl) ?>"><?= $view->icon('plus') ?><span>Add webhook</span></a>
+                    </div>
+                </div>
+<?= $view->tabs() ?>
+
+                <div class="card">
+<?php if ([] === $form->webhooks): ?>
+                    <div class="card__content card__content--pt">
+                        <div class="empty">
+                            <div class="empty__content">
+                                <h2 class="empty__title">No webhooks</h2>
+                                <p class="empty__description">Add one to forward submissions to another system. The JSON it sends is signed with HMAC-SHA256 when you set a secret.</p>
+                            </div>
+                            <div class="empty__actions">
+                                <a class="btn btn--primary" href="<?= $view->escape($addUrl) ?>"><?= $view->icon('plus') ?><span>Add webhook</span></a>
+                            </div>
+                        </div>
+                    </div>
+<?php else: ?>
+                    <div class="card__content card__content--flush">
+                        <div class="table__wrapper table__wrapper--borderless">
+                            <table class="table table--hoverable table--card">
+                                <thead class="table__header">
+                                    <tr class="table__row">
+                                        <th class="table__head">Name</th>
+                                        <th class="table__head">Method</th>
+                                        <th class="table__head">URL</th>
+                                        <th class="table__head">Signed</th>
+                                        <th class="table__head">Status</th>
+                                        <th class="table__head table__actions"><span class="sr-only">Actions</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table__body">
+<?php foreach ($form->webhooks as $webhook): ?>
+<?php $keys = ['form' => $id, 'webhook' => (int) $webhook->id] ?>
+                                    <tr class="table__row" data-record="<?= (int) $webhook->id ?>">
+                                        <td class="table__cell"><a class="text--medium" href="<?= $view->escape($view->url('webhook', $keys)) ?>"><?= $view->escape($webhook->name ?: 'Untitled') ?></a></td>
+                                        <td class="table__cell"><?= $view->escape($webhook->method) ?></td>
+                                        <td class="table__cell"><code class="text--xs webhook__url"><?= $view->escape($webhook->url) ?></code></td>
+                                        <td class="table__cell"><?= null !== $webhook->secret ? 'Yes' : 'No' ?></td>
+                                        <td class="table__cell"><span class="badge badge--<?= $webhook->enabled ? 'success-muted' : 'outline' ?>"><?= $webhook->enabled ? 'Sending' : 'Off' ?></span></td>
+                                        <td class="table__cell table__actions">
+                                            <a class="btn btn--ghost btn--icon btn--sm" href="<?= $view->escape($view->url('webhook', $keys)) ?>" aria-label="Edit <?= $view->escape($webhook->name) ?>" data-tooltip="Edit" data-tooltip-position="left"><?= $view->icon('pencil') ?></a>
+                                            <form method="post" action="<?= $view->escape($view->url('webhook-delete', $keys)) ?>" data-confirm="<?= $view->escape('Delete the ' . ($webhook->name ?: 'untitled') . ' webhook?') ?>">
+                                                <?= $view->token() ?>
+                                                <button type="submit" class="btn btn--ghost btn--icon btn--sm" aria-label="Delete <?= $view->escape($webhook->name) ?>" data-tooltip="Delete" data-tooltip-position="left"><?= $view->icon('trash') ?></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+<?php endforeach ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+<?php endif ?>
+                </div>
