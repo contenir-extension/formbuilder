@@ -67,6 +67,9 @@ adheres to [Semantic Versioning](https://semver.org/).
   page saying what they do (how many entries a redaction would take now), with the button there, instead of sitting
   in the Forms home's header. `FormsToolsMenu` declares the group.
 
+- Preview says what its test notifications did: how many were sent with Test: subjects and how many failed (the log
+  says why), instead of always saying they were sent.
+
 ### Changed
 
 - A webhook's method is POST or PUT, as its screen offers; anything else posted is read as POST.
