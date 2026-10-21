@@ -94,8 +94,7 @@ final class PreviewHandler implements HandlerInterface
                 'form'    => $form,
                 'markup'  => $markup,
                 'success' => $success,
-                'sent'    => $mail?->summary() ?? '',
-                'failed'  => $mail->failed ?? 0,
+                ...(null === $mail ? [] : ['sent' => $mail->summary(), 'failed' => $mail->failed]),
             ],
             FormTabs::of($id, self::NAME),
         );
