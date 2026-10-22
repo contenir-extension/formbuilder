@@ -140,7 +140,7 @@ final class FormHandlerTest extends TestCase
         $tabs   = $screen->tabs ?? [];
 
         static::assertSame(
-            ['Contact', 'Contact', 'contact', 'delete', 'delete', true, 'form', ['form' => $id]],
+            ['Contact', 'Contact', 'contact', 'delete', 'delete', true, true, 'form', ['form' => $id]],
             [
                 $screen?->title,
                 $screen?->form?->field('title')?->default,
@@ -148,6 +148,7 @@ final class FormHandlerTest extends TestCase
                 $screen?->operations[0]->name ?? null,
                 $screen?->operations[0]->privilege ?? null,
                 $screen?->operations[0]->confirm ?? null,
+                $screen?->operations[0]->destructive ?? null,
                 array_values(array_filter($tabs, static fn(Tab $tab): bool => $tab->current))[0]->handler ?? null,
                 $tabs[0]->query ?? null,
             ],

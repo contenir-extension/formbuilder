@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d22f388db5baf036ea5628c895a89e3a",
+    "content-hash": "0b5844c653a7be5affbf03adc9f06bdc",
     "packages": [
         {
             "name": "contenir/contenir-extension-api",
-            "version": "v0.7.0",
+            "version": "v0.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/contenir/contenir-extension-api.git",
-                "reference": "7b65fbcf342aeff84ba9ee8eafdbd0305d833da4"
+                "reference": "942f05af62267ed7cb945c72f88f3ea3e04d5e91"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/7b65fbcf342aeff84ba9ee8eafdbd0305d833da4",
-                "reference": "7b65fbcf342aeff84ba9ee8eafdbd0305d833da4",
+                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/942f05af62267ed7cb945c72f88f3ea3e04d5e91",
+                "reference": "942f05af62267ed7cb945c72f88f3ea3e04d5e91",
                 "shasum": ""
             },
             "require": {
@@ -76,7 +76,7 @@
                 "issues": "https://github.com/contenir/contenir-extension-api/issues",
                 "source": "https://github.com/contenir/contenir-extension-api"
             },
-            "time": "2026-10-21T12:57:35+00:00"
+            "time": "2026-10-22T08:49:11+00:00"
         },
         {
             "name": "contenir/contenir-formbuilder",
@@ -5890,9 +5890,9 @@
     "platform": {
         "php": "~8.3.0 || ~8.4.0 || ~8.5.0"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "platform-overrides": {
         "php": "8.3.99"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
