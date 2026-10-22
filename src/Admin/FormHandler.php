@@ -44,6 +44,7 @@ final class FormHandler implements HandlerInterface
                 DeleteFormOperation::class,
                 confirm: true,
                 confirmMessage: 'Delete this form, its fields, notifications, integrations and every entry? This cannot be undone.',
+                destructive: true,
             )],
             tabs: FormTabs::of($id, self::NAME),
         ));
