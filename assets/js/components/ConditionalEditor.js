@@ -88,7 +88,7 @@ export default class ConditionalEditor extends BaseComponent {
         element.addEventListener('change', onChange)
 
         const sortable = createSortable(rows, {
-            draggable: '[data-conditional-row]',
+            items:  '[data-conditional-row]',
             handle: '[data-handle]',
             onSort: () => this._refreshCombinatorSlots(rows),
         })

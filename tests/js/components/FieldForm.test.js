@@ -88,7 +88,7 @@ describe('FieldForm validator reordering', () => {
 
         expect(createSortable).toHaveBeenCalledWith(
             form.querySelector('[data-validator-rows]'),
-            expect.objectContaining({ draggable: '[data-validator-row]', handle: '[data-handle]' }),
+            expect.objectContaining({ items: '[data-validator-row]', handle: '[data-handle]' }),
         )
     })
 

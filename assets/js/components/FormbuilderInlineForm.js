@@ -24,8 +24,8 @@ import { withToken } from '../utils/HandlerToken.js'
  * submit button is re-enabled either way.
  *
  * After inserting a row we dispatch `formbuilder:row-added` so FieldsEditor
- * can attach a SortableJS instance to the new row's `[data-formbuilder-fields]`
- * container — without that, fields can't be dragged in or out of the new
+ * can join the new row's `[data-formbuilder-fields]` container to its drag
+ * group — without that, fields can't be dragged in or out of the new
  * row until a page reload. New groups and sections come with their own
  * `[data-formbuilder-rows]` and FieldsEditor's selector mounts them through
  * the framework's MutationObserver automatically.

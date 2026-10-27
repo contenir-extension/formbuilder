@@ -151,9 +151,9 @@
 }
 
 /**
- * While a row or field is dragged, every row's field strip shows it can take a drop
+ * While a field is dragged, every row's field strip shows it can take a drop
  */
-.formbuilder__rows--dragging [data-formbuilder-fields] {
+[data-formbuilder-fields]:is([data-sortable-state="active"], [data-sortable-state="over"]) {
     outline: 1px dashed var(--primary);
     outline-offset: 2px;
     background-color: color-mix(in srgb, var(--primary) 4%, transparent);
