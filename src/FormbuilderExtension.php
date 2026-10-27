@@ -63,7 +63,6 @@ final readonly class FormbuilderExtension implements ExtensionInterface
         '[data-field-modal]'         => 'js/FieldFormModal.js',
         '[data-field-form]'          => 'js/FieldForm.js',
         '[data-conditional-editor]'  => 'js/ConditionalEditor.js',
-        '[data-identifier]'          => 'js/DataIdentifier.js',
         '[data-form-stepper]'        => 'js/FormStepper.js',
         '[data-form-conditional]'    => 'js/FormConditional.js',
         '[data-notification-layout]' => 'js/NotificationLayout.js',

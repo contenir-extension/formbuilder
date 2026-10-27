@@ -13,6 +13,11 @@ adheres to [Semantic Versioning](https://semver.org/).
   a field moves across as well, between columns and rows. A reorder posts only when a drop changed the order, and
   every row's field strip shows it can take a drop only while a field, not a row, is dragged.
 
+### Removed
+
+- The add-on's own `[data-identifier]` component. The CMS registers that selector itself, so it left the add-on's
+  out with a console warning; a field's ID now follows its label through the CMS's component alone.
+
 ## [0.1.0] - 2026-10-22
 
 The form builder as an add-on, in place of the CMS's built-in Forms module, road-tested on a copy of a live site.
