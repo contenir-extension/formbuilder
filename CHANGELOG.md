@@ -4,10 +4,14 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.2.0] - 2026-10-27
+
+Requires contenir/contenir-extension-api 0.7.1 or later.
 
 ### Changed
 
+- Delete form is drawn as a destructive operation, apart from the rest: it takes the form, its fields,
+  notifications, integrations and every entry. It still asks first.
 - Fields, rows, validators and conditions are dragged on Parallelogram's drag engine (`@parallelogram-js/core`
   `^0.7.22`) in place of SortableJS, which is no longer required. A row and a list of rules move up and down only;
   a field moves across as well, between columns and rows. A reorder posts only when a drop changed the order, and
