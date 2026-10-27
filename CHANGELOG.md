@@ -4,6 +4,15 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- Fields, rows, validators and conditions are dragged on Parallelogram's drag engine (`@parallelogram-js/core`
+  `^0.7.22`) in place of SortableJS, which is no longer required. A row and a list of rules move up and down only;
+  a field moves across as well, between columns and rows. A reorder posts only when a drop changed the order, and
+  every row's field strip shows it can take a drop only while a field, not a row, is dragged.
+
 ## [0.1.0] - 2026-10-22
 
 The form builder as an add-on, in place of the CMS's built-in Forms module, road-tested on a copy of a live site.

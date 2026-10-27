@@ -10,7 +10,7 @@ import { compile } from 'sass'
  *   - public/js/<Component>.js, one ES module per component in
  *     assets/js/components, each default-exporting its component class for
  *     the host's registry to mount, with the code they share (BaseComponent,
- *     the HTTP client, SortableJS) split into public/js/chunks/.
+ *     the HTTP client, the drag engine) split into public/js/chunks/.
  *   - public/css/formbuilder.css, compiled from assets/css/formbuilder.scss.
  *
  * The output must depend on the sources alone, so CI can rebuild and diff

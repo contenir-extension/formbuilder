@@ -14,10 +14,10 @@ import { setSectionEnabled } from '../utils/FormSection.js'
  *    blank-but-present rows don't survive the POST.
  *
  * 2. Validator drag-to-reorder. The `[data-validator-rows]` container
- *    becomes a SortableJS list keyed off the row's `[data-handle]`; on
- *    sort, every `validators[N][...]` name index is renumbered to match
- *    the new DOM order so the server iterates them in the user's chosen
- *    execution order.
+ *    becomes a sortable list dragged by each row's `[data-handle]`; once
+ *    a drop changes the order, every `validators[N][...]` name index is
+ *    renumbered to match the new DOM order so the server iterates them
+ *    in the user's chosen execution order.
  *
  * Field type is locked once the field is created — picked from the Add
  * Field dropdown (URL `?type=`) and never editable afterwards. The
@@ -53,7 +53,7 @@ export default class FieldForm extends BaseComponent {
         rows.addEventListener('change', onChange)
 
         const sortable = createSortable(rows, {
-            draggable: '[data-validator-row]',
+            items:  '[data-validator-row]',
             handle: '[data-handle]',
             onSort: () => this._renumberValidators(rows),
         })

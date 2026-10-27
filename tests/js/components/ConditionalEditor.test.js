@@ -153,7 +153,7 @@ describe('ConditionalEditor reordering', () => {
         const element = makeEditor()
 
         expect(createSortable).toHaveBeenCalledWith(element.querySelector('[data-conditional-rows]'), expect.objectContaining({
-            draggable: '[data-conditional-row]',
+            items: '[data-conditional-row]',
             handle: '[data-handle]',
         }))
     })

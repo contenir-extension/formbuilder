@@ -7,22 +7,27 @@ import { withToken } from '../utils/HandlerToken.js'
  * FieldsEditor — drag-and-drop layout editor for the form builder's
  * fields screen.
  *
- * Registered against `[data-formbuilder-rows]` (one per group). Wires up
- * two SortableJS instances per group:
+ * Registered against `[data-formbuilder-rows]` (one per group). Makes two
+ * kinds of list sortable on Parallelogram's drag engine:
  *
  *   1. Vertical row reorder. The container itself is sortable; each
  *      `[data-formbuilder-row]` child is draggable by its
- *      `data-formbuilder-row-handle` grip. On drop, POSTs the new row
- *      sequence to `data-row-reorder-url`.
+ *      `data-formbuilder-row-handle` grip, and moves up and down only.
+ *      A drop that changes the order POSTs the new row sequence to
+ *      `data-row-reorder-url`.
  *
  *   2. Field reorder, within and across rows and groups. Every
- *      `[data-formbuilder-fields]` (one per row) joins a single SortableJS
- *      group (FIELD_GROUP) shared with every other field grid in the
- *      form, so a field dragged out of row A can drop into:
+ *      `[data-formbuilder-fields]` (one per row) joins one drag group
+ *      (FIELD_GROUP) shared with every other field grid in the form, so a
+ *      field moves across as well as down, and one dragged out of row A
+ *      can drop into:
  *
  *        - the same row at a different index (within-row reorder),
  *        - another row in the same group (cross-row reorder),
  *        - another row in a different group (cross-group reorder).
+ *
+ * A press on a field's grip inside a row stays with the field lists, so a
+ * row moves only by its own grip.
  *
  * Both reorders POST a FormData body to the add-on's handlers: a `rows`
  * field holding the JSON-encoded order, plus the host's handler token.
@@ -37,12 +42,10 @@ import { withToken } from '../utils/HandlerToken.js'
  * source row lives in a different `[data-formbuilder-rows]` container than
  * this instance owns.
  *
- * The `[data-formbuilder-append]` "+ add field" button is excluded from the
- * sortable via SortableJS's `filter` so it stays anchored at the end
- * of every row.
+ * While a field is dragged, the engine marks every field grid's
+ * `data-sortable-state` as `active`, and the one under the pointer `over`.
  */
-const FIELD_GROUP    = 'forms-formbuilder-fields'
-const DRAGGING_CLASS = 'formbuilder__rows--dragging'
+const FIELD_GROUP = 'forms-formbuilder-fields'
 
 export default class FieldsEditor extends BaseComponent {
     _getSelector() {
@@ -53,41 +56,27 @@ export default class FieldsEditor extends BaseComponent {
         const rowReorderUrl   = element.getAttribute('data-row-reorder-url') || ''
         const fieldReorderUrl = element.getAttribute('data-field-reorder-url') || ''
 
-        const onDragStart = () => element.classList.add(DRAGGING_CLASS)
-        const onDragEnd   = () => element.classList.remove(DRAGGING_CLASS)
-
         const rowSortable = createSortable(element, {
-            draggable: '[data-formbuilder-row]',
-            handle:    '[data-formbuilder-row-handle]',
-            onStart: onDragStart,
-            onEnd: () => {
-                onDragEnd()
-                this._postRowOrder(element, rowReorderUrl)
-            },
+            items:  '[data-formbuilder-row]',
+            handle: '[data-formbuilder-row-handle]',
+            onSort: () => this._postRowOrder(element, rowReorderUrl),
         })
 
         const fieldSortables = []
         const initFieldContainer = (container) => {
             fieldSortables.push(createSortable(container, {
-                group:     FIELD_GROUP,
-                draggable: '[data-formbuilder-field]',
-                handle:    '[data-formbuilder-field-handle]',
-                filter:    '[data-formbuilder-append]',
-                preventOnFilter: false,
-                direction: 'horizontal',
-                onStart: onDragStart,
-                onEnd: () => {
-                    onDragEnd()
-                    this._postFieldOrder(fieldReorderUrl)
-                },
+                items:  '[data-formbuilder-field]',
+                handle: '[data-formbuilder-field-handle]',
+                group:  FIELD_GROUP,
+                onSort: () => this._postFieldOrder(fieldReorderUrl),
             }))
         }
         element.querySelectorAll('[data-formbuilder-fields]').forEach(initFieldContainer)
 
         /**
          * FormbuilderInlineForm dispatches `formbuilder:row-added` (bubbling)
-         * when an XHR row insert lands. Wire SortableJS onto the new row's
-         * field container so cross-row drags work without a page reload.
+         * when an XHR row insert lands. Join the new row's field container
+         * to the drag group so cross-row drags work without a page reload.
          */
         const onRowAdded = (event) => {
             const row = event.detail?.row

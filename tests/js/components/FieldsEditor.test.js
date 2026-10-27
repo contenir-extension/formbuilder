@@ -64,7 +64,7 @@ describe('FieldsEditor setup', () => {
         mount(element)
 
         expect(createSortable).toHaveBeenCalledWith(element, expect.objectContaining({
-            draggable: '[data-formbuilder-row]',
+            items: '[data-formbuilder-row]',
             handle: '[data-formbuilder-row-handle]',
         }))
     })
@@ -76,20 +76,19 @@ describe('FieldsEditor setup', () => {
         const fieldCalls = createSortable.mock.calls.filter(([, opts]) => opts.group === 'forms-formbuilder-fields')
         expect(fieldCalls.map(([el]) => el.getAttribute('data-row-id'))).toEqual(['801', '804'])
         expect(fieldCalls[0][1]).toMatchObject({
-            draggable: '[data-formbuilder-field]',
+            items: '[data-formbuilder-field]',
             handle: '[data-formbuilder-field-handle]',
-            filter: '[data-formbuilder-append]',
         })
     })
 })
 
 describe('FieldsEditor row reordering', () => {
-    it('posts the row ids in DOM order as a JSON rows field on row sort end', () => {
+    it('posts the row ids in DOM order as a JSON rows field once a drop changes the row order', () => {
         const element = makeGroup()
         mount(element)
         element.appendChild(element.querySelector('[data-formbuilder-row]'))
 
-        rowSortable(element).onEnd()
+        rowSortable(element).onSort()
 
         expect(request).toHaveBeenCalledWith(ROW_REORDER_URL, expect.objectContaining({ method: 'POST' }))
         expect(postedRows()).toEqual([804, 801])
@@ -99,7 +98,7 @@ describe('FieldsEditor row reordering', () => {
         const element = makeGroup()
         mount(element)
 
-        rowSortable(element).onEnd()
+        rowSortable(element).onSort()
 
         expect(request.mock.calls[0][1].headers).toEqual({ 'Accept': 'application/json' })
     })
@@ -109,7 +108,7 @@ describe('FieldsEditor row reordering', () => {
         const element = makeGroup()
         mount(element)
 
-        rowSortable(element).onEnd()
+        rowSortable(element).onSort()
 
         expect(request.mock.calls[0][1].body.get(TOKEN_NAME)).toBe(TOKEN_VALUE)
     })
@@ -119,7 +118,7 @@ describe('FieldsEditor row reordering', () => {
         mount(element)
         element.querySelector('[data-formbuilder-row][data-row-id="804"]').setAttribute('data-row-id', 'new')
 
-        rowSortable(element).onEnd()
+        rowSortable(element).onSort()
 
         expect(postedRows()).toEqual([801])
     })
@@ -128,7 +127,7 @@ describe('FieldsEditor row reordering', () => {
         const element = makeGroup({ rowReorderUrl: '' })
         mount(element)
 
-        rowSortable(element).onEnd()
+        rowSortable(element).onSort()
 
         expect(request).not.toHaveBeenCalled()
     })
@@ -138,7 +137,7 @@ describe('FieldsEditor row reordering', () => {
         element.removeAttribute('data-row-reorder-url')
         mount(element)
 
-        rowSortable(element).onEnd()
+        rowSortable(element).onSort()
 
         expect(request).not.toHaveBeenCalled()
     })
@@ -150,22 +149,11 @@ describe('FieldsEditor row reordering', () => {
         mount(element)
         element.appendChild(element.querySelector('[data-formbuilder-row]'))
 
-        rowSortable(element).onEnd()
+        rowSortable(element).onSort()
         await new Promise((resolve) => setTimeout(resolve, 0))
 
         expect([...element.querySelectorAll(':scope > [data-formbuilder-row]')].map((row) => row.getAttribute('data-row-id')))
             .toEqual(['804', '801'])
-    })
-
-    it('toggles the dragging class around a row drag', () => {
-        const element = makeGroup()
-        mount(element)
-
-        rowSortable(element).onStart()
-        const whileDragging = element.classList.contains('formbuilder__rows--dragging')
-        rowSortable(element).onEnd()
-
-        expect([whileDragging, element.classList.contains('formbuilder__rows--dragging')]).toEqual([true, false])
     })
 })
 
@@ -176,7 +164,7 @@ describe('FieldsEditor field reordering', () => {
         const container = element.querySelector('[data-formbuilder-fields][data-row-id="801"]')
         container.appendChild(container.querySelector('[data-formbuilder-field]'))
 
-        fieldSortable(container).onEnd()
+        fieldSortable(container).onSort()
 
         expect(request).toHaveBeenCalledWith(FIELD_REORDER_URL, expect.objectContaining({ method: 'POST' }))
         expect(postedRows()).toEqual({ 801: [902, 901], 804: [] })
@@ -187,7 +175,7 @@ describe('FieldsEditor field reordering', () => {
         const element = makeGroup()
         mount(element)
 
-        fieldSortable(element.querySelector('[data-formbuilder-fields]')).onEnd()
+        fieldSortable(element.querySelector('[data-formbuilder-fields]')).onSort()
 
         expect(request.mock.calls[0][1].body.get(TOKEN_NAME)).toBe(TOKEN_VALUE)
     })
@@ -197,7 +185,7 @@ describe('FieldsEditor field reordering', () => {
         mountedFixtureElement('fields-editor-form', '[data-formbuilder-rows][data-group-id="702"]')
         mount(element)
 
-        fieldSortable(element.querySelector('[data-formbuilder-fields]')).onEnd()
+        fieldSortable(element.querySelector('[data-formbuilder-fields]')).onSort()
 
         expect(postedRows()).toEqual({ 801: [901, 902], 804: [], 802: [903] })
     })
@@ -208,7 +196,7 @@ describe('FieldsEditor field reordering', () => {
         element.querySelector('[data-formbuilder-fields][data-row-id="804"]').setAttribute('data-row-id', '0')
         element.querySelector('[data-formbuilder-field][data-field-id="902"]').setAttribute('data-field-id', 'x')
 
-        fieldSortable(element.querySelector('[data-formbuilder-fields]')).onEnd()
+        fieldSortable(element.querySelector('[data-formbuilder-fields]')).onSort()
 
         expect(postedRows()).toEqual({ 801: [901] })
     })
@@ -218,7 +206,7 @@ describe('FieldsEditor field reordering', () => {
         mount(element)
         element.querySelector('[data-formbuilder-fields][data-row-id="804"]').setAttribute('data-row-id', 'new')
 
-        fieldSortable(element.querySelector('[data-formbuilder-fields]')).onEnd()
+        fieldSortable(element.querySelector('[data-formbuilder-fields]')).onSort()
 
         expect(postedRows()).toEqual({ 801: [901, 902] })
     })
@@ -227,7 +215,7 @@ describe('FieldsEditor field reordering', () => {
         const element = makeGroup({ fieldReorderUrl: '' })
         mount(element)
 
-        fieldSortable(element.querySelector('[data-formbuilder-fields]')).onEnd()
+        fieldSortable(element.querySelector('[data-formbuilder-fields]')).onSort()
 
         expect(request).not.toHaveBeenCalled()
     })
@@ -237,21 +225,9 @@ describe('FieldsEditor field reordering', () => {
         element.removeAttribute('data-field-reorder-url')
         mount(element)
 
-        fieldSortable(element.querySelector('[data-formbuilder-fields]')).onEnd()
+        fieldSortable(element.querySelector('[data-formbuilder-fields]')).onSort()
 
         expect(request).not.toHaveBeenCalled()
-    })
-
-    it('toggles the dragging class around a field drag', () => {
-        const element = makeGroup()
-        mount(element)
-        const options = fieldSortable(element.querySelector('[data-formbuilder-fields]'))
-
-        options.onStart()
-        const whileDragging = element.classList.contains('formbuilder__rows--dragging')
-        options.onEnd()
-
-        expect([whileDragging, element.classList.contains('formbuilder__rows--dragging')]).toEqual([true, false])
     })
 
     it('wires a sortable onto a row inserted via formbuilder:row-added', () => {
