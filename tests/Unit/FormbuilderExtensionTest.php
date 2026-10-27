@@ -6,6 +6,7 @@ namespace Contenir\Extension\Formbuilder\Tests\Unit;
 
 use Contenir\Extension\Api\Handler\Privilege;
 use Contenir\Extension\Api\Migration\Target;
+use Contenir\Extension\Api\Module\Component;
 use Contenir\Extension\Api\Registration;
 use Contenir\Extension\Api\Registry;
 use Contenir\Extension\Formbuilder\Admin\FormsHandler;
@@ -17,6 +18,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+use function array_map;
 use function count;
 use function dirname;
 use function is_dir;
@@ -109,6 +111,17 @@ final class FormbuilderExtensionTest extends TestCase
     }
 
     #[Test]
+    public function leavesTheIdentifierFieldToTheCmsComponent(): void
+    {
+        $selectors = array_map(
+            static fn(Component $component): string => $component->selector,
+            $this->registration()->module->components ?? [],
+        );
+
+        static::assertNotContains('[data-identifier]', $selectors);
+    }
+
+    #[Test]
     public function letsARoleViewingFormsTestThemInThePreview(): void
     {
         static::assertSame(Privilege::View, $this->registration()->handlers['preview']?->privilege);
@@ -139,7 +152,7 @@ final class FormbuilderExtensionTest extends TestCase
         }
 
         static::assertSame(
-            [dirname(__DIR__, levels: 2) . '/public', 12, [], true],
+            [dirname(__DIR__, levels: 2) . '/public', 11, [], true],
             [
                 $module?->assets,
                 count($module->components ?? []),

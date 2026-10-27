@@ -4,6 +4,13 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Removed
+
+- The add-on's own `[data-identifier]` component. The CMS registers that selector itself, so it left the add-on's
+  out with a console warning; a field's ID now follows its label through the CMS's component alone.
+
 ## [0.1.0] - 2026-10-22
 
 The form builder as an add-on, in place of the CMS's built-in Forms module, road-tested on a copy of a live site.
