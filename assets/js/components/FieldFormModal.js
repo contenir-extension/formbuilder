@@ -27,7 +27,7 @@ import { withToken } from '../utils/HandlerToken.js'
  *
  * The form is rendered into the light DOM, so MutationObserver-driven
  * components inside it (FieldForm for the type-aware toggling,
- * ConditionalEditor, DataIdentifier, dropdowns) auto-mount as soon as
+ * ConditionalEditor, the CMS's DataIdentifier, dropdowns) auto-mount as soon as
  * the HTML is injected.
  */
 export default class FieldFormModal extends BaseComponent {

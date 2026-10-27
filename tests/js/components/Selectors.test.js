@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import ConditionalEditor from '../../../assets/js/components/ConditionalEditor.js'
-import DataIdentifier from '../../../assets/js/components/DataIdentifier.js'
 import EditableLegend from '../../../assets/js/components/EditableLegend.js'
 import FieldForm from '../../../assets/js/components/FieldForm.js'
 import FieldFormModal from '../../../assets/js/components/FieldFormModal.js'
@@ -26,7 +25,6 @@ describe('Component selectors', () => {
         ['FieldFormModal', FieldFormModal, 'data-field-modal'],
         ['FieldForm', FieldForm, 'data-field-form'],
         ['ConditionalEditor', ConditionalEditor, 'data-conditional-editor'],
-        ['DataIdentifier', DataIdentifier, 'data-identifier'],
         ['FormStepper', FormStepper, 'data-form-stepper'],
         ['FormConditional', FormConditional, 'data-form-conditional'],
         ['NotificationLayout', NotificationLayout, 'data-notification-layout'],
