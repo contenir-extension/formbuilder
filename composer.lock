@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d22f388db5baf036ea5628c895a89e3a",
+    "content-hash": "fb9710e291d03002920363c45e68052c",
     "packages": [
         {
             "name": "contenir/contenir-extension-api",
-            "version": "v0.7.0",
+            "version": "v0.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/contenir/contenir-extension-api.git",
-                "reference": "7b65fbcf342aeff84ba9ee8eafdbd0305d833da4"
+                "reference": "5e85dd64c0a6b250fb208056d2b04a672b5c7033"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/7b65fbcf342aeff84ba9ee8eafdbd0305d833da4",
-                "reference": "7b65fbcf342aeff84ba9ee8eafdbd0305d833da4",
+                "url": "https://api.github.com/repos/contenir/contenir-extension-api/zipball/5e85dd64c0a6b250fb208056d2b04a672b5c7033",
+                "reference": "5e85dd64c0a6b250fb208056d2b04a672b5c7033",
                 "shasum": ""
             },
             "require": {
@@ -51,7 +51,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "0.7.x-dev"
+                    "dev-main": "0.8.x-dev"
                 }
             },
             "autoload": {
@@ -76,7 +76,7 @@
                 "issues": "https://github.com/contenir/contenir-extension-api/issues",
                 "source": "https://github.com/contenir/contenir-extension-api"
             },
-            "time": "2026-10-21T12:57:35+00:00"
+            "time": "2026-11-04T10:23:48+00:00"
         },
         {
             "name": "contenir/contenir-formbuilder",
@@ -5890,9 +5890,9 @@
     "platform": {
         "php": "~8.3.0 || ~8.4.0 || ~8.5.0"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "platform-overrides": {
         "php": "8.3.99"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
